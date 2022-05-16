@@ -28,6 +28,13 @@ public: //メインの関数
 	static FbxLoader *GetInstance();
 
 	/// <summary>
+	/// FBXの行列をXMMatrixに変換
+	/// </summary>
+	/// <param name="dst">書き込み先</param>
+	/// <param name="src">元となるFBX行列</param>
+	static void ConvertMatrixFromFbx(DirectX::XMMATRIX *dst, const FbxAMatrix &src);
+
+	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <param name="device">D3D12デバイス</param>
@@ -68,6 +75,8 @@ public://サブ関数
 	void ParseMaterial(FBXModel *model, FbxNode *fbxNode);
 	//テクスチャ読み込み
 	void LoadTexture(FBXModel *model, const std::string &fullpath);
+	//スキ二ング情報の読み取り
+	void ParseSkin(FBXModel *model, FbxMesh *fbxMesh);
 	//ディレクトリを含んだファイルパスからファイル名を抽出する
 	std::string ExtractFileName(const std::string &path);
 private:

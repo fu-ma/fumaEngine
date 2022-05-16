@@ -4,7 +4,7 @@ void FBXModel::CreateBuffers(ID3D12Device *device)
 {
 	//頂点データ全体のサイズ
 	HRESULT result;
-	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUv) * vertices.size());
+	UINT sizeVB = static_cast<UINT>(sizeof(VertexPosNormalUvSkin) * vertices.size());
 	//頂点バッファ生成
 	result = device->CreateCommittedResource
 	(
@@ -17,7 +17,7 @@ void FBXModel::CreateBuffers(ID3D12Device *device)
 	);
 
 	//頂点バッファへのデータ転送
-	VertexPosNormalUv *vertMap = nullptr;
+	VertexPosNormalUvSkin *vertMap = nullptr;
 	result = vertBuff->Map(0, nullptr, (void **)&vertMap);
 	if (SUCCEEDED(result))
 	{
@@ -135,4 +135,10 @@ void FBXModel::Draw(ID3D12GraphicsCommandList *cmdList)
 
 	//描画コマンド
 	cmdList->DrawIndexedInstanced((UINT)indices.size(), 1, 0, 0, 0);
+}
+
+FBXModel::~FBXModel()
+{
+	//FBXシーンの解放
+	fbxScene->Destroy();
 }
