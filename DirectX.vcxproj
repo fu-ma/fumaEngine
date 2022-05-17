@@ -36,6 +36,7 @@
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
+    <ClCompile Include="easing.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
     <ClCompile Include="FBXModel.cpp" />
     <ClCompile Include="FBXObject3d.cpp" />
@@ -150,6 +151,7 @@
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
     <ClInclude Include="DebugText\DebugText.h" />
+    <ClInclude Include="easing.h" />
     <ClInclude Include="FbxLoader.h" />
     <ClInclude Include="FBXModel.h" />
     <ClInclude Include="FBXObject3d.h" />

@@ -120,6 +120,9 @@
     <ClCompile Include="FBXObject3d.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="easing.cpp">
+      <Filter>Engine\easing</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -232,6 +235,9 @@
     </ClInclude>
     <ClInclude Include="FBXObject3d.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="easing.h">
+      <Filter>Engine\easing</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -350,6 +356,9 @@
     </Filter>
     <Filter Include="Engine\Light\Group\SpotLight">
       <UniqueIdentifier>{ab3a858a-192c-4d7c-a76d-b7e5866123c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\easing">
+      <UniqueIdentifier>{0e9a4752-83df-4cdf-98d4-7fe2f8ad958b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
