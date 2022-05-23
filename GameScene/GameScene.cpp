@@ -193,13 +193,13 @@ void GameScene::GamePlayDraw()
 	objFighter->Draw();
 	objSphere->Draw();
 
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();
@@ -309,7 +309,7 @@ void GameScene::staticInit()
 
 	// モデル名を指定してファイル読み込み
 	//FbxLoader::GetInstance()->LoadModelFromFile("cube");
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("cube");
+	model1 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
 	
 	//FBX用の3Dオブジェクト生成とモデルのセット
 	object1 = new FBXObject3d;

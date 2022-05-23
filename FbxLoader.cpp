@@ -11,7 +11,7 @@ const std::string FbxLoader::baseDirectory = "Resources/";
 /// <summary>
 /// テクスチャがない場合の標準テクスチャファイル名
 /// </summary>
-const std::string FbxLoader::defaultTextureFileName = "white1*1.png";
+const std::string FbxLoader::defaultTextureFileName = "white1.png";
 
 FbxLoader *FbxLoader::GetInstance()
 {
