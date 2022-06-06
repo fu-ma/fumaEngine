@@ -184,6 +184,8 @@ void FBXObject3d::CreateGraphicsPipeline()
 
 void FBXObject3d::Initialize()
 {
+	//1フレーム分の時間を60FPSで設定
+	frameTime.SetTime(0, 0, 0, 1, 0, FbxTime::EMode::eFrames60);
 	HRESULT result;
 	//定数バッファの生成
 	result = device->CreateCommittedResource
@@ -248,15 +250,33 @@ void FBXObject3d::Update()
 	//ボーン配列
 	std::vector<FBXModel::Bone> &bones = model->GetBones();
 
+	//アニメーション
+	if (isPlay)
+	{
+		//1フレーム進める
+		currentTime += frameTime;
+		//最後まで再生したら先頭に戻す
+		if (currentTime > endTime)
+		{
+			currentTime = startTime;
+		}
+	}
+
 	//定数バッファへのデータ転送
 	ConstBufferDataSkin *constMapSkin = nullptr;
 	result = constBuffSkin->Map(0, nullptr, (void **)&constMapSkin);
+	for (int i = 0; i < MAX_BONES; i++)
+	{
+		constMapSkin->bones[i] = XMMatrixIdentity();
+	}
+	constBuffSkin->Unmap(0, nullptr);
+
 	for (int i = 0; i < bones.size(); i++)
 	{
 		//今の姿勢行列
 		XMMATRIX matCurrentPose;
 		//今の姿勢行列を取得
-		FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(0);
+		FbxAMatrix fbxCurrentPose = bones[i].fbxCluster->GetLink()->EvaluateGlobalTransform(currentTime);
 		//XMMATRIXに変換
 		FbxLoader::ConvertMatrixFromFbx(&matCurrentPose, fbxCurrentPose);
 		//合体してスキニング行列に
@@ -284,4 +304,24 @@ void FBXObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
 
 	//モデル描画
 	model->Draw(cmdList);
+}
+
+void FBXObject3d::PlayAnimation()
+{
+	FbxScene *fbxScene = model->GetFbxScene();
+	//0番のアニメーション取得
+	FbxAnimStack *animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	//アニメーションの名前取得
+	const char *animstackname = animstack->GetName();
+	//アニメーションの時間情報
+	FbxTakeInfo *takeinfo = fbxScene->GetTakeInfo(animstackname);
+
+	//開始時間取得
+	startTime = takeinfo->mLocalTimeSpan.GetStart();
+	//終了時間取得
+	endTime = takeinfo->mLocalTimeSpan.GetStop();
+	//開始時間に合わせる
+	currentTime = startTime;
+	//再生中状態にする
+	isPlay = true;
 }

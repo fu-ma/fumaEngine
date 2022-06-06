@@ -92,6 +92,7 @@ void GameScene::GamePlayInit()
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 20, 0 });
 	camera->SetDistance(100.0f);
+	object1->PlayAnimation();
 }
 
 void GameScene::GamePlayUpdate()
@@ -190,11 +191,11 @@ void GameScene::GamePlayDraw()
 
 	objSkydome->Draw();
 	objGround->Draw();
-	objFighter->Draw();
-	objSphere->Draw();
-
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
+	//objFighter->Draw();
+	//objSphere->Draw();
+
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
 
