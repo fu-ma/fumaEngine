@@ -90,8 +90,10 @@ void GameScene::GamePlayInit()
 	objFighter->SetPosition(XMFLOAT3(fighterPos));
 	objSphere->SetPosition({ -1,1,0 });
 	// カメラ注視点をセット
-	camera->SetTarget({ 0, 20, 0 });
-	camera->SetDistance(100.0f);
+	camera->SetTarget({ 0, 2.5f, 0 });
+	camera->SetDistance(8.0f);
+	object1->SetRotation({ 0,90,0 });
+
 	object1->PlayAnimation();
 }
 
@@ -288,6 +290,12 @@ void GameScene::staticInit()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
+	//ポストエフェクト用テクスチャの読み込み
+	Sprite::LoadTexture(100, L"Resources/e1.png");
+	//ポストエフェクトの初期化
+	postEffect = std::make_unique<PostEffect>();
+	postEffect->Initialize();
+
 	// モデル読み込み
 	modelSkydome = Model::CreateFromOBJ("skydome", true);
 	modelGround = Model::CreateFromOBJ("ground", true);
@@ -377,21 +385,23 @@ void GameScene::Draw()
 #pragma region 描画前処理
 
 	common->PreDraw();
+	//ポストエフェクトの描画
+	postEffect->Draw(common->GetCmdList().Get());
 
-	switch (SceneNo)
-	{
-	case static_cast<int>(GameScene::GameSceneNo::Title):
-		TitleDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::GamePlay):
-		GamePlayDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::End):
-		EndDraw();
-		break;
-	default:
-		break;
-	}
+	//switch (SceneNo)
+	//{
+	//case static_cast<int>(GameScene::GameSceneNo::Title):
+	//	TitleDraw();
+	//	break;
+	//case static_cast<int>(GameScene::GameSceneNo::GamePlay):
+	//	GamePlayDraw();
+	//	break;
+	//case static_cast<int>(GameScene::GameSceneNo::End):
+	//	EndDraw();
+	//	break;
+	//default:
+	//	break;
+	//}
 
 #pragma region 描画後処理
 

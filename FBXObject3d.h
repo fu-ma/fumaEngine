@@ -55,6 +55,37 @@ public://静的メンバ関数
 	/// </summary>
 	static void CreateGraphicsPipeline();
 
+	/// <summary>
+/// 座標の取得
+/// </summary>
+/// <returns>座標</returns>
+	const XMFLOAT3 &GetPosition() { return position; }
+
+	/// <summary>
+	/// 回転の取得
+	/// </summary>
+	/// <returns>回転</returns>
+	const XMFLOAT3 &GetRotation() { return rotation; }
+
+	/// <summary>
+	/// ワールド行列の取得
+	/// </summary>
+	/// <returns>ワールド行列</returns>
+	const XMMATRIX &GetMatWorld() { return matWorld; }
+
+	/// <summary>
+	/// 座標の設定
+	/// </summary>
+	/// <param name="position">座標</param>
+	void SetPosition(XMFLOAT3 position) { this->position = position; }
+
+	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="position">スケール</param>
+	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
 public://メンバ関数
 	/// <summary>
 	/// 初期化

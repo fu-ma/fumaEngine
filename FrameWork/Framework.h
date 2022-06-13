@@ -82,7 +82,6 @@ protected:
 	DebugText *debugText;
 	ParticleManager *particleMan;
 	DebugCamPtr camera;
-
 	LightGroupPtr lightGroup;
 
 	//Œ»İ‚ÌƒV[ƒ“‚Ì”Ô†
