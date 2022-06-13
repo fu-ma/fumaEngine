@@ -291,7 +291,7 @@ void GameScene::staticInit()
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	//ポストエフェクト用テクスチャの読み込み
-	Sprite::LoadTexture(100, L"Resources/e1.png");
+	Sprite::LoadTexture(100, L"Resources/backGround3.png");
 	//ポストエフェクトの初期化
 	postEffect = std::make_unique<PostEffect>();
 	postEffect->Initialize();
@@ -382,28 +382,29 @@ bool GameScene::Update()
 
 void GameScene::Draw()
 {
-#pragma region 描画前処理
+	//レンダーテクスチャへの描画
+	postEffect->PreDrawScene(common->GetCmdList().Get());
 
+	switch (SceneNo)
+	{
+	case static_cast<int>(GameScene::GameSceneNo::Title):
+		TitleDraw();
+		break;
+	case static_cast<int>(GameScene::GameSceneNo::GamePlay):
+		GamePlayDraw();
+		break;
+	case static_cast<int>(GameScene::GameSceneNo::End):
+		EndDraw();
+		break;
+	default:
+		break;
+	}
+	postEffect->PostDrawScene(common->GetCmdList().Get());
+
+	//描画開始
 	common->PreDraw();
 	//ポストエフェクトの描画
 	postEffect->Draw(common->GetCmdList().Get());
-
-	//switch (SceneNo)
-	//{
-	//case static_cast<int>(GameScene::GameSceneNo::Title):
-	//	TitleDraw();
-	//	break;
-	//case static_cast<int>(GameScene::GameSceneNo::GamePlay):
-	//	GamePlayDraw();
-	//	break;
-	//case static_cast<int>(GameScene::GameSceneNo::End):
-	//	EndDraw();
-	//	break;
-	//default:
-	//	break;
-	//}
-
-#pragma region 描画後処理
-
+	//描画終了
 	common->PostDraw();
 }
