@@ -34,6 +34,12 @@
     <FxCompile Include="Resources\shaders\FBXPS.hlsl">
       <Filter>リソース\shader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestPS.hlsl">
+      <Filter>リソース\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl">
+      <Filter>リソース\shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\Audio.cpp">
@@ -260,6 +266,9 @@
       <Filter>リソース\shader</Filter>
     </None>
     <None Include="Resources\shaders\FBX.hlsli">
+      <Filter>リソース\shader</Filter>
+    </None>
+    <None Include="Resources\shaders\PostEffectTest.hlsli">
       <Filter>リソース\shader</Filter>
     </None>
   </ItemGroup>

@@ -15,7 +15,17 @@ void Framework::GameRun()
 		}
 		if (SceneTime)
 		{
+			//レンダーテクスチャへの描画
+			postEffect->PreDrawScene(common->GetCmdList().Get());
 			Draw();
+			postEffect->PostDrawScene(common->GetCmdList().Get());
+
+			//描画開始
+			common->PreDraw();
+			//ポストエフェクトの描画
+			postEffect->Draw(common->GetCmdList().Get());
+			//描画終了
+			common->PostDraw();
 		}
 	}
 	SceneDelete();
@@ -37,6 +47,12 @@ void Framework::staticInit()
 	Sprite::LoadTexture(0, L"Resources/debugfont.png");
 	debugText = DebugText::GetInstance();
 	debugText->Initialize(0);
+
+	//ポストエフェクト用テクスチャの読み込み
+	//Sprite::LoadTexture(100, L"Resources/backGround3.png");
+	//ポストエフェクトの初期化
+	postEffect = std::make_unique<PostEffect>();
+	postEffect->Initialize();
 
 	/*FBX初期化*/
 	FbxLoader::GetInstance()->Initialize(common->GetDev().Get());

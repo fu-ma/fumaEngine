@@ -19,11 +19,21 @@ private://メンバ変数
     ComPtr<ID3D12DescriptorHeap> descHeapRTV;
     //DSV用デスクリプタヒープ
     ComPtr<ID3D12DescriptorHeap> descHeapDSV;
+    //グラフィックパイプライン
+    ComPtr<ID3D12PipelineState> pipelineState;
+    //ルートシグネチャ
+    ComPtr<ID3D12RootSignature> rootSignature;
+
 public://メンバ関数
     ///<summary>
     ///コンストラクタ
     ///</summary>
     PostEffect();
+
+    ///<summary>
+    ///パイプライン生成
+    ///</summary>
+    void CreateGraphicsPipelineState();
 
     ///<summary>
     ///初期化

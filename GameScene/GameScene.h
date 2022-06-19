@@ -9,7 +9,6 @@
 #include"CollisionManager.h"
 #include "Player.h"
 #include "TouchableObject.h"
-#include"PostEffect.h"
 
 class GameScene : public Framework
 {
@@ -25,7 +24,6 @@ private: // エイリアス
 	using ObjPtr = std::unique_ptr<ModelObj>;
 	using ModelPtr = std::unique_ptr<Model>;
 	using SpritePtr = std::unique_ptr<Sprite>;
-	using PostEffectPtr = std::unique_ptr<PostEffect>;
 
 private:
 
@@ -38,7 +36,6 @@ private:
 	/// </summary>
 
 	Sprite *spriteBG = nullptr;
-	PostEffectPtr postEffect;
 
 	Model *modelSkydome = nullptr;
 	Model *modelGround = nullptr;

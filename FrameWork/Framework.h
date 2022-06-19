@@ -11,6 +11,7 @@
 #include"FbxLoader.h"
 #include"FBXObject3d.h"
 #include<memory>
+#include"PostEffect.h"
 
 /// <summary>
 /// フレームワーク
@@ -23,6 +24,8 @@ protected:
 	using AudioPtr = std::unique_ptr<Audio>;
 	using DebugCamPtr = std::unique_ptr<DebugCamera>;
 	using LightGroupPtr = std::unique_ptr<LightGroup>;
+	using PostEffectPtr = std::unique_ptr<PostEffect>;
+
 	enum class GameSceneNo
 	{
 		Title,
@@ -83,6 +86,7 @@ protected:
 	ParticleManager *particleMan;
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
+	PostEffectPtr postEffect;
 
 	//現在のシーンの番号
 	int SceneNo = static_cast<int>(GameSceneNo::GamePlay);

@@ -176,16 +176,16 @@ void GameScene::GamePlayDraw()
 {
 #pragma region 描画処理
 
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	//Sprite::PreDraw(common->GetCmdList().Get());
 
-	// 背景スプライト描画
-	spriteBG->Draw();
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
-	//深度バッファクリア
-	common->ClearDepthBuffer();
+	//// 背景スプライト描画
+	//spriteBG->Draw();
+	///*スプライト描画後処理*/
+	//Sprite::PostDraw();
+	////深度バッファクリア
+	//common->ClearDepthBuffer();
 
 	/*モデル描画*/
 	/*モデル描画前処理*/
@@ -290,12 +290,6 @@ void GameScene::staticInit()
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
-	//ポストエフェクト用テクスチャの読み込み
-	Sprite::LoadTexture(100, L"Resources/backGround3.png");
-	//ポストエフェクトの初期化
-	postEffect = std::make_unique<PostEffect>();
-	postEffect->Initialize();
-
 	// モデル読み込み
 	modelSkydome = Model::CreateFromOBJ("skydome", true);
 	modelGround = Model::CreateFromOBJ("ground", true);
@@ -382,8 +376,6 @@ bool GameScene::Update()
 
 void GameScene::Draw()
 {
-	//レンダーテクスチャへの描画
-	postEffect->PreDrawScene(common->GetCmdList().Get());
 
 	switch (SceneNo)
 	{
@@ -399,12 +391,4 @@ void GameScene::Draw()
 	default:
 		break;
 	}
-	postEffect->PostDrawScene(common->GetCmdList().Get());
-
-	//描画開始
-	common->PreDraw();
-	//ポストエフェクトの描画
-	postEffect->Draw(common->GetCmdList().Get());
-	//描画終了
-	common->PostDraw();
 }
