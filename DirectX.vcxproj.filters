@@ -132,6 +132,9 @@
     <ClCompile Include="PostEffect.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="2d\MultipleRender.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -249,6 +252,9 @@
       <Filter>Engine\easing</Filter>
     </ClInclude>
     <ClInclude Include="2d\PostEffect.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="2d\MultipleRender.h">
       <Filter>Engine</Filter>
     </ClInclude>
   </ItemGroup>

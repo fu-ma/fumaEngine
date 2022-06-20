@@ -191,8 +191,8 @@ void GameScene::GamePlayDraw()
 	/*ƒ‚ƒfƒ‹•`‰æ‘Oˆ—*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	objSkydome->Draw();
-	objGround->Draw();
+	//objSkydome->Draw();
+	//objGround->Draw();
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	//objFighter->Draw();

@@ -12,7 +12,7 @@
 #include"FBXObject3d.h"
 #include<memory>
 #include"PostEffect.h"
-
+#include"MultipleRender.h"
 /// <summary>
 /// フレームワーク
 /// </summary>
@@ -24,7 +24,7 @@ protected:
 	using AudioPtr = std::unique_ptr<Audio>;
 	using DebugCamPtr = std::unique_ptr<DebugCamera>;
 	using LightGroupPtr = std::unique_ptr<LightGroup>;
-	using PostEffectPtr = std::unique_ptr<PostEffect>;
+	using PostEffectPtr = std::unique_ptr<MultipleRender>;
 
 	enum class GameSceneNo
 	{
