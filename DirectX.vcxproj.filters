@@ -40,6 +40,12 @@
     <FxCompile Include="Resources\shaders\PostEffectTestVS.hlsl">
       <Filter>リソース\shader</Filter>
     </FxCompile>
+    <FxCompile Include="Resources\shaders\MultipleTexturePS.hlsl">
+      <Filter>リソース\shader</Filter>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\MultipleTextureVS.hlsl">
+      <Filter>リソース\shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="audio\Audio.cpp">
@@ -133,6 +139,9 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="2d\MultipleRender.cpp">
+      <Filter>Engine</Filter>
+    </ClCompile>
+    <ClCompile Include="2d\MultipleTexture.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
   </ItemGroup>
@@ -257,6 +266,9 @@
     <ClInclude Include="2d\MultipleRender.h">
       <Filter>Engine</Filter>
     </ClInclude>
+    <ClInclude Include="2d\MultipleTexture.h">
+      <Filter>Engine</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -275,6 +287,9 @@
       <Filter>リソース\shader</Filter>
     </None>
     <None Include="Resources\shaders\PostEffectTest.hlsli">
+      <Filter>リソース\shader</Filter>
+    </None>
+    <None Include="Resources\shaders\MultipleTexture.hlsli">
       <Filter>リソース\shader</Filter>
     </None>
   </ItemGroup>

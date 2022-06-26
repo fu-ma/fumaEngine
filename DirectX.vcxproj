@@ -20,6 +20,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="2d\MultipleRender.cpp" />
+    <ClCompile Include="2d\MultipleTexture.cpp" />
     <ClCompile Include="2d\Sprite.cpp" />
     <ClCompile Include="3dModel\Material.cpp" />
     <ClCompile Include="3dModel\Mesh.cpp" />
@@ -54,6 +55,7 @@
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
     <None Include="Resources\shaders\FBX.hlsli" />
+    <None Include="Resources\shaders\MultipleTexture.hlsli" />
     <None Include="Resources\shaders\OBJShaderHeader.hlsli" />
     <None Include="Resources\shaders\Particle.hlsli" />
     <None Include="Resources\shaders\PostEffectTest.hlsli" />
@@ -84,6 +86,18 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\MultipleTexturePS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
+    </FxCompile>
+    <FxCompile Include="Resources\shaders\MultipleTextureVS.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">5.0</ShaderModel>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Resources\shaders\OBJPixelShader.hlsl">
@@ -143,6 +157,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="2d\MultipleRender.h" />
+    <ClInclude Include="2d\MultipleTexture.h" />
     <ClInclude Include="2d\PostEffect.h" />
     <ClInclude Include="2d\Sprite.h" />
     <ClInclude Include="3dModel\Material.h" />
@@ -294,6 +309,7 @@
       <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>false</ConformanceMode>
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -312,6 +328,7 @@
       <AdditionalIncludeDirectories>$(SolutionDir)DirectXTex;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
       <BasicRuntimeChecks>Default</BasicRuntimeChecks>
+      <TreatWarningAsError>true</TreatWarningAsError>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

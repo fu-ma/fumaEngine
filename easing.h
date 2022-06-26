@@ -36,10 +36,10 @@ enum ease
 	InOutBounce
 };
 
-static class easing
+class easing
 {
 public:
-	static void Updete(float &pos, float rearPos, int anyEase, float &time);
+	static void Updete(double &pos, double rearPos, int anyEase, double &time);
 private:
 	static const double c1;
 	static const double c2;

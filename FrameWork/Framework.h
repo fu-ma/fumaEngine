@@ -13,6 +13,8 @@
 #include<memory>
 #include"PostEffect.h"
 #include"MultipleRender.h"
+#include"MultipleTexture.h"
+
 /// <summary>
 /// フレームワーク
 /// </summary>
@@ -24,7 +26,7 @@ protected:
 	using AudioPtr = std::unique_ptr<Audio>;
 	using DebugCamPtr = std::unique_ptr<DebugCamera>;
 	using LightGroupPtr = std::unique_ptr<LightGroup>;
-	using PostEffectPtr = std::unique_ptr<MultipleRender>;
+	using PostEffectPtr = std::unique_ptr<MultipleTexture>;
 
 	enum class GameSceneNo
 	{

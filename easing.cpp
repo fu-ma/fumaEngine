@@ -166,9 +166,9 @@ double easing::easeInOutBounce(double x)
 }
 
 //public
-void easing::Updete(float &pos, float rearPos, int anyEase,float &time)
+void easing::Updete(double &pos, double rearPos, int anyEase, double &time)
 {
-	const float initialPos = pos;
+	const double initialPos = pos;
 	switch (anyEase)
 	{
 	case 1:
