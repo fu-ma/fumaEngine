@@ -90,15 +90,22 @@ void GameScene::GamePlayInit()
 	objFighter->SetPosition(XMFLOAT3(fighterPos));
 	objSphere->SetPosition({ -1,1,0 });
 	// カメラ注視点をセット
-	camera->SetTarget({ 0, 2.5f, 0 });
-	camera->SetDistance(8.0f);
-	object1->SetRotation({ 0,90,0 });
+	camera->SetTarget({ 0, 0, 0 });
+	camera->SetDistance(3.0f);
+	//object1->SetRotation({ 0,90,0 });
 
 	object1->PlayAnimation();
 }
 
 void GameScene::GamePlayUpdate()
 {
+	//マテリアルパラメータをモデルに反映
+	model1->SetBaseColor(XMFLOAT3(1,0,0));
+	model1->SetMetalness(1.0f);
+	model1->SetSpecular(0.5f);
+	model1->SetRoughness(0.38f);
+	model1->TransferMaterial();
+
 	// パーティクル生成
 	//CreateParticles();
 	XMFLOAT3 rot = objSphere->GetRotation();
@@ -273,7 +280,7 @@ void GameScene::staticInit()
 	//lightGroup->SetPointLightActive(0, false);
 	//lightGroup->SetPointLightActive(1, false);
 	//lightGroup->SetPointLightActive(2, false);
-	lightGroup->SetSpotLightActive(0, true);
+	lightGroup->SetSpotLightActive(0, false);
 	lightGroup->SetCircleShadowActive(0, true);
 
 	pointLightPos[0] = 0.5f;
@@ -312,8 +319,10 @@ void GameScene::staticInit()
 
 	// モデル名を指定してファイル読み込み
 	//FbxLoader::GetInstance()->LoadModelFromFile("cube");
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("boneTest");
-	
+	model1 = FbxLoader::GetInstance()->LoadModelFromFile("SpiralPBR");
+	//ライトグループをセット
+	FBXObject3d::SetLightGroup(lightGroup.get());
+
 	//FBX用の3Dオブジェクト生成とモデルのセット
 	object1 = new FBXObject3d;
 	object1->Initialize();

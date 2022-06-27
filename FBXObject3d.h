@@ -10,6 +10,7 @@
 #include<d3dx12.h>
 #include<DirectXMath.h>
 #include<string>
+#include"LightGroup.h"
 
 class FBXObject3d
 {
@@ -82,6 +83,12 @@ public://静的メンバ関数
 	void SetRotation(XMFLOAT3 rotation) { this->rotation = rotation; }
 
 	/// <summary>
+	/// ライトの設定
+	/// </summary>
+	/// <param name="position">ライト</param>
+	static void SetLightGroup(LightGroup *lightGroup) { FBXObject3d::lightGroup = lightGroup; }
+
+	/// <summary>
 	/// スケールの設定
 	/// </summary>
 	/// <param name="position">スケール</param>
@@ -142,4 +149,6 @@ private://静的メンバ変数
 	static ComPtr<ID3D12RootSignature> rootsignature;
 	//パイプラインステートオブジェクト
 	static ComPtr<ID3D12PipelineState> pipelinestate;
+	//ライトグループ
+	static LightGroup *lightGroup;
 };

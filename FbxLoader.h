@@ -74,7 +74,7 @@ public://サブ関数
 	//マテリアル読み取り
 	void ParseMaterial(FBXModel *model, FbxNode *fbxNode);
 	//テクスチャ読み込み
-	void LoadTexture(FBXModel *model, const std::string &fullpath);
+	void LoadTexture(TextureData *texdata, const std::string &fullpath);
 	//スキ二ング情報の読み取り
 	void ParseSkin(FBXModel *model, FbxMesh *fbxMesh);
 	//ディレクトリを含んだファイルパスからファイル名を抽出する

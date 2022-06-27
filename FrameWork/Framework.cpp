@@ -51,7 +51,7 @@ void Framework::staticInit()
 	//ポストエフェクト用テクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/backGround3.png");
 	//ポストエフェクトの初期化
-	postEffect = std::make_unique<MultipleTexture>();
+	postEffect = std::make_unique<PostEffect>();
 	postEffect->Initialize();
 
 	/*FBX初期化*/

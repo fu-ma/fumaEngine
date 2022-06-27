@@ -26,7 +26,7 @@ protected:
 	using AudioPtr = std::unique_ptr<Audio>;
 	using DebugCamPtr = std::unique_ptr<DebugCamera>;
 	using LightGroupPtr = std::unique_ptr<LightGroup>;
-	using PostEffectPtr = std::unique_ptr<MultipleTexture>;
+	using PostEffectPtr = std::unique_ptr<PostEffect>;
 
 	enum class GameSceneNo
 	{
