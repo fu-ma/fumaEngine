@@ -144,6 +144,9 @@
     <ClCompile Include="2d\MultipleTexture.cpp">
       <Filter>Engine</Filter>
     </ClCompile>
+    <ClCompile Include="Controller.cpp">
+      <Filter>Engine\Input</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -268,6 +271,9 @@
     </ClInclude>
     <ClInclude Include="2d\MultipleTexture.h">
       <Filter>Engine</Filter>
+    </ClInclude>
+    <ClInclude Include="Controller.h">
+      <Filter>Engine\Input</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

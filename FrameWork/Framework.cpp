@@ -39,6 +39,9 @@ void Framework::staticInit()
 	common->Initialize();
 	input = Input::GetInstance();
 	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
+	controller = Controller::GetInstance();
+	controller->Initialize(0);
+
 	Audio::Init();
 	//ライト静的初期化
 	LightGroup::StaticInitialize(common->GetDev().Get());
@@ -82,6 +85,8 @@ bool Framework::Update()
 {
 	//キーボード情報の取得開始
 	input->Update();
+	controller->Update(0);
+
 	if (winApp->ProcessMessage() || input->isKeyTrigger(DIK_ESCAPE))
 	{
 		return false;

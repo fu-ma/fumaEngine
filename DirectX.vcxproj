@@ -37,6 +37,7 @@
     <ClCompile Include="Collision\CollisionPrimitive.cpp" />
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
+    <ClCompile Include="Controller.cpp" />
     <ClCompile Include="DebugText\DebugText.cpp" />
     <ClCompile Include="easing.cpp" />
     <ClCompile Include="FbxLoader.cpp" />
@@ -183,6 +184,7 @@
     <ClInclude Include="Collision\QueryCallback.h" />
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
+    <ClInclude Include="Controller.h" />
     <ClInclude Include="DebugText\DebugText.h" />
     <ClInclude Include="easing.h" />
     <ClInclude Include="FbxLoader.h" />

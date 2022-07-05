@@ -28,8 +28,8 @@ public:
 	void OnCollision(const CollisionInfo& info) override;
 
 private:
-	//const float gravity = (- 9.8f / 60/ 20);
-	const float gravity = (-9.8f / 60 / 40);
+	const float gravity = (- 9.8f / 60/ 20);
+	//const float gravity = (-9.8f / 60 / 40);
 	float speed;
 	bool onGround = true;
 	// 落下ベクトル

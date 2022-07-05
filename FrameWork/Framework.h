@@ -14,6 +14,7 @@
 #include"PostEffect.h"
 #include"MultipleRender.h"
 #include"MultipleTexture.h"
+#include"Controller.h"
 
 /// <summary>
 /// フレームワーク
@@ -81,6 +82,7 @@ public:
 protected:
 	WinPtr winApp;
 	Input* input;
+	Controller* controller;
 	CommonPtr common;
 
 	AudioPtr audio;

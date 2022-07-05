@@ -92,7 +92,7 @@ void GameScene::GamePlayInit()
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance(3.0f);
-	//object1->SetRotation({ 0,90,0 });
+	object1->SetPosition({ 0,5,0 });
 
 	object1->PlayAnimation();
 }
@@ -100,10 +100,10 @@ void GameScene::GamePlayInit()
 void GameScene::GamePlayUpdate()
 {
 	//マテリアルパラメータをモデルに反映
-	model1->SetBaseColor(XMFLOAT3(1,0,0));
-	model1->SetMetalness(1.0f);
-	model1->SetSpecular(0.5f);
-	model1->SetRoughness(0.38f);
+	model1->SetBaseColor(XMFLOAT3(0,1,1));
+	model1->SetMetalness(0.0f);
+	model1->SetSpecular(1.0f);
+	model1->SetRoughness(0.0f);
 	model1->TransferMaterial();
 
 	// パーティクル生成
@@ -112,23 +112,23 @@ void GameScene::GamePlayUpdate()
 	rot.y += 1.0f;
 	objSphere->SetRotation(rot);
 	//objFighter->SetRotation(rot);
-	if (input->isKey(DIK_W))
-	{
-		fighterPos[1] += 0.01f;
-	}
-	if (input->isKey(DIK_S))
-	{
-		fighterPos[1] -= 0.01f;
-	}
+	//if (controller->PushButton(static_cast<int>(Button::A)) == true)
+	//{
+	//	fighterPos[1] += 0.01f;
+	//}
+	//if (controller->PushButton(static_cast<int>(Button::B)) == true)
+	//{
+	//	fighterPos[1] -= 0.01f;
+	//}
 
-	if (input->isKey(DIK_A))
-	{
-		fighterPos[0] += 0.01f;
-	}
-	if (input->isKey(DIK_D))
-	{
-		fighterPos[0] -= 0.01f;
-	}
+	//if (controller->PushButton(static_cast<int>(Button::X)) == true)
+	//{
+	//	fighterPos[0] += 0.01f;
+	//}
+	//if (controller->PushButton(static_cast<int>(Button::Y)) == true)
+	//{
+	//	fighterPos[0] -= 0.01f;
+	//}
 
 	{
 		/*lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
@@ -198,12 +198,12 @@ void GameScene::GamePlayDraw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
+	objSkydome->Draw();
+	objGround->Draw();
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
-	//objFighter->Draw();
-	//objSphere->Draw();
+	objFighter->Draw();
+	objSphere->Draw();
 
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
@@ -280,7 +280,7 @@ void GameScene::staticInit()
 	//lightGroup->SetPointLightActive(0, false);
 	//lightGroup->SetPointLightActive(1, false);
 	//lightGroup->SetPointLightActive(2, false);
-	lightGroup->SetSpotLightActive(0, false);
+	lightGroup->SetSpotLightActive(0, true);
 	lightGroup->SetCircleShadowActive(0, true);
 
 	pointLightPos[0] = 0.5f;
@@ -319,7 +319,7 @@ void GameScene::staticInit()
 
 	// モデル名を指定してファイル読み込み
 	//FbxLoader::GetInstance()->LoadModelFromFile("cube");
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("SpiralPBR");
+	model1 = FbxLoader::GetInstance()->LoadModelFromFile("SpherePBR");
 	//ライトグループをセット
 	FBXObject3d::SetLightGroup(lightGroup.get());
 

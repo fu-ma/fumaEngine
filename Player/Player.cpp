@@ -5,6 +5,7 @@
 #include "ParticleManager.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
+#include"Controller.h"
 
 using namespace DirectX;
 
@@ -49,15 +50,16 @@ bool Player::Initialize()
 void Player::Update()
 {
 	Input* input = Input::GetInstance();
-
+	Controller *controller = Controller::GetInstance();
+	// 移動ベクトルをY軸周りの角度で回転
 	// A,Dで旋回
-	if (input->isKey(DIK_A))
+	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
-		rotation.y -= 2.0f;
+		position.x -= 0.1f;
 	}
-	else if (input->isKey(DIK_D))
+	else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
 	{
-		rotation.y += 2.0f;
+		position.x += 0.1f;
 	}
 
 	// 移動ベクトルをY軸周りの角度で回転
@@ -66,13 +68,13 @@ void Player::Update()
 	move = XMVector3TransformNormal(move, matRot);
 
 	// 向いている方向に移動
-	if (input->isKey(DIK_S))
+	if (input->isKey(DIK_S) || controller->PushButton(static_cast<int>(Button::DOWN)) == true)
 	{
 		position.x -= move.m128_f32[0];
 		position.y -= move.m128_f32[1];
 		position.z -= move.m128_f32[2];
 	}
-	else if (input->isKey(DIK_W))
+	else if (input->isKey(DIK_W) || controller->PushButton(static_cast<int>(Button::UP)) == true)
 	{
 		position.x += move.m128_f32[0];
 		position.y += move.m128_f32[1];
@@ -97,12 +99,12 @@ void Player::Update()
 		//position.z += fallV.m128_f32[2];
 	}
 	// ジャンプ操作
-	else if (Input::GetInstance()->isKeyTrigger(DIK_SPACE))
+	else if (Input::GetInstance()->isKeyTrigger(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 	{
 		onGround = false;
-		position.y = 20.0f;
-		speed = 0.0f;
-		//speed = 0.6f;
+		position.y += 0.0f;
+		//speed = 0.0f;
+		speed = 0.4f;
 		//const float jumpVYFist = 20.0f;
 		//fallV = {0, jumpVYFist, 0, 0};
 	}
