@@ -15,6 +15,7 @@
 #include"MultipleRender.h"
 #include"MultipleTexture.h"
 #include"Controller.h"
+#include"ImguiCommon.h"
 
 /// <summary>
 /// フレームワーク

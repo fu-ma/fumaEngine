@@ -15,9 +15,14 @@ void Framework::GameRun()
 		}
 		if (SceneTime)
 		{
+			//Imguiの描画前処理
+			ImguiCommon::PreDraw();
+
 			//レンダーテクスチャへの描画
 			postEffect->PreDrawScene(common->GetCmdList().Get());
 			Draw();
+			//Imguiの描画処理
+			ImguiCommon::Draw(common->GetCmdList().Get());
 			postEffect->PostDrawScene(common->GetCmdList().Get());
 
 			//描画開始
@@ -26,6 +31,7 @@ void Framework::GameRun()
 			postEffect->Draw(common->GetCmdList().Get());
 			//描画終了
 			common->PostDraw();
+
 		}
 	}
 	SceneDelete();
@@ -37,6 +43,7 @@ void Framework::staticInit()
 	common = std::make_unique<DirectXCommon>(winApp.get());
 	winApp->Innitialize();
 	common->Initialize();
+
 	input = Input::GetInstance();
 	input->Initialize(winApp->GetHInstance(), winApp->GetHwnd());
 	controller = Controller::GetInstance();
@@ -75,6 +82,9 @@ void Framework::staticInit()
 	FBXObject3d::SetCamera(camera.get());
 	//グラフィックスパイプライン生成
 	FBXObject3d::CreateGraphicsPipeline();
+
+	//Imgui初期化
+	ImguiCommon::Initialize(common->GetDev().Get(),winApp->GetHwnd());
 }
 
 void Framework::Init()
