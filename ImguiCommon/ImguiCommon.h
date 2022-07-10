@@ -20,6 +20,9 @@ public:
 
 	//imgui用のヒープアクセサ
 	static ComPtr<ID3D12DescriptorHeap> GetHeapForImgui() { return _heapForImgui; }
+
+	ImguiCommon(const ImguiCommon &) = delete;
+	ImguiCommon &operator=(const ImguiCommon &) = delete;
 private:
 	static ComPtr<ID3D12DescriptorHeap> _heapForImgui;//ヒープ保持用
 };
