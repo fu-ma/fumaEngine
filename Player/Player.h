@@ -1,13 +1,19 @@
 ﻿#pragma once
-#include "ModelObj.h"
+#include"ModelObj.h"
+#include"DebugCamera.h"
+#include<math.h>
+#include"DebugCamera.h"
+
 class Player : public ModelObj
 {
+	using XMVECTOR = DirectX::XMVECTOR;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
 public:
 	/// <summary>
 	/// 3Dオブジェクト生成
 	/// </summary>
 	/// <returns></returns>
-	static Player* Create(Model* model = nullptr);
+	static Player* Create(Model * model = nullptr);
 public:
 
 	/// <summary>
@@ -20,19 +26,22 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
-
-	/// <summary>
-	/// 衝突時コールバック関数
-	/// </summary>
-	/// <param name="info">衝突情報</param>
-	void OnCollision(const CollisionInfo& info) override;
-
+	void moveSphere(ModelObj* obj2);
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
+	float rot1;
+	float rot2;
 	float speed;
+	XMFLOAT3 moveSpeed = {};
 	bool onGround = true;
 	// 落下ベクトル
-	DirectX::XMVECTOR fallV;
+	XMVECTOR fallV;
+	XMVECTOR V;
+	XMFLOAT3 up = { 0, 1, 0 };
+	// カメラ回転行列
+	XMMATRIX matPlayerRot;
+	float angleX;
+	float angleY;
 };
 

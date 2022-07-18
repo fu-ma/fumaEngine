@@ -149,11 +149,18 @@ public: // メンバ関数
 	/// <returns>回転</returns>
 	const XMFLOAT3 &GetRotation() { return rotation; }
 
+	const XMFLOAT3 &GetPosition2() { return position2; }
+
+	const XMFLOAT3 &GetRotation2() { return rotation2; }
+
 	/// <summary>
 	/// ワールド行列の取得
 	/// </summary>
 	/// <returns>ワールド行列</returns>
 	const XMMATRIX &GetMatWorld() { return matWorld; }
+
+	const XMFLOAT3 &GetScale() { return scale; }
+	const XMFLOAT3 &GetScale2() { return scale2; }
 
 	/// <summary>
 	/// 座標の設定
@@ -168,6 +175,16 @@ public: // メンバ関数
 	/// </summary>
 	/// <param name="position">スケール</param>
 	void SetScale(XMFLOAT3 scale) { this->scale = scale; }
+
+	void SetPosition2(XMFLOAT3 position2) { this->position2 = position2; }
+
+	void SetRotation2(XMFLOAT3 rotation2) { this->rotation2 = rotation2; }
+
+	/// <summary>
+	/// スケールの設定
+	/// </summary>
+	/// <param name="position">スケール</param>
+	void SetScale2(XMFLOAT3 scale2) { this->scale2 = scale2; }
 
 	/// <summary>
 	/// モデルのセット
@@ -187,6 +204,7 @@ public: // メンバ関数
 	/// <param name="collider">コライダー</param>
 	void SetCollider(BaseCollider * collider);
 
+	void SetParent(ModelObj *obj) { this->parent = obj; }
 	/// <summary>
 	/// 衝突時コールバック関数
 	/// </summary>
@@ -218,8 +236,16 @@ protected: // メンバ変数
 	XMFLOAT3 rotation = { 0,0,0 };
 	// ローカル座標
 	XMFLOAT3 position = { 0,0,0 };
+
+	XMFLOAT3 scale2 = { 1,1,1 };
+	// X,Y,Z軸回りのローカル回転角
+	XMFLOAT3 rotation2 = { 0,0,0 };
+	// ローカル座標
+	XMFLOAT3 position2 = { 0,0,0 };
+
 	// ローカルワールド変換行列
 	XMMATRIX matWorld;
+	XMMATRIX matWorld2;
 	// 親オブジェクト
 	ModelObj *parent = nullptr;
 	// モデル

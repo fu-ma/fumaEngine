@@ -93,7 +93,7 @@ protected:
 	ParticleManager *particleMan;
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
-	PostEffectPtr postEffect;
+	MultipleTexPtr postEffect;
 
 	//Œ»İ‚ÌƒV[ƒ“‚Ì”Ô†
 	int SceneNo = static_cast<int>(GameSceneNo::GamePlay);

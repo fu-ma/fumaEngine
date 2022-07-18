@@ -34,7 +34,7 @@ void GameScene::TitleUpdate()
 	particleMan->Update();
 	camera->Update();
 	objSkydome->Update();
-	objGround->Update();
+	//objGround->Update();
 	objFighter->Update();
 	objSphere->Update();
 }
@@ -59,7 +59,7 @@ void GameScene::TitleDraw()
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
 	//objSkydome->Draw();
-	objGround->Draw();
+	//objGround->Draw();
 	objFighter->Draw();
 	objSphere->Draw();
 
@@ -87,8 +87,9 @@ void GameScene::GamePlayInit()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	//objFighter->SetPosition({ 1,1,0 });
-	objFighter->SetPosition(XMFLOAT3(fighterPos));
-	objSphere->SetPosition({ -1,1,0 });
+	objFighter->SetScale({ 1, 1, 1 });
+	objSphere->SetScale({ 10, 10, 10 });
+	objFighter->SetPosition({ 0,0,-objSphere->GetPosition().z - objSphere->GetScale().z });
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance(3.0f);
@@ -108,27 +109,27 @@ void GameScene::GamePlayUpdate()
 
 	// パーティクル生成
 	//CreateParticles();
-	XMFLOAT3 rot = objSphere->GetRotation();
-	rot.y += 1.0f;
-	objSphere->SetRotation(rot);
-	//objFighter->SetRotation(rot);
-	//if (controller->PushButton(static_cast<int>(Button::A)) == true)
-	//{
-	//	fighterPos[1] += 0.01f;
-	//}
-	//if (controller->PushButton(static_cast<int>(Button::B)) == true)
-	//{
-	//	fighterPos[1] -= 0.01f;
-	//}
+	/*XMFLOAT3 rot=objSphere->GetRotation2();
+	if (input->isKey(DIK_A))
+	{
+		rot.y++;
+	}
+	else if (input->isKey(DIK_D))
+	{
+		rot.y--;
+	}
+	if (input->isKey(DIK_W))
+	{
+		rot.x++;
+	}
+	if (input->isKey(DIK_S))
+	{
+		rot.x--;
+	}
+	objSphere->SetRotation2(rot);*/
 
-	//if (controller->PushButton(static_cast<int>(Button::X)) == true)
-	//{
-	//	fighterPos[0] += 0.01f;
-	//}
-	//if (controller->PushButton(static_cast<int>(Button::Y)) == true)
-	//{
-	//	fighterPos[0] -= 0.01f;
-	//}
+	objFighter->moveSphere(objSphere);
+	camera->SetTarget(objFighter->GetPosition());
 
 	{
 		/*lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
@@ -159,21 +160,11 @@ void GameScene::GamePlayUpdate()
 	particleMan->Update();
 	camera->Update();
 	objSkydome->Update();
-	objGround->Update();
+	//objGround->Update();
 	objFighter->Update();
 	objSphere->Update();
 	//FBX用のオブジェクトの更新
 	object1->Update();
-
-	Ray ray;
-	ray.start = { 10.0f, 0.5f, 0.0f, 1 };
-	ray.dir = { 0,-1,0,0 };
-	RaycastHit raycastHit;
-
-	if (collisionManager->Raycast(ray, &raycastHit)) {
-		DebugText::GetInstance()->SetPos(0, 30);
-		DebugText::GetInstance()->Printf("Raycast Hit.");
-	}
 
 	//全ての衝突をチェック
 	collisionManager->CheckAllCollisions();
@@ -199,7 +190,7 @@ void GameScene::GamePlayDraw()
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
 	objSkydome->Draw();
-	objGround->Draw();
+	//objGround->Draw();
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
@@ -243,7 +234,7 @@ void GameScene::EndUpdate()
 	particleMan->Update();
 	camera->Update();
 	objSkydome->Update();
-	objGround->Update();
+	//objGround->Update();
 	objFighter->Update();
 	objSphere->Update();
 
@@ -308,9 +299,10 @@ void GameScene::staticInit()
 	objFighter = Player::Create(modelFighter);
 
 	objSkydome = ModelObj::Create(modelSkydome);
-	objGround = TouchableObject::Create(modelGround);
+	//objGround = TouchableObject::Create(modelGround);
 	objSphere = ModelObj::Create(modelSphere);
 
+	objFighter->SetParent(objSphere);
 	//コライダーの追加
 	objSphere->SetCollider(new SphereCollider({},1.0f));
 

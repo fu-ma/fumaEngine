@@ -329,6 +329,7 @@ void ModelObj::UpdateWorldMatrix()
 	assert(camera);
 
 	XMMATRIX matScale, matRot, matTrans;
+	XMMATRIX matScale2, matRot2, matTrans2;
 
 	// スケール、回転、平行移動行列の計算
 	matScale = XMMatrixScaling(scale.x, scale.y, scale.z);
@@ -337,6 +338,13 @@ void ModelObj::UpdateWorldMatrix()
 	matRot *= XMMatrixRotationX(XMConvertToRadians(rotation.x));
 	matRot *= XMMatrixRotationY(XMConvertToRadians(rotation.y));
 	matTrans = XMMatrixTranslation(position.x, position.y, position.z);
+
+	matScale2 = XMMatrixScaling(scale2.x, scale2.y, scale2.z);
+	matRot2 = XMMatrixIdentity();
+	matRot2 *= XMMatrixRotationZ(XMConvertToRadians(rotation2.z));
+	matRot2 *= XMMatrixRotationX(XMConvertToRadians(rotation2.x));
+	matRot2 *= XMMatrixRotationY(XMConvertToRadians(rotation2.y));
+	matTrans2 = XMMatrixTranslation(position2.x, position2.y, position2.z);
 
 	// ワールド行列の合成
 	if (isBillboard && camera)
@@ -355,13 +363,18 @@ void ModelObj::UpdateWorldMatrix()
 		matWorld *= matScale; // ワールド行列にスケーリングを反映
 		matWorld *= matRot; // ワールド行列に回転を反映
 		matWorld *= matTrans; // ワールド行列に平行移動を反映
+		matWorld2 = XMMatrixIdentity(); // 変形をリセット
+		matWorld2 *= matScale2; // ワールド行列にスケーリングを反映
+		matWorld2 *= matRot2; // ワールド行列に回転を反映
+		matWorld2 *= matTrans2; // ワールド行列に平行移動を反映
+
 	}
 
 	// 親オブジェクトがあれば
 	if (parent != nullptr)
 	{
 		// 親オブジェクトのワールド行列を掛ける
-		matWorld *= parent->matWorld;
+		matWorld *= parent->matWorld2;
 	}
 }
 
