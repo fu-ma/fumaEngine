@@ -1,18 +1,14 @@
 #include "GameScene.h"
-#include"Collision.h"
-#include"SphereCollider.h"
 #include <cassert>
 #include <sstream>
 #include <iomanip>
-#include "SphereCollider.h"
-#include "MeshCollider.h"
 #include"FbxLoader.h"
 
 void GameScene::TitleInit()
 {
 	audio->PlayLoadedSound(soundData2, 0.05f);
 	objFighter->SetPosition({ 1,1,0 });
-	objSphere->SetPosition({ -1,1,0 });
+	//objSphere->SetPosition({ -1,1,0 });
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 1, 0 });
 	camera->SetDistance(3.0f);
@@ -33,10 +29,11 @@ void GameScene::TitleUpdate()
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	objSkydome->Update();
+	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
-	objSphere->Update();
+	//objSphere->Update();
+	objStageBox->Update();
 }
 
 void GameScene::TitleDraw()
@@ -57,12 +54,6 @@ void GameScene::TitleDraw()
 	/*モデル描画*/
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//objSkydome->Draw();
-	//objGround->Draw();
-	objFighter->Draw();
-	objSphere->Draw();
-
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
@@ -88,8 +79,8 @@ void GameScene::GamePlayInit()
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	//objFighter->SetPosition({ 1,1,0 });
 	objFighter->SetScale({ 1, 1, 1 });
-	objSphere->SetScale({ 10, 10, 10 });
-	objFighter->SetPosition({ 0,0,-objSphere->GetPosition().z - objSphere->GetScale().z });
+	//objSphere->SetScale({ 10, 10, 10 });
+	//objFighter->SetPosition({ 0,10,0 });
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 0, 0 });
 	camera->SetDistance(10.0f);
@@ -102,33 +93,12 @@ void GameScene::GamePlayUpdate()
 {
 	//マテリアルパラメータをモデルに反映
 	model1->SetBaseColor(XMFLOAT3(0,1,1));
-	model1->SetMetalness(0.0f);
-	model1->SetSpecular(1.0f);
-	model1->SetRoughness(0.0f);
+	model1->SetMetalness(1.0f);
+	model1->SetSpecular(0.5f);
+	model1->SetRoughness(0.3f);
 	model1->TransferMaterial();
 
-	// パーティクル生成
-	//CreateParticles();
-	/*XMFLOAT3 rot=objSphere->GetRotation2();
-	if (input->isKey(DIK_A))
-	{
-		rot.y++;
-	}
-	else if (input->isKey(DIK_D))
-	{
-		rot.y--;
-	}
-	if (input->isKey(DIK_W))
-	{
-		rot.x++;
-	}
-	if (input->isKey(DIK_S))
-	{
-		rot.x--;
-	}
-	objSphere->SetRotation2(rot);*/
-
-	objFighter->moveSphere(objSphere);
+	objFighter->moveSphere(objStageBox);
 	camera->SetTarget(objFighter->GetPosition());
 
 	{
@@ -159,15 +129,13 @@ void GameScene::GamePlayUpdate()
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	objSkydome->Update();
+	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
-	objSphere->Update();
+	//objSphere->Update();
+	objStageBox->Update();
 	//FBX用のオブジェクトの更新
 	object1->Update();
-
-	//全ての衝突をチェック
-	collisionManager->CheckAllCollisions();
 }
 
 void GameScene::GamePlayDraw()
@@ -189,12 +157,13 @@ void GameScene::GamePlayDraw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	objSkydome->Draw();
+	//objSkydome->Draw();
 	//objGround->Draw();
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
-	objSphere->Draw();
+	//objSphere->Draw();
+	objStageBox->Draw();
 
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
@@ -233,10 +202,11 @@ void GameScene::EndUpdate()
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	objSkydome->Update();
+	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
-	objSphere->Update();
+	//objSphere->Update();
+	objStageBox->Update();
 
 }
 
@@ -289,22 +259,19 @@ void GameScene::staticInit()
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 
 	// モデル読み込み
-	modelSkydome = Model::CreateFromOBJ("skydome", true);
-	modelGround = Model::CreateFromOBJ("ground", true);
+	//modelSkydome = Model::CreateFromOBJ("skydome", true);
+	//modelGround = Model::CreateFromOBJ("ground", true);
 	modelFighter = Model::CreateFromOBJ("sphere", true);
-	modelSphere = Model::CreateFromOBJ("sphere");
-
+	//modelSphere = Model::CreateFromOBJ("sphere");
+	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	// 3Dオブジェクト生成
-	collisionManager = CollisionManager::GetInstance();
 	objFighter = Player::Create(modelFighter);
 
-	objSkydome = ModelObj::Create(modelSkydome);
+	//objSkydome = ModelObj::Create(modelSkydome);
 	//objGround = TouchableObject::Create(modelGround);
-	objSphere = ModelObj::Create(modelSphere);
-
-	objFighter->SetParent(objSphere);
-	//コライダーの追加
-	objSphere->SetCollider(new SphereCollider({},1.0f));
+	//objSphere = ModelObj::Create(modelSphere);
+	objStageBox = ModelObj::Create(modelStageBox);
+	//objFighter->SetParent(objSphere);
 
 	// 3Dオブジェクトにカメラをセット
 	ModelObj::SetCamera(camera.get());

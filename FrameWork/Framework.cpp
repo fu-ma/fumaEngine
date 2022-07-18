@@ -19,16 +19,19 @@ void Framework::GameRun()
 			ImguiCommon::PreDraw();
 
 			//レンダーテクスチャへの描画
-			postEffect->PreDrawScene(common->GetCmdList().Get());
-			Draw();
+			//postEffect->PreDrawScene(common->GetCmdList().Get());
+			//Draw();
 			//Imguiの描画処理
-			ImguiCommon::Draw(common->GetCmdList().Get());
-			postEffect->PostDrawScene(common->GetCmdList().Get());
+			//ImguiCommon::Draw(common->GetCmdList().Get());
+			//postEffect->PostDrawScene(common->GetCmdList().Get());
 
 			//描画開始
 			common->PreDraw();
+			Draw();
+			//Imguiの描画処理
+			ImguiCommon::Draw(common->GetCmdList().Get());
 			//ポストエフェクトの描画
-			postEffect->Draw(common->GetCmdList().Get());
+			//postEffect->Draw(common->GetCmdList().Get());
 			//描画終了
 			common->PostDraw();
 

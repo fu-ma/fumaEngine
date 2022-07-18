@@ -64,19 +64,19 @@
       <Filter>Engine\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\Model.cpp">
-      <Filter>Engine\Model\Model</Filter>
+      <Filter>Engine\3D\Model\Model</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\Mesh.cpp">
-      <Filter>Engine\Model\Mesh</Filter>
+      <Filter>Engine\3D\Model\Mesh</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\Material.cpp">
-      <Filter>Engine\Model\Material</Filter>
+      <Filter>Engine\3D\Model\Material</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\ModelObj.cpp">
-      <Filter>Engine\Model\Obj</Filter>
+      <Filter>Engine\3D\Model\Obj</Filter>
     </ClCompile>
     <ClCompile Include="Particle\ParticleManager.cpp">
-      <Filter>Engine\Particle</Filter>
+      <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
       <Filter>Engine\Player</Filter>
@@ -88,7 +88,7 @@
       <Filter>Engine</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\TouchableObject.cpp">
-      <Filter>Engine\Model\Obj</Filter>
+      <Filter>Engine\3D\Model\Obj</Filter>
     </ClCompile>
     <ClCompile Include="Collision\Collision.cpp">
       <Filter>Engine\Collision\Collision</Filter>
@@ -136,13 +136,13 @@
       <Filter>imgui</Filter>
     </ClCompile>
     <ClCompile Include="FBX\Loader\FbxLoader.cpp">
-      <Filter>Engine\FBX\Loader</Filter>
+      <Filter>Engine\3D\FBX\Loader</Filter>
     </ClCompile>
     <ClCompile Include="FBX\Model\FBXModel.cpp">
-      <Filter>Engine\FBX\Model</Filter>
+      <Filter>Engine\3D\FBX\Model</Filter>
     </ClCompile>
     <ClCompile Include="FBX\Object\FBXObject3d.cpp">
-      <Filter>Engine\FBX\Object</Filter>
+      <Filter>Engine\3D\FBX\Object</Filter>
     </ClCompile>
     <ClCompile Include="Input\Controller.cpp">
       <Filter>Engine\Input\Controller</Filter>
@@ -154,22 +154,22 @@
       <Filter>Engine\Easing</Filter>
     </ClCompile>
     <ClCompile Include="2d\MultipleTexture\MultipleTexture.cpp">
-      <Filter>Engine\MultipleTexture</Filter>
+      <Filter>Engine\2D\MultipleTexture</Filter>
     </ClCompile>
     <ClCompile Include="2d\MultipleRender\MultipleRender.cpp">
-      <Filter>Engine\MultipleRender</Filter>
+      <Filter>Engine\2D\MultipleRender</Filter>
     </ClCompile>
     <ClCompile Include="2d\PostEffect\PostEffect.cpp">
-      <Filter>Engine\PostEffect</Filter>
+      <Filter>Engine\2D\PostEffect</Filter>
     </ClCompile>
     <ClCompile Include="2d\Sprite\Sprite.cpp">
-      <Filter>Engine\Sprite</Filter>
+      <Filter>Engine\2D\Sprite</Filter>
     </ClCompile>
     <ClCompile Include="ImguiCommon\ImguiCommon.cpp">
       <Filter>Engine\ImguiCommon</Filter>
     </ClCompile>
     <ClCompile Include="2d\DebugText\DebugText.cpp">
-      <Filter>Engine\DebugText</Filter>
+      <Filter>Engine\2D\DebugText</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -189,19 +189,19 @@
       <Filter>Engine\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\Model.h">
-      <Filter>Engine\Model\Model</Filter>
+      <Filter>Engine\3D\Model\Model</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\Mesh.h">
-      <Filter>Engine\Model\Mesh</Filter>
+      <Filter>Engine\3D\Model\Mesh</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\Material.h">
-      <Filter>Engine\Model\Material</Filter>
+      <Filter>Engine\3D\Model\Material</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\ModelObj.h">
-      <Filter>Engine\Model\Obj</Filter>
+      <Filter>Engine\3D\Model\Obj</Filter>
     </ClInclude>
     <ClInclude Include="Particle\ParticleManager.h">
-      <Filter>Engine\Particle</Filter>
+      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Player\Player.h">
       <Filter>Engine\Player</Filter>
@@ -210,7 +210,7 @@
       <Filter>Engine\WinApp</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\TouchableObject.h">
-      <Filter>Engine\Model\Obj</Filter>
+      <Filter>Engine\3D\Model\Obj</Filter>
     </ClInclude>
     <ClInclude Include="Collision\Collision.h">
       <Filter>Engine\Collision\Collision</Filter>
@@ -288,13 +288,13 @@
       <Filter>imgui</Filter>
     </ClInclude>
     <ClInclude Include="FBX\Loader\FbxLoader.h">
-      <Filter>Engine\FBX\Loader</Filter>
+      <Filter>Engine\3D\FBX\Loader</Filter>
     </ClInclude>
     <ClInclude Include="FBX\Model\FBXModel.h">
-      <Filter>Engine\FBX\Model</Filter>
+      <Filter>Engine\3D\FBX\Model</Filter>
     </ClInclude>
     <ClInclude Include="FBX\Object\FBXObject3d.h">
-      <Filter>Engine\FBX\Object</Filter>
+      <Filter>Engine\3D\FBX\Object</Filter>
     </ClInclude>
     <ClInclude Include="Light\CircleShadow.h">
       <Filter>Engine\Shadow</Filter>
@@ -309,22 +309,22 @@
       <Filter>Engine\Easing</Filter>
     </ClInclude>
     <ClInclude Include="2d\MultipleTexture\MultipleTexture.h">
-      <Filter>Engine\MultipleTexture</Filter>
+      <Filter>Engine\2D\MultipleTexture</Filter>
     </ClInclude>
     <ClInclude Include="2d\MultipleRender\MultipleRender.h">
-      <Filter>Engine\MultipleRender</Filter>
+      <Filter>Engine\2D\MultipleRender</Filter>
     </ClInclude>
     <ClInclude Include="2d\PostEffect\PostEffect.h">
-      <Filter>Engine\PostEffect</Filter>
+      <Filter>Engine\2D\PostEffect</Filter>
     </ClInclude>
     <ClInclude Include="2d\Sprite\Sprite.h">
-      <Filter>Engine\Sprite</Filter>
+      <Filter>Engine\2D\Sprite</Filter>
     </ClInclude>
     <ClInclude Include="ImguiCommon\ImguiCommon.h">
       <Filter>Engine\ImguiCommon</Filter>
     </ClInclude>
     <ClInclude Include="2d\DebugText\DebugText.h">
-      <Filter>Engine\DebugText</Filter>
+      <Filter>Engine\2D\DebugText</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -371,27 +371,6 @@
     </Filter>
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{2068b091-9d88-4e66-b586-2a998ad28d03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Model">
-      <UniqueIdentifier>{85fe8671-a044-4d90-83f3-a5fcb1acb394}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Model\Model">
-      <UniqueIdentifier>{a1ad0b66-cdc7-4fc6-a970-549ec8bc579b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Model\Mesh">
-      <UniqueIdentifier>{4512a66e-2f1a-4f16-a50b-a7f95e3fa152}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Model\Material">
-      <UniqueIdentifier>{89d50caa-c38a-4419-8864-c0da17e0f8eb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Model\Obj">
-      <UniqueIdentifier>{f35bd27c-6e57-4324-8f27-e6d9f4095b95}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Particle">
-      <UniqueIdentifier>{459d2abb-6547-40f0-bd3a-2aacf9be2505}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\Player">
-      <UniqueIdentifier>{21330239-ab9a-4ab5-927c-4f664a341cc0}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\WinApp">
       <UniqueIdentifier>{5a0909fa-a7e4-47a8-9fae-a362c388baa7}</UniqueIdentifier>
@@ -450,18 +429,6 @@
     <Filter Include="Engine\ImguiCommon">
       <UniqueIdentifier>{b897a1fd-c7e6-4ceb-bd64-553996a45112}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\FBX">
-      <UniqueIdentifier>{072a701b-e912-4c63-9c21-66bb413e24c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\FBX\Model">
-      <UniqueIdentifier>{f20f8200-0537-4b10-a4ce-2ae58bfdab5b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\FBX\Object">
-      <UniqueIdentifier>{51887ccc-c78e-4e75-999b-7db3be962bc6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\FBX\Loader">
-      <UniqueIdentifier>{edbba9f4-9c88-4ece-8cbe-6aac702d76b5}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Input\Controller">
       <UniqueIdentifier>{e3c50c6e-c92c-4a9d-a624-cf91b0930f29}</UniqueIdentifier>
     </Filter>
@@ -471,20 +438,59 @@
     <Filter Include="Engine\Easing">
       <UniqueIdentifier>{0e9a4752-83df-4cdf-98d4-7fe2f8ad958b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\DebugText">
-      <UniqueIdentifier>{1008a95d-91bd-414e-8715-406166c1edf9}</UniqueIdentifier>
+    <Filter Include="Engine\3D">
+      <UniqueIdentifier>{6e49336a-e2d2-4726-bbf4-c2845c16dc35}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Sprite">
+    <Filter Include="Engine\3D\FBX">
+      <UniqueIdentifier>{072a701b-e912-4c63-9c21-66bb413e24c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\FBX\Model">
+      <UniqueIdentifier>{f20f8200-0537-4b10-a4ce-2ae58bfdab5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\FBX\Object">
+      <UniqueIdentifier>{51887ccc-c78e-4e75-999b-7db3be962bc6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\FBX\Loader">
+      <UniqueIdentifier>{edbba9f4-9c88-4ece-8cbe-6aac702d76b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Model">
+      <UniqueIdentifier>{85fe8671-a044-4d90-83f3-a5fcb1acb394}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Model\Model">
+      <UniqueIdentifier>{a1ad0b66-cdc7-4fc6-a970-549ec8bc579b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Model\Mesh">
+      <UniqueIdentifier>{4512a66e-2f1a-4f16-a50b-a7f95e3fa152}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Model\Material">
+      <UniqueIdentifier>{89d50caa-c38a-4419-8864-c0da17e0f8eb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Model\Obj">
+      <UniqueIdentifier>{f35bd27c-6e57-4324-8f27-e6d9f4095b95}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D">
+      <UniqueIdentifier>{a23a54fd-b6a6-4aef-ada6-b5b61c08176b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Player">
+      <UniqueIdentifier>{21330239-ab9a-4ab5-927c-4f664a341cc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\3D\Particle">
+      <UniqueIdentifier>{459d2abb-6547-40f0-bd3a-2aacf9be2505}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D\PostEffect">
+      <UniqueIdentifier>{b5807ae9-18e1-4b65-8583-0c553611ef15}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\2D\Sprite">
       <UniqueIdentifier>{dc2708d0-6d27-43e7-a41d-7d6744960eca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\MultipleTexture">
+    <Filter Include="Engine\2D\MultipleTexture">
       <UniqueIdentifier>{98cc86bc-8b0d-4dd9-b3c2-4744b27ba4aa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\MultipleRender">
+    <Filter Include="Engine\2D\MultipleRender">
       <UniqueIdentifier>{a12177eb-886a-4a69-a4a6-4b7c2b608d1b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\PostEffect">
-      <UniqueIdentifier>{b5807ae9-18e1-4b65-8583-0c553611ef15}</UniqueIdentifier>
+    <Filter Include="Engine\2D\DebugText">
+      <UniqueIdentifier>{1008a95d-91bd-414e-8715-406166c1edf9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

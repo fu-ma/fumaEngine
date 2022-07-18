@@ -1,12 +1,10 @@
 #pragma once
 #include"ModelObj.h"
 #include"Model.h"
-#include"CollisionPrimitive.h"
 #include <DirectXMath.h>
 #include "Sprite.h"
 #include"LightGroup.h"
 #include"Framework.h"
-#include"CollisionManager.h"
 #include "Player.h"
 #include "TouchableObject.h"
 
@@ -37,16 +35,17 @@ private:
 
 	Sprite *spriteBG = nullptr;
 
-	Model *modelSkydome = nullptr;
-	Model *modelGround = nullptr;
+	//Model *modelSkydome = nullptr;
+	//Model *modelGround = nullptr;
 	Model *modelFighter = nullptr;
-	Model *modelSphere = nullptr;
+	//Model *modelSphere = nullptr;
+	Model *modelStageBox = nullptr;
 
-	ModelObj *objSkydome = nullptr;
+	//ModelObj *objSkydome = nullptr;
 	TouchableObject *objGround = nullptr;
 	Player *objFighter = nullptr;
-	ModelObj *objSphere = nullptr;
-
+	//ModelObj *objSphere = nullptr;
+	ModelObj *objStageBox = nullptr;
 	FBXModel *model1 = nullptr;
 	FBXObject3d *object1 = nullptr;
 
@@ -65,9 +64,6 @@ private:
 	float circleShadowFactorAngle[2] = { 0.0f,0.5f };
 
 	float fighterPos[3] = { 1,1.0f,0 };
-
-	//衝突マネージャ
-	CollisionManager *collisionManager = nullptr;
 
 #pragma region タイトルシーン
 	void TitleInit();
@@ -97,23 +93,23 @@ public:
 		delete spriteBG;
 		spriteBG = nullptr;
 		//modelObj解放処理
-		delete objSkydome;
-		objSkydome = nullptr;
+		//delete objSkydome;
+		//objSkydome = nullptr;
 		delete objGround;
 		objGround = nullptr;
 		delete objFighter;
 		objFighter = nullptr;
-		delete objSphere;
-		objSphere = nullptr;
+		delete objStageBox;
+		objStageBox = nullptr;
 		//model解放処理
-		delete modelSkydome;
-		modelSkydome = nullptr;
-		delete modelGround;
-		modelGround = nullptr;
-		delete modelFighter;
-		modelFighter = nullptr;
-		delete modelSphere;
-		modelSphere = nullptr;
+		//delete modelSkydome;
+		//modelSkydome = nullptr;
+		//delete modelGround;
+		//modelGround = nullptr;
+		//delete modelFighter;
+		//modelFighter = nullptr;
+		delete modelStageBox;
+		modelStageBox = nullptr;
 		//FBX用のオブジェクト解放
 		delete object1;
 		object1 = nullptr;

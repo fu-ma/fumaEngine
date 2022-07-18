@@ -46,6 +46,8 @@ void Player::Update()
 	Input* input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 
+	//speed += gravity;
+	//position.y += speed;
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
 		position.x-= 0.1f;

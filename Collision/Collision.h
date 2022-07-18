@@ -74,4 +74,6 @@ public:
 	/// <param name="inter">交点（出力用）</param>
 	/// <returns>交差しているか否か</returns>
 	static bool CheckRay2Sphere(const Ray &lay, const Sphere &sphere, float *distance, DirectX::XMVECTOR *inter = nullptr);
+
+	static bool CheckBox2Box(const float ax,const float ay,const float bx,const float by)
 };
