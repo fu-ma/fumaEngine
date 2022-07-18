@@ -92,7 +92,7 @@ void GameScene::GamePlayInit()
 	objFighter->SetPosition({ 0,0,-objSphere->GetPosition().z - objSphere->GetScale().z });
 	// カメラ注視点をセット
 	camera->SetTarget({ 0, 0, 0 });
-	camera->SetDistance(3.0f);
+	camera->SetDistance(10.0f);
 	object1->SetPosition({ 0,5,0 });
 
 	object1->PlayAnimation();
