@@ -3,6 +3,7 @@
 #include"DebugCamera.h"
 #include<math.h>
 #include"DebugCamera.h"
+#include"Collision.h"
 
 class Player : public ModelObj
 {
@@ -26,22 +27,20 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
-	void moveSphere(ModelObj* obj2);
+	void CollisionObj(ModelObj *obj2);
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
 	float rot1;
 	float rot2;
+	//重力を加算するためのスピード
 	float speed;
-	XMFLOAT3 moveSpeed = {};
-	bool onGround = true;
-	// 落下ベクトル
-	XMVECTOR fallV;
-	XMVECTOR V;
-	XMFLOAT3 up = { 0, 1, 0 };
-	// カメラ回転行列
-	XMMATRIX matPlayerRot;
-	float angleX;
-	float angleY;
+	//ジャンプするための変数
+	int jumpTimer = 0;
+	//長押しの時に多めにジャンプ
+	int jumpAliveTimer = 0;
+	//直前にジャンプしたかどうか
+	bool jumpFlag = false;
+	float jump = 0.2f;
 };
 

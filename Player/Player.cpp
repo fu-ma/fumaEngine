@@ -46,41 +46,121 @@ void Player::Update()
 	Input* input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 
-	//speed += gravity;
-	//position.y += speed;
+	if (speed > gravity * 50)
+	{
+		speed += gravity / 5;
+	}
+	position.y += speed;
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
-		position.x-= 0.1f;
+		position.x -= 0.1f;
 	}
 	else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
 	{
-		position.x+= 0.1f;
+		position.x += 0.1f;
 	}
-	// 向いている方向に移動
-	if (input->isKey(DIK_S) || controller->PushButton(static_cast<int>(Button::DOWN)) == true)
+	if (jumpAliveTimer == 0)
 	{
-		position.y-= 0.1f;
+		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+		{
+			jumpFlag = true;
+			if (jumpTimer < 40)
+			{
+				position.y += jump;
+			}
+			jumpTimer++;
+		}
+		else
+		{
+			//空中のジャンプ制限
+			jumpAliveTimer = 1;
+			jumpFlag = false;
+		}
 	}
-	else if (input->isKey(DIK_W) || controller->PushButton(static_cast<int>(Button::UP)) == true)
+
+	if (jumpFlag == true && jumpTimer > 40)
 	{
-		position.y += 0.1f;
+		jumpAliveTimer = 1;
+	}
+
+	if (jumpFlag == false)
+	{
+		jumpAliveTimer = 0;
 	}
 
 	// 行列の更新など
 	ModelObj::Update();
 }
 
-void Player::moveSphere(ModelObj *obj2)
+void Player::CollisionObj(ModelObj *obj2)
 {
-	XMVECTOR nowPosition = XMLoadFloat3(&position);
-	XMVECTOR spherePosition = XMLoadFloat3(&obj2->GetPosition());
-	XMVECTOR sphereRadius = XMLoadFloat3(&obj2->GetScale());
-	XMVECTOR distance = nowPosition - spherePosition;
-	distance = XMVector3Normalize(distance) * sphereRadius;
-	position =
+	Input *input = Input::GetInstance();
+	Controller *controller = Controller::GetInstance();
+
+	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
+	XMVECTOR distance = { position.x - boxPos.m128_f32[0],0,0 };
+	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	if (speed < gravity && jumpFlag == false)
 	{
-		spherePosition.m128_f32[0] + distance.m128_f32[0],
-		spherePosition.m128_f32[1] + distance.m128_f32[1],
-		spherePosition.m128_f32[2] + distance.m128_f32[2]
-	};
+		jumpAliveTimer = 1;
+	}
+	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
+	{
+		if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
+			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y - 0.1f,0 },
+			scale.x, obj2->GetScale().x))
+		{
+			position =
+			{
+				boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
+				position.y ,
+				0
+			};
+		}
+	}
+	if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
+	{
+		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
+			{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y + 0.1f,0 },
+			scale.x, obj2->GetScale().x))
+		{
+			position =
+			{
+				boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
+				position.y ,
+				0
+			};
+		}
+	}
+	if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
+		{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
+		scale.x, obj2->GetScale().x))
+	{
+		position =
+		{
+			position.x,
+			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.01f ,
+			0
+		};
+		speed = gravity / 5;
+		jumpTimer = 0;
+		//着地しているときのみジャンプを可能にする
+		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
+		{
+			jumpFlag = false;
+		}
+	}
+	if (Collision::CheckBox2Box({ position.x - 0.1f,position.y + 0.1f,0 },
+		{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y - 0.1f,0 },
+		scale.x, obj2->GetScale().x))
+	{
+		position =
+		{
+			position.x,
+			boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.001f - jump ,
+			0
+		};
+		jumpAliveTimer = 1;
+	}
 }

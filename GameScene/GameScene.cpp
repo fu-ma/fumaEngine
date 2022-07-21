@@ -4,6 +4,8 @@
 #include <iomanip>
 #include"FbxLoader.h"
 
+using namespace DirectX;
+
 void GameScene::TitleInit()
 {
 	audio->PlayLoadedSound(soundData2, 0.05f);
@@ -33,7 +35,10 @@ void GameScene::TitleUpdate()
 	//objGround->Update();
 	objFighter->Update();
 	//objSphere->Update();
-	objStageBox->Update();
+	for (int i = 0; i < 20; i++)
+	{
+		objStageBox[i]->Update();
+	}
 }
 
 void GameScene::TitleDraw()
@@ -78,15 +83,21 @@ void GameScene::GamePlayInit()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	//objFighter->SetPosition({ 1,1,0 });
-	objFighter->SetScale({ 1, 1, 1 });
+	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
 	//objSphere->SetScale({ 10, 10, 10 });
-	//objFighter->SetPosition({ 0,10,0 });
+	objFighter->SetPosition({ 10,0,0 });
 	// カメラ注視点をセット
-	camera->SetTarget({ 0, 0, 0 });
-	camera->SetDistance(10.0f);
+	camera->SetTarget({ 10, 10, 0 });
+	camera->SetDistance(20.0f);
 	object1->SetPosition({ 0,5,0 });
 
 	object1->PlayAnimation();
+	for (int i = 0; i < 20; i++)
+	{
+		objStageBox[i]->SetPosition({ 2.0f * i, 0, 0 });
+		objStageBox[10]->SetPosition({ 10.0f, 2.0f, 0 });
+		objStageBox[11]->SetPosition({ 8.0f, 6.0f, 0 });
+	}
 }
 
 void GameScene::GamePlayUpdate()
@@ -98,25 +109,8 @@ void GameScene::GamePlayUpdate()
 	model1->SetRoughness(0.3f);
 	model1->TransferMaterial();
 
-	objFighter->moveSphere(objStageBox);
-	camera->SetTarget(objFighter->GetPosition());
-
-	{
-		/*lightGroup->SetPointLightPos(0, XMFLOAT3(pointLightPos));
-		lightGroup->SetPointLightColor(0, XMFLOAT3(pointLightColor));
-		lightGroup->SetPointLightAtten(0, XMFLOAT3(pointLightAtten));*/
-		lightGroup->SetSpotLightDir(0, XMVECTOR({ spotLightDir[0],spotLightDir[1] , spotLightDir[2], 0 }));
-		lightGroup->SetSpotLightPos(0, XMFLOAT3(spotLightPos));
-		lightGroup->SetSpotLightColor(0, XMFLOAT3(spotLightColor));
-		lightGroup->SetSpotLightAtten(0, XMFLOAT3(spotLightAtten));
-		lightGroup->SetSpotLightFactorAngle(0, XMFLOAT2(spotLightFactorAngle));
-		/*lightGroup->SetCircleShadowDir(0, XMVECTOR({ circleShadowDir[0],circleShadowDir[1],circleShadowDir[2],0 }));
-		lightGroup->SetCircleShadowCasterPos(0, XMFLOAT3({ fighterPos[0],fighterPos[1],fighterPos[2] }));
-		lightGroup->SetCircleShadowAtten(0, XMFLOAT3(circleShadowAtten));
-		lightGroup->SetCircleShadowFactorAngle(0, XMFLOAT2(circleShadowFactorAngle));*/
-
-		//objFighter->SetPosition(XMFLOAT3({ fighterPos[0],fighterPos[1] ,fighterPos[2] }));
-	}
+	//objFighter->moveSphere(objStageBox);
+	//camera->SetTarget(objFighter->GetPosition());
 
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_N))
@@ -126,6 +120,11 @@ void GameScene::GamePlayUpdate()
 		SceneNo = static_cast<int>(GameSceneNo::End);
 	}
 
+	for (int i = 0; i < 20; i++)
+	{
+
+		objFighter->CollisionObj(objStageBox[i]);
+	}
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
@@ -133,7 +132,11 @@ void GameScene::GamePlayUpdate()
 	//objGround->Update();
 	objFighter->Update();
 	//objSphere->Update();
-	objStageBox->Update();
+	for (int i = 0; i < 20; i++)
+	{
+
+		objStageBox[i]->Update();
+	}
 	//FBX用のオブジェクトの更新
 	object1->Update();
 }
@@ -163,8 +166,11 @@ void GameScene::GamePlayDraw()
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
 	//objSphere->Draw();
-	objStageBox->Draw();
+	for (int i = 0; i < 20; i++)
+	{
 
+		objStageBox[i]->Draw();
+	}
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
 
@@ -206,7 +212,11 @@ void GameScene::EndUpdate()
 	//objGround->Update();
 	objFighter->Update();
 	//objSphere->Update();
-	objStageBox->Update();
+	for (int i = 0; i < 20; i++)
+	{
+
+		objStageBox[i]->Update();
+	}
 
 }
 
@@ -261,7 +271,7 @@ void GameScene::staticInit()
 	// モデル読み込み
 	//modelSkydome = Model::CreateFromOBJ("skydome", true);
 	//modelGround = Model::CreateFromOBJ("ground", true);
-	modelFighter = Model::CreateFromOBJ("sphere", true);
+	modelFighter = Model::CreateFromOBJ("StageBox", true);
 	//modelSphere = Model::CreateFromOBJ("sphere");
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	// 3Dオブジェクト生成
@@ -270,7 +280,10 @@ void GameScene::staticInit()
 	//objSkydome = ModelObj::Create(modelSkydome);
 	//objGround = TouchableObject::Create(modelGround);
 	//objSphere = ModelObj::Create(modelSphere);
-	objStageBox = ModelObj::Create(modelStageBox);
+	for (int i = 0; i < 20; i++)
+	{
+		objStageBox[i] = ModelObj::Create(modelStageBox);
+	}
 	//objFighter->SetParent(objSphere);
 
 	// 3Dオブジェクトにカメラをセット

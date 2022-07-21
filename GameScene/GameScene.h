@@ -7,6 +7,7 @@
 #include"Framework.h"
 #include "Player.h"
 #include "TouchableObject.h"
+#include"Collision.h"
 
 class GameScene : public Framework
 {
@@ -45,7 +46,7 @@ private:
 	TouchableObject *objGround = nullptr;
 	Player *objFighter = nullptr;
 	//ModelObj *objSphere = nullptr;
-	ModelObj *objStageBox = nullptr;
+	ModelObj *objStageBox[20] = { nullptr };
 	FBXModel *model1 = nullptr;
 	FBXObject3d *object1 = nullptr;
 
@@ -99,8 +100,11 @@ public:
 		objGround = nullptr;
 		delete objFighter;
 		objFighter = nullptr;
-		delete objStageBox;
-		objStageBox = nullptr;
+		for (int i = 0; i < 20; i++)
+		{
+			delete objStageBox[i];
+			objStageBox[i] = nullptr;
+		}
 		//model‰ð•úˆ—
 		//delete modelSkydome;
 		//modelSkydome = nullptr;
