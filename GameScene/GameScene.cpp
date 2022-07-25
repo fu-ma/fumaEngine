@@ -95,8 +95,6 @@ void GameScene::GamePlayInit()
 	for (int i = 0; i < 20; i++)
 	{
 		objStageBox[i]->SetPosition({ 2.0f * i, 0, 0 });
-		objStageBox[10]->SetPosition({ 10.0f, 2.0f, 0 });
-		objStageBox[11]->SetPosition({ 8.0f, 6.0f, 0 });
 	}
 }
 

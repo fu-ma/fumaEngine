@@ -35,6 +35,8 @@ private:
 	float rot2;
 	//重力を加算するためのスピード
 	float speed;
+	//移動するスピード
+	float moveSpeed;
 	//ジャンプするための変数
 	int jumpTimer = 0;
 	//長押しの時に多めにジャンプ
