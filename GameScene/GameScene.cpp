@@ -86,6 +86,8 @@ void GameScene::GamePlayInit()
 	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
 	//objSphere->SetScale({ 10, 10, 10 });
 	objFighter->SetPosition({ 10,0,0 });
+	objFighter2->SetPosition({ 12,0,0 });
+
 	// カメラ注視点をセット
 	camera->SetTarget({ 10, 10, 0 });
 	camera->SetDistance(20.0f);
@@ -118,10 +120,22 @@ void GameScene::GamePlayUpdate()
 		SceneNo = static_cast<int>(GameSceneNo::End);
 	}
 
+	objFighter2->SetMoveSpeed(0.0f);
 	for (int i = 0; i < 20; i++)
 	{
 
 		objFighter->CollisionObj(objStageBox[i]);
+		objFighter2->CollisionObj(objStageBox[i]);
+	}
+
+	if (Collision::CheckBox2Box(objFighter->GetPosition(), objFighter2->GetPosition(), objFighter->GetScale().x, objFighter2->GetScale().x))
+	{
+		hitFlag = true;
+	}
+	if (hitFlag == true)
+	{
+		objFighter->SetMoveSpeed(0.0f);
+		objFighter2->SetMoveSpeed(0.1f);
 	}
 	lightGroup->Update();
 	particleMan->Update();
@@ -129,6 +143,7 @@ void GameScene::GamePlayUpdate()
 	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
+	objFighter2->Update();
 	//objSphere->Update();
 	for (int i = 0; i < 20; i++)
 	{
@@ -163,6 +178,7 @@ void GameScene::GamePlayDraw()
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
+	objFighter2->Draw();
 	//objSphere->Draw();
 	for (int i = 0; i < 20; i++)
 	{
@@ -274,6 +290,7 @@ void GameScene::staticInit()
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	// 3Dオブジェクト生成
 	objFighter = Player::Create(modelFighter);
+	objFighter2 = Player::Create(modelFighter);
 
 	//objSkydome = ModelObj::Create(modelSkydome);
 	//objGround = TouchableObject::Create(modelGround);

@@ -28,6 +28,8 @@ public:
 	/// </summary>
 	void Update() override;
 	void CollisionObj(ModelObj *obj2);
+
+	void SetMoveSpeed(float moveSpeed) { this->moveSpeed = moveSpeed; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);

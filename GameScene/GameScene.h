@@ -45,6 +45,8 @@ private:
 	//ModelObj *objSkydome = nullptr;
 	TouchableObject *objGround = nullptr;
 	Player *objFighter = nullptr;
+	Player *objFighter2 = nullptr;
+
 	//ModelObj *objSphere = nullptr;
 	ModelObj *objStageBox[20] = { nullptr };
 	FBXModel *model1 = nullptr;
@@ -66,6 +68,7 @@ private:
 
 	float fighterPos[3] = { 1,1.0f,0 };
 
+	bool hitFlag = false;
 #pragma region タイトルシーン
 	void TitleInit();
 	void TitleUpdate();
