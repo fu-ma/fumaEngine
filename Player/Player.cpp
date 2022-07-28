@@ -38,6 +38,8 @@ bool Player::Initialize()
 	}
 	
 	speed = 0;
+	jumpChange = 0;
+	jumpChangeTimer = 0;
 	return true;
 }
 
@@ -46,11 +48,28 @@ void Player::Update()
 	Input* input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 
-	if (speed > gravity * 50)
+	//重力処理
+	if (speed > gravity * 40)
 	{
-		speed += gravity / 4;
+		speed += gravity / 5;
 	}
 	position.y += speed;
+
+	//1.2.3段ジャンプ処理
+	if (jumpChange == 0)
+	{
+		jumpMax = 40;
+	}
+	if (jumpChange == 1)
+	{
+		jumpMax = 60;
+	}
+	if (jumpChange == 2)
+	{
+		jumpMax = 100;
+	}
+
+	//移動処理
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
 		position.x -= 0.1f;
@@ -63,11 +82,22 @@ void Player::Update()
 	{
 		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 		{
-			if (jumpTimer < 40)
+			if (jumpTimer < jumpMax)
 			{
 				position.y += jump;
 			}
 			jumpTimer++;
+
+			if (jumpChangeTimer > 0 && jumpChangeTimer < 30)
+			{
+				jumpChange++;
+				jumpChangeTimer = 0;
+			}
+			else if (jumpChangeTimer > 30)
+			{
+				jumpChange = 0;
+				jumpChangeTimer = 0;
+			}
 		}
 	}
 
@@ -89,6 +119,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	XMVECTOR distance = { position.x - boxPos.m128_f32[0],0,0 };
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
+	//空中処理
 	if (speed < gravity && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 	{
 		jumpFlag = true;
@@ -131,10 +162,11 @@ void Player::CollisionObj(ModelObj *obj2)
 			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.01f ,
 			0
 		};
-		speed = 0;
+		speed = gravity / 4;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 		{
+			jumpChangeTimer++;
 			jumpTimer = 0;
 			jumpFlag = false;
 		}

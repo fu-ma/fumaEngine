@@ -36,7 +36,12 @@ private:
 	//ジャンプするための変数
 	int jumpTimer = 0;
 	//長押しの時に多めにジャンプ
-	int jumpAliveTimer = 0;
+	int jumpChange = 0;
+
+	//ジャンプのつながり
+	int jumpChangeTimer = 0;
+	//ジャンプごとの最大値
+	int jumpMax;
 	//直前にジャンプしたかどうか
 	bool jumpFlag = false;
 	float jump = 0.2f;
