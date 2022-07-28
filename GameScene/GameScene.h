@@ -69,6 +69,13 @@ private:
 	float fighterPos[3] = { 1,1.0f,0 };
 
 	bool hitFlag = false;
+
+	//円運動
+	float angle;
+	float radius;
+	float addX;
+	float addY;
+	float length = 200.0f;
 #pragma region タイトルシーン
 	void TitleInit();
 	void TitleUpdate();

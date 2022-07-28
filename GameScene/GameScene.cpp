@@ -111,7 +111,15 @@ void GameScene::GamePlayUpdate()
 
 	//objFighter->moveSphere(objStageBox);
 	//camera->SetTarget(objFighter->GetPosition());
+	radius = angle * 3.14f / 180.0f;
+	addX = cos(radius) * length;
+	addY = sin(radius) * length;
 
+	spriteBG->SetPosition({ 640 + addX,360 + addY });
+	if (input->isKey(DIK_UP))
+	{
+		angle += 1.0f;
+	}
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_N))
 	{
@@ -160,12 +168,12 @@ void GameScene::GamePlayDraw()
 
 	///*スプライト描画*/
 	///*スプライト描画前処理*/
-	//Sprite::PreDraw(common->GetCmdList().Get());
+	Sprite::PreDraw(common->GetCmdList().Get());
 
 	//// 背景スプライト描画
-	//spriteBG->Draw();
+	spriteBG->Draw();
 	///*スプライト描画後処理*/
-	//Sprite::PostDraw();
+	Sprite::PostDraw();
 	////深度バッファクリア
 	//common->ClearDepthBuffer();
 
@@ -278,7 +286,7 @@ void GameScene::staticInit()
 	soundData3 = audio->SoundLoadWave("Resources/SPACESE.wav", false);
 
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/background.png");
+	Sprite::LoadTexture(1, L"Resources/e1.png");
 	// 背景スプライト生成
 	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
 

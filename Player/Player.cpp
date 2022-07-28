@@ -51,19 +51,21 @@ void Player::Update()
 		speed += gravity / 5;
 	}
 	position.y += speed;
-	position.x += moveSpeed;
+	position.x += (float)moveSpeed;
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
-		moveSpeed = -0.1f;
+		easing::Updete(moveSpeed, -maxMoveSpeed, InSine, moveTime);
 	}
 	else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
 	{
-		moveSpeed = 0.1f;
+		easing::Updete(moveSpeed, maxMoveSpeed, InSine, moveTime);
 	}
 	else
 	{
-		moveSpeed *= 0.9f;
+		moveTime = 0.0f;
+		moveSpeed = 0.0f;
 	}
+
 
 	if (jumpAliveTimer == 0)
 	{

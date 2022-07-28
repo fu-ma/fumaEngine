@@ -4,6 +4,7 @@
 #include<math.h>
 #include"DebugCamera.h"
 #include"Collision.h"
+#include"easing.h"
 
 class Player : public ModelObj
 {
@@ -38,7 +39,9 @@ private:
 	//重力を加算するためのスピード
 	float speed;
 	//移動するスピード
-	float moveSpeed;
+	double moveSpeed;
+	const double maxMoveSpeed = 0.1f;
+	double moveTime = 0;
 	//ジャンプするための変数
 	int jumpTimer = 0;
 	//長押しの時に多めにジャンプ
