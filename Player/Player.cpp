@@ -48,7 +48,7 @@ void Player::Update()
 
 	if (speed > gravity * 50)
 	{
-		speed += gravity / 5;
+		speed += gravity / 4;
 	}
 	position.y += speed;
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
@@ -59,33 +59,21 @@ void Player::Update()
 	{
 		position.x += 0.1f;
 	}
-	if (jumpAliveTimer == 0)
+	if (jumpFlag == false)
 	{
 		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 		{
-			jumpFlag = true;
 			if (jumpTimer < 40)
 			{
 				position.y += jump;
 			}
 			jumpTimer++;
 		}
-		else
-		{
-			//空中のジャンプ制限
-			jumpAliveTimer = 1;
-			jumpFlag = false;
-		}
 	}
 
-	if (jumpFlag == true && jumpTimer > 40)
+	if (jumpTimer > 0 && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 	{
-		jumpAliveTimer = 1;
-	}
-
-	if (jumpFlag == false)
-	{
-		jumpAliveTimer = 0;
+		jumpFlag = true;
 	}
 
 	// 行列の更新など
@@ -101,9 +89,9 @@ void Player::CollisionObj(ModelObj *obj2)
 	XMVECTOR distance = { position.x - boxPos.m128_f32[0],0,0 };
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
-	if (speed < gravity && jumpFlag == false)
+	if (speed < gravity && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 	{
-		jumpAliveTimer = 1;
+		jumpFlag = true;
 	}
 	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 	{
@@ -143,14 +131,15 @@ void Player::CollisionObj(ModelObj *obj2)
 			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.01f ,
 			0
 		};
-		speed = gravity / 5;
-		jumpTimer = 0;
+		speed = 0;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 		{
+			jumpTimer = 0;
 			jumpFlag = false;
 		}
 	}
+
 	if (Collision::CheckBox2Box({ position.x - 0.1f,position.y + 0.1f,0 },
 		{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y - 0.1f,0 },
 		scale.x, obj2->GetScale().x))
@@ -161,6 +150,6 @@ void Player::CollisionObj(ModelObj *obj2)
 			boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.001f - jump ,
 			0
 		};
-		jumpAliveTimer = 1;
+		jumpFlag = true;
 	}
 }

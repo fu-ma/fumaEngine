@@ -31,8 +31,6 @@ public:
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
-	float rot1;
-	float rot2;
 	//重力を加算するためのスピード
 	float speed;
 	//ジャンプするための変数
