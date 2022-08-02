@@ -75,5 +75,5 @@ public:
 	/// <returns>交差しているか否か</returns>
 	static bool CheckRay2Sphere(const Ray &lay, const Sphere &sphere, float *distance, DirectX::XMVECTOR *inter = nullptr);
 
-	static bool CheckBox2Box(DirectX::XMFLOAT3 pos1,DirectX::XMFLOAT3 pos2,const float r1,const float r2);
+	static bool CheckBox2Box(DirectX::XMFLOAT3 pos1,DirectX::XMFLOAT3 pos2, const float r1X, const float r1Y, const float r2X, const float r2Y);
 };

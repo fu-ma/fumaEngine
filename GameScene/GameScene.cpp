@@ -50,7 +50,7 @@ void GameScene::TitleDraw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	spriteBG->Draw();
+	backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア
@@ -82,10 +82,9 @@ void GameScene::GamePlayInit()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	//objFighter->SetPosition({ 1,1,0 });
 	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
-	//objSphere->SetScale({ 10, 10, 10 });
 	objFighter->SetPosition({ 10,0,0 });
+	
 	// カメラ注視点をセット
 	camera->SetTarget({ 10, 10, 0 });
 	camera->SetDistance(20.0f);
@@ -147,14 +146,14 @@ void GameScene::GamePlayDraw()
 
 	///*スプライト描画*/
 	///*スプライト描画前処理*/
-	//Sprite::PreDraw(common->GetCmdList().Get());
+	Sprite::PreDraw(common->GetCmdList().Get());
 
 	//// 背景スプライト描画
-	//spriteBG->Draw();
+	backGround->Draw();
 	///*スプライト描画後処理*/
-	//Sprite::PostDraw();
+	Sprite::PostDraw();
 	////深度バッファクリア
-	//common->ClearDepthBuffer();
+	common->ClearDepthBuffer();
 
 	/*モデル描画*/
 	/*モデル描画前処理*/
@@ -264,9 +263,9 @@ void GameScene::staticInit()
 	soundData3 = audio->SoundLoadWave("Resources/SPACESE.wav", false);
 
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/background.png");
+	Sprite::LoadTexture(1, L"Resources/backGround3.png");
 	// 背景スプライト生成
-	spriteBG = Sprite::Create(1, { 0.0f,0.0f });
+	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
 
 	// モデル読み込み
 	//modelSkydome = Model::CreateFromOBJ("skydome", true);

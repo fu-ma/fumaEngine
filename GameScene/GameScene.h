@@ -34,7 +34,7 @@ private:
 	/// ゲームシーン用
 	/// </summary>
 
-	Sprite *spriteBG = nullptr;
+	Sprite *backGround = nullptr;
 
 	//Model *modelSkydome = nullptr;
 	//Model *modelGround = nullptr;
@@ -91,8 +91,8 @@ public:
 		//DirectXCommon解放処理
 		//スプライトの解放処理
 		debugText->deleteSprite();
-		delete spriteBG;
-		spriteBG = nullptr;
+		delete backGround;
+		backGround = nullptr;
 		//modelObj解放処理
 		//delete objSkydome;
 		//objSkydome = nullptr;

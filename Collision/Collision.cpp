@@ -284,11 +284,11 @@ bool Collision::CheckRay2Sphere(const Ray & lay, const Sphere & sphere, float*di
 	return true;
 }
 
-bool Collision::CheckBox2Box(DirectX::XMFLOAT3 pos1, DirectX::XMFLOAT3 pos2, const float r1, const float r2)
+bool Collision::CheckBox2Box(DirectX::XMFLOAT3 pos1, DirectX::XMFLOAT3 pos2, const float r1X, const float r1Y, const float r2X, const float r2Y)
 {
-	if (pos2.x - r2 < pos1.x + r1 && pos1.x - r1 < pos2.x + r2)
+	if (pos2.x - r2X < pos1.x + r1X && pos1.x - r1X < pos2.x + r2X)
 	{
-		if (pos2.y - r2 < pos1.y + r1 && pos1.y - r1 < pos2.y + r2)
+		if (pos2.y - r2Y < pos1.y + r1Y && pos1.y - r1Y < pos2.y + r2Y)
 		{
 			return true;
 		}

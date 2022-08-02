@@ -45,5 +45,12 @@ private:
 	//直前にジャンプしたかどうか
 	bool jumpFlag = false;
 	float jump = 0.2f;
+
+	//壁キック用
+	bool leftWallJumpFlag = false;
+	bool rightWallJumpFlag = false;
+	int leftWallJumpTimer = 0;
+	int rightWallJumpTimer = 0;
+	const int wallJumpMax = 15;
 };
 
