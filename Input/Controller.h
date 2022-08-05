@@ -25,6 +25,7 @@ class Controller
 {
 private:
 	XINPUT_STATE state;
+	XINPUT_STATE oldstate;
 	DWORD dwResult;
 	//スティックの入力を方向パッドに変換
 	WORD ThumbToPad(SHORT sThumbX,SHORT sThumbY,SHORT sDeadZone);
@@ -35,6 +36,7 @@ public:
 	void Initialize(DWORD controllerNum);
 	void Update(DWORD controllerNum);
 	bool PushButton(int button);
+	bool TriggerButton(int button);
 	bool PushLt();
 	bool PushRt();
 	bool PushLeftStickUp();

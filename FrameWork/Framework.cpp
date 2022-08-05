@@ -16,7 +16,7 @@ void Framework::GameRun()
 		if (SceneTime)
 		{
 			//Imguiの描画前処理
-			ImguiCommon::PreDraw();
+			//ImguiCommon::PreDraw();
 
 			//レンダーテクスチャへの描画
 			//postEffect->PreDrawScene(common->GetCmdList().Get());
@@ -29,7 +29,7 @@ void Framework::GameRun()
 			common->PreDraw();
 			Draw();
 			//Imguiの描画処理
-			ImguiCommon::Draw(common->GetCmdList().Get());
+			//ImguiCommon::Draw(common->GetCmdList().Get());
 			//ポストエフェクトの描画
 			//postEffect->Draw(common->GetCmdList().Get());
 			//描画終了

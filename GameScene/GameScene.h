@@ -66,6 +66,8 @@ private:
 
 	float fighterPos[3] = { 1,1.0f,0 };
 
+	int gameTimer = 0;
+
 #pragma region タイトルシーン
 	void TitleInit();
 	void TitleUpdate();

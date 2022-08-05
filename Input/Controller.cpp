@@ -54,6 +54,7 @@ void Controller::Initialize(DWORD controllerNum)
 void Controller::Update(DWORD controllerNum)
 {
 	//構造体のクリア
+	oldstate = state;
 	ZeroMemory(&state, sizeof(XINPUT_STATE));
 
 	dwResult = XInputGetState(controllerNum, &state);
@@ -69,11 +70,24 @@ void Controller::Update(DWORD controllerNum)
 
 	//左スティックからの入力を方向パッドに変換
 	state.Gamepad.wButtons |= ThumbToPad(state.Gamepad.sThumbLX, state.Gamepad.sThumbLY, XINPUT_GAMEPAD_LEFT_THUMB_DEADZONE);
+
 }
 
 bool Controller::PushButton(int button)
 {
 	if (state.Gamepad.wButtons & button)
+	{
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
+bool Controller::TriggerButton(int button)
+{
+	if ((state.Gamepad.wButtons & button) && !(oldstate.Gamepad.wButtons & button))
 	{
 		return true;
 	}

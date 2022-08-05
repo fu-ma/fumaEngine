@@ -27,6 +27,7 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
+	void Move();
 	void CollisionObj(ModelObj *obj2);
 private:
 	const float gravity = (- 9.8f / 60/ 20);
@@ -51,6 +52,8 @@ private:
 	bool rightWallJumpFlag = false;
 	int leftWallJumpTimer = 0;
 	int rightWallJumpTimer = 0;
+	bool leftWallColFlag = false;
+	bool rightWallColFlag = false;
 	const int wallJumpMax = 15;
 };
 

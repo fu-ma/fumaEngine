@@ -83,20 +83,18 @@ void GameScene::GamePlayInit()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
-	objFighter->SetPosition({ 10,0,0 });
+	objFighter->SetPosition({ 10,2,0 });
 	
-	// カメラ注視点をセット
-	camera->SetTarget({ 10, 10, 0 });
-	camera->SetDistance(20.0f);
 	object1->SetPosition({ 0,5,0 });
 
 	object1->PlayAnimation();
 	for (int i = 0; i < 20; i++)
 	{
 		objStageBox[i]->SetPosition({ 2.0f * i, 0, 0 });
-		objStageBox[10]->SetPosition({ 10.0f, 2.0f, 0 });
+		objStageBox[10]->SetPosition({ 18.0f, 2.0f, 0 });
 		objStageBox[11]->SetPosition({ 8.0f, 6.0f, 0 });
 	}
+	gameTimer = 0;
 }
 
 void GameScene::GamePlayUpdate()
@@ -110,6 +108,9 @@ void GameScene::GamePlayUpdate()
 
 	//objFighter->moveSphere(objStageBox);
 	//camera->SetTarget(objFighter->GetPosition());
+	// カメラ注視点をセット
+	camera->SetTarget({ objFighter->GetPosition().x + 10, 10, 0});
+	camera->SetDistance(20.0f);
 
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_N))
@@ -117,6 +118,13 @@ void GameScene::GamePlayUpdate()
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData1);
 		SceneNo = static_cast<int>(GameSceneNo::End);
+	}
+
+	gameTimer++;
+
+	if (gameTimer > 60)
+	{
+		objFighter->Move();
 	}
 
 	for (int i = 0; i < 20; i++)
