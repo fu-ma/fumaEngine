@@ -4,6 +4,8 @@
 #include <iomanip>
 #include"FbxLoader.h"
 
+#pragma warning(disable : 4996)
+
 using namespace DirectX;
 
 void GameScene::TitleInit()
@@ -82,6 +84,11 @@ void GameScene::GamePlayInit()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
+	objFighter->Initialize();
+	for (int i = 0; i < 2; i++)
+	{
+		enemy[i]->Initialize();
+	}
 	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
 	objFighter->SetPosition({ 10,2,0 });
 	
@@ -94,6 +101,8 @@ void GameScene::GamePlayInit()
 		objStageBox[10]->SetPosition({ 18.0f, 2.0f, 0 });
 		objStageBox[11]->SetPosition({ 8.0f, 6.0f, 0 });
 	}
+	enemy[0]->SetPosition({22,2,0});
+	enemy[1]->SetPosition({ 26,2,0 });
 	gameTimer = 0;
 }
 
@@ -132,12 +141,20 @@ void GameScene::GamePlayUpdate()
 
 		objFighter->CollisionObj(objStageBox[i]);
 	}
+	for (int i = 0; i < 2; i++)
+	{
+		objFighter->CollisionEnemy(enemy[i]);
+	}
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
 	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
+	for (int i = 0; i < 2; i++)
+	{
+		enemy[i]->Update();
+	}
 	//objSphere->Update();
 	for (int i = 0; i < 20; i++)
 	{
@@ -172,6 +189,10 @@ void GameScene::GamePlayDraw()
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
+	for (int i = 0; i < 2; i++)
+	{
+		enemy[i]->Draw();
+	}
 	//objSphere->Draw();
 	for (int i = 0; i < 20; i++)
 	{
@@ -283,6 +304,10 @@ void GameScene::staticInit()
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	// 3Dオブジェクト生成
 	objFighter = Player::Create(modelFighter);
+	for (int i = 0; i < 2; i++)
+	{
+		enemy[i] = Enemy::Create(modelFighter);
+	}
 
 	//objSkydome = ModelObj::Create(modelSkydome);
 	//objGround = TouchableObject::Create(modelGround);

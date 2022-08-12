@@ -40,6 +40,13 @@ bool Player::Initialize()
 	speed = 0;
 	jumpChange = 0;
 	jumpChangeTimer = 0;
+	t = 0;
+	treadSpeed = 0;
+	treadFlag = false;
+	notHitFlag = false;
+	enemyNotUpFlag = false;
+	invincibleFlag = false;
+	invincibleTimer = 0;
 	return true;
 }
 
@@ -47,6 +54,14 @@ void Player::Update()
 {
 	// 行列の更新など
 	ModelObj::Update();
+}
+
+void Player::Draw()
+{
+	if (invincibleTimer%10 == 0 || invincibleTimer % 15 == 0)
+	{
+		ModelObj::Draw();
+	}
 }
 
 void Player::Move()
@@ -225,6 +240,11 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
+					//壁キックする前に重力を初期化
+					if (leftWallJumpFlag == false)
+					{
+						speed = gravity / 5;
+					}
 					leftWallJumpFlag = true;
 				}
 			}
@@ -248,6 +268,11 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
+					//壁キックする前に重力を初期化
+					if (rightWallJumpFlag == false)
+					{
+						speed = gravity / 5;
+					}
 					rightWallJumpFlag = true;
 				}
 			}
@@ -284,5 +309,113 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		jumpFlag = true;
+	}
+}
+
+void Player::CollisionEnemy(Enemy *enemy)
+{
+	Input *input = Input::GetInstance();
+	Controller *controller = Controller::GetInstance();
+
+	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
+	{
+		if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
+			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y - 0.1f,0 },
+			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x, enemy->GetScale().y))
+		{
+			if (enemy->GetHP() == 1)
+			{
+				if (invincibleFlag == false)
+				{
+					HP--;
+				}
+				invincibleFlag = true;
+				notHitFlag = true;
+			}
+		}
+	}
+
+	if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
+	{
+		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
+			{ enemy->GetPosition().x - 0.1f,enemy->GetPosition().y + 0.1f,0 },
+			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x, enemy->GetScale().y))
+		{
+			if (enemy->GetHP() == 1)
+			{
+				if (invincibleFlag == false)
+				{
+					HP--;
+				}
+				invincibleFlag = true;
+				notHitFlag = true;
+			}
+		}
+	}
+
+	if (Collision::CheckBox2Box({ position.x,position.y,0 },
+		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
+		scale.x, scale.y - 0.3f, enemy->GetScale().x, enemy->GetScale().y))
+	{
+		if (enemy->GetHP() == 1)
+		{
+			notHitFlag = true;
+			invincibleFlag = true;
+		}
+		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+		{
+			enemyNotUpFlag = true;
+		}
+	}
+	else
+	{
+		notHitFlag = false;
+	}
+
+	//プレイヤーが敵より上に行ったら
+	if (position.y > enemy->GetPosition().y + enemy->GetScale().y * 2.0f)
+	{
+		enemyNotUpFlag = false;
+	}
+
+	//無敵時間
+	if (enemy->GetHP() == 1)
+	{
+		if (invincibleFlag == true)
+		{
+			invincibleTimer++;
+			if (invincibleTimer > 300)
+			{
+				invincibleFlag = false;
+				invincibleTimer = 0;
+			}
+		}
+	}
+
+	if (notHitFlag == false && enemyNotUpFlag == false)
+	{
+		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
+			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y + 0.1f,0 },
+			scale.x, scale.y + speed, enemy->GetScale().x, enemy->GetScale().y))
+		{
+			if (enemy->GetHP() == 1)
+			{
+				invincibleFlag = false;
+				treadFlag = true;
+				enemy->Deth();
+			}
+		}
+	}
+
+	if (treadFlag == true)
+	{
+		easing::Updete(treadSpeed, 0.3, ease::InSine, t);
+		position.y += (float)treadSpeed;
+		if (treadSpeed == 0.3)
+		{
+			t = 0;
+			treadSpeed = 0;
+			treadFlag = false;
+		}
 	}
 }

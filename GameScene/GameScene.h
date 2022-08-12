@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "TouchableObject.h"
 #include"Collision.h"
+#include"Enemy.h"
 
 class GameScene : public Framework
 {
@@ -49,6 +50,7 @@ private:
 	ModelObj *objStageBox[20] = { nullptr };
 	FBXModel *model1 = nullptr;
 	FBXObject3d *object1 = nullptr;
+	Enemy *enemy[2] = { nullptr };
 
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1,1,1 };
@@ -67,7 +69,6 @@ private:
 	float fighterPos[3] = { 1,1.0f,0 };
 
 	int gameTimer = 0;
-
 #pragma region タイトルシーン
 	void TitleInit();
 	void TitleUpdate();

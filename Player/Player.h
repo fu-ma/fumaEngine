@@ -4,6 +4,8 @@
 #include<math.h>
 #include"DebugCamera.h"
 #include"Collision.h"
+#include"Enemy.h"
+#include"easing.h"
 
 class Player : public ModelObj
 {
@@ -27,8 +29,10 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
+	void Draw() override;
 	void Move();
 	void CollisionObj(ModelObj *obj2);
+	void CollisionEnemy(Enemy *enemy);
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
@@ -55,5 +59,22 @@ private:
 	bool leftWallColFlag = false;
 	bool rightWallColFlag = false;
 	const int wallJumpMax = 15;
+
+	int HP = 10;
+
+	//easing用の変数
+	bool treadFlag = false;
+	double t = 0;
+	double treadSpeed = 0;
+
+	bool notHitFlag = false;
+
+	//敵と当たっているときにジャンプしてもバグらないようにするフラグ
+	bool enemyNotUpFlag = false;
+
+	//無敵時間フラグ
+	bool invincibleFlag = false;
+	//無敵時間
+	int invincibleTimer = 0;
 };
 

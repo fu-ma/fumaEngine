@@ -171,6 +171,9 @@
     <ClCompile Include="2d\DebugText\DebugText.cpp">
       <Filter>Engine\2D\DebugText</Filter>
     </ClCompile>
+    <ClCompile Include="Enemy.cpp">
+      <Filter>Engine\Enemy</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -325,6 +328,9 @@
     </ClInclude>
     <ClInclude Include="2d\DebugText\DebugText.h">
       <Filter>Engine\2D\DebugText</Filter>
+    </ClInclude>
+    <ClInclude Include="Enemy.h">
+      <Filter>Engine\Enemy</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -491,6 +497,9 @@
     </Filter>
     <Filter Include="Engine\Camera\Audio">
       <UniqueIdentifier>{b6632811-a865-44f1-8806-18ee457b0b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Enemy">
+      <UniqueIdentifier>{bc395424-84ba-4033-9405-a970760b30af}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
