@@ -29,7 +29,7 @@ private:
 	DWORD dwResult;
 	//スティックの入力を方向パッドに変換
 	WORD ThumbToPad(SHORT sThumbX,SHORT sThumbY,SHORT sDeadZone);
-public: // 静的メンバ変数
+public: // 静的メンバ関数
 	static Controller *GetInstance();
 
 public:

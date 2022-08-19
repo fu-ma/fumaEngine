@@ -37,10 +37,6 @@ void GameScene::TitleUpdate()
 	//objGround->Update();
 	objFighter->Update();
 	//objSphere->Update();
-	for (int i = 0; i < 20; i++)
-	{
-		objStageBox[i]->Update();
-	}
 }
 
 void GameScene::TitleDraw()
@@ -52,7 +48,7 @@ void GameScene::TitleDraw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	backGround->Draw();
+	titleSprite->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア
@@ -74,7 +70,7 @@ void GameScene::TitleDraw()
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
+	//debugText->DrawAll(common->GetCmdList().Get());
 
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
@@ -85,24 +81,33 @@ void GameScene::GamePlayInit()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	objFighter->Initialize();
-	for (int i = 0; i < 2; i++)
+	for (int y = 0; y < 6; y++)
 	{
-		enemy[i]->Initialize();
+		for (int x = 0; x < 24; x++)
+		{
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100.0f, -100.0f, 0 });
+		}
 	}
-	objFighter->SetScale({ 0.7f, 0.7f, 0.7f });
 	objFighter->SetPosition({ 10,2,0 });
 	
 	object1->SetPosition({ 0,5,0 });
 
 	object1->PlayAnimation();
-	for (int i = 0; i < 20; i++)
+	for (int y = 0; y < 6; y++)
 	{
-		objStageBox[i]->SetPosition({ 2.0f * i, 0, 0 });
-		objStageBox[10]->SetPosition({ 18.0f, 2.0f, 0 });
-		objStageBox[11]->SetPosition({ 8.0f, 6.0f, 0 });
+		for (int x = 0; x < 24; x++)
+		{
+			if (map1[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + 10.0f, 0 });
+			}
+			if (map1[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + 10.0f, 0 });
+			}
+		}
 	}
-	enemy[0]->SetPosition({22,2,0});
-	enemy[1]->SetPosition({ 26,2,0 });
 	gameTimer = 0;
 }
 
@@ -136,30 +141,28 @@ void GameScene::GamePlayUpdate()
 		objFighter->Move();
 	}
 
-	for (int i = 0; i < 20; i++)
+	for (int y = 0; y < 6; y++)
 	{
+		for (int x = 0; x < 24; x++)
+		{
+			objFighter->CollisionObj(objStageBox[y][x]);
+			objFighter->CollisionEnemy(enemy[y][x]);
+		}
+	}
 
-		objFighter->CollisionObj(objStageBox[i]);
-	}
-	for (int i = 0; i < 2; i++)
-	{
-		objFighter->CollisionEnemy(enemy[i]);
-	}
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
 	//objSkydome->Update();
 	//objGround->Update();
 	objFighter->Update();
-	for (int i = 0; i < 2; i++)
+	for (int y = 0; y < 6; y++)
 	{
-		enemy[i]->Update();
-	}
-	//objSphere->Update();
-	for (int i = 0; i < 20; i++)
-	{
-
-		objStageBox[i]->Update();
+		for (int x = 0; x < 24; x++)
+		{
+			enemy[y][x]->Update();
+			objStageBox[y][x]->Update();
+		}
 	}
 	//FBX用のオブジェクトの更新
 	object1->Update();
@@ -189,16 +192,15 @@ void GameScene::GamePlayDraw()
 	//FBX
 	object1->Draw(common->GetCmdList().Get());
 	objFighter->Draw();
-	for (int i = 0; i < 2; i++)
+	for (int y = 0; y < 6; y++)
 	{
-		enemy[i]->Draw();
+		for (int x = 0; x < 24; x++)
+		{
+			enemy[y][x]->Draw();
+			objStageBox[y][x]->Draw();
+		}
 	}
 	//objSphere->Draw();
-	for (int i = 0; i < 20; i++)
-	{
-
-		objStageBox[i]->Draw();
-	}
 	// パーティクルの描画
 	particleMan->Draw(common->GetCmdList().Get());
 
@@ -240,11 +242,6 @@ void GameScene::EndUpdate()
 	//objGround->Update();
 	objFighter->Update();
 	//objSphere->Update();
-	for (int i = 0; i < 20; i++)
-	{
-
-		objStageBox[i]->Update();
-	}
 
 }
 
@@ -293,28 +290,29 @@ void GameScene::staticInit()
 
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/backGround3.png");
+	Sprite::LoadTexture(2, L"Resources/titleSprite.png");
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
-
+	titleSprite= Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	// モデル読み込み
 	//modelSkydome = Model::CreateFromOBJ("skydome", true);
 	//modelGround = Model::CreateFromOBJ("ground", true);
-	modelFighter = Model::CreateFromOBJ("StageBox", true);
+	modelFighter = Model::CreateFromOBJ("player", true);
 	//modelSphere = Model::CreateFromOBJ("sphere");
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	// 3Dオブジェクト生成
 	objFighter = Player::Create(modelFighter);
-	for (int i = 0; i < 2; i++)
-	{
-		enemy[i] = Enemy::Create(modelFighter);
-	}
 
 	//objSkydome = ModelObj::Create(modelSkydome);
 	//objGround = TouchableObject::Create(modelGround);
 	//objSphere = ModelObj::Create(modelSphere);
-	for (int i = 0; i < 20; i++)
+	for (int y = 0; y < 6; y++)
 	{
-		objStageBox[i] = ModelObj::Create(modelStageBox);
+		for (int x = 0; x < 24; x++)
+		{
+			objStageBox[y][x] = ModelObj::Create(modelStageBox);
+			enemy[y][x] = Enemy::Create(modelFighter);
+		}
 	}
 	//objFighter->SetParent(objSphere);
 

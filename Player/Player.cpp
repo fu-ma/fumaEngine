@@ -52,13 +52,25 @@ bool Player::Initialize()
 
 void Player::Update()
 {
+	if (HP == 2)
+	{
+		scale = { 1.0f,1.0f,1.0f };
+	}
+	if (HP == 1)
+	{
+		scale = { 0.7f,0.7f,0.7f };
+	}
+	if (HP == 0)
+	{
+		
+	}
 	// 行列の更新など
 	ModelObj::Update();
 }
 
 void Player::Draw()
 {
-	if (invincibleTimer%10 == 0 || invincibleTimer % 15 == 0)
+	if (invincibleTimer % 10 == 0 || invincibleTimer % 15 == 0 || invincibleTimer >= 500)
 	{
 		ModelObj::Draw();
 	}
@@ -139,6 +151,9 @@ void Player::Move()
 		{
 			position.x -= 0.1f;
 		}
+
+		//プレイヤーの向きを左側にする
+		rotation.y = 180;
 	}
 	else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
 	{
@@ -146,6 +161,9 @@ void Player::Move()
 		{
 			position.x += 0.1f;
 		}
+
+		//プレイヤーの向きを右側にする
+		rotation.y = 0;
 	}
 	if (jumpFlag == false)
 	{
@@ -173,6 +191,29 @@ void Player::Move()
 	if (jumpTimer > 0 && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 	{
 		jumpFlag = true;
+	}
+
+	//無敵時間
+	if (invincibleFlag == true)
+	{
+		invincibleTimer++;
+		if (invincibleTimer > 300)
+		{
+			invincibleFlag = false;
+			invincibleTimer = 0;
+		}
+	}
+
+	if (treadFlag == true)
+	{
+		easing::Updete(treadSpeed, 0.4, 2, t);
+		position.y += (float)treadSpeed;
+		if (treadSpeed >= 0.4)
+		{
+			t = 0;
+			treadSpeed = 0;
+			treadFlag = false;
+		}
 	}
 }
 
@@ -360,6 +401,10 @@ void Player::CollisionEnemy(Enemy *enemy)
 		if (enemy->GetHP() == 1)
 		{
 			notHitFlag = true;
+			if (invincibleFlag == false)
+			{
+				HP--;
+			}
 			invincibleFlag = true;
 		}
 		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
@@ -367,29 +412,11 @@ void Player::CollisionEnemy(Enemy *enemy)
 			enemyNotUpFlag = true;
 		}
 	}
-	else
-	{
-		notHitFlag = false;
-	}
 
 	//プレイヤーが敵より上に行ったら
 	if (position.y > enemy->GetPosition().y + enemy->GetScale().y * 2.0f)
 	{
 		enemyNotUpFlag = false;
-	}
-
-	//無敵時間
-	if (enemy->GetHP() == 1)
-	{
-		if (invincibleFlag == true)
-		{
-			invincibleTimer++;
-			if (invincibleTimer > 300)
-			{
-				invincibleFlag = false;
-				invincibleTimer = 0;
-			}
-		}
 	}
 
 	if (notHitFlag == false && enemyNotUpFlag == false)
@@ -400,22 +427,10 @@ void Player::CollisionEnemy(Enemy *enemy)
 		{
 			if (enemy->GetHP() == 1)
 			{
-				invincibleFlag = false;
 				treadFlag = true;
 				enemy->Deth();
 			}
 		}
 	}
 
-	if (treadFlag == true)
-	{
-		easing::Updete(treadSpeed, 0.3, ease::InSine, t);
-		position.y += (float)treadSpeed;
-		if (treadSpeed == 0.3)
-		{
-			t = 0;
-			treadSpeed = 0;
-			treadFlag = false;
-		}
-	}
 }

@@ -36,7 +36,7 @@ private:
 	/// </summary>
 
 	Sprite *backGround = nullptr;
-
+	Sprite *titleSprite = nullptr;
 	//Model *modelSkydome = nullptr;
 	//Model *modelGround = nullptr;
 	Model *modelFighter = nullptr;
@@ -47,10 +47,10 @@ private:
 	TouchableObject *objGround = nullptr;
 	Player *objFighter = nullptr;
 	//ModelObj *objSphere = nullptr;
-	ModelObj *objStageBox[20] = { nullptr };
+	ModelObj *objStageBox[6][24] = { nullptr };
 	FBXModel *model1 = nullptr;
 	FBXObject3d *object1 = nullptr;
-	Enemy *enemy[2] = { nullptr };
+	Enemy *enemy[6][24] = { nullptr };
 
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1,1,1 };
@@ -69,6 +69,15 @@ private:
 	float fighterPos[3] = { 1,1.0f,0 };
 
 	int gameTimer = 0;
+
+	const int map1[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 2, 0, 0, 0, 0, 0, 0, 0,
+						 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	};
+
 #pragma region タイトルシーン
 	void TitleInit();
 	void TitleUpdate();
@@ -96,6 +105,9 @@ public:
 		debugText->deleteSprite();
 		delete backGround;
 		backGround = nullptr;
+		delete titleSprite;
+		titleSprite = nullptr;
+
 		//modelObj解放処理
 		//delete objSkydome;
 		//objSkydome = nullptr;
@@ -103,10 +115,15 @@ public:
 		objGround = nullptr;
 		delete objFighter;
 		objFighter = nullptr;
-		for (int i = 0; i < 20; i++)
+		for (int y = 0; y < 6; y++)
 		{
-			delete objStageBox[i];
-			objStageBox[i] = nullptr;
+			for (int x = 0; x < 24; x++)
+			{
+				delete objStageBox[y][x];
+				objStageBox[y][x] = nullptr;
+				delete enemy[y][x];
+				enemy[y][x] = nullptr;
+			}
 		}
 		//model解放処理
 		//delete modelSkydome;

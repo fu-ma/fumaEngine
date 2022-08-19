@@ -60,7 +60,7 @@ private:
 	bool rightWallColFlag = false;
 	const int wallJumpMax = 15;
 
-	int HP = 10;
+	int HP = 2;
 
 	//easing用の変数
 	bool treadFlag = false;

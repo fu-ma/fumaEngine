@@ -46,7 +46,6 @@ void Controller::Initialize(DWORD controllerNum)
 	//Ú‘±¸”s
 	else
 	{
-		int a=0;
 		return;
 	}
 }
