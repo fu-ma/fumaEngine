@@ -9,6 +9,8 @@
 #include "TouchableObject.h"
 #include"Collision.h"
 #include"Enemy.h"
+#include<stdlib.h>
+#include<time.h>
 
 class GameScene : public Framework
 {
@@ -27,6 +29,8 @@ private: // エイリアス
 
 private:
 
+	static const int X_MAX = 24;
+	static const int Y_MAX = 6;
 	SoundData soundData1;
 	SoundData soundData2;
 	SoundData soundData3;
@@ -37,20 +41,23 @@ private:
 
 	Sprite *backGround = nullptr;
 	Sprite *titleSprite = nullptr;
-	//Model *modelSkydome = nullptr;
-	//Model *modelGround = nullptr;
-	Model *modelFighter = nullptr;
-	//Model *modelSphere = nullptr;
-	Model *modelStageBox = nullptr;
 
-	//ModelObj *objSkydome = nullptr;
-	TouchableObject *objGround = nullptr;
-	Player *objFighter = nullptr;
-	//ModelObj *objSphere = nullptr;
-	ModelObj *objStageBox[6][24] = { nullptr };
-	FBXModel *model1 = nullptr;
-	FBXObject3d *object1 = nullptr;
-	Enemy *enemy[6][24] = { nullptr };
+	//プレイヤー
+	Model *modelPlayer = nullptr;
+	Player *objPlayer = nullptr;
+	
+	//雲
+	Model *modelCloud = nullptr;
+	ModelObj *cloud[10] = { nullptr };
+	XMFLOAT3 cloudPos[10] = {};
+
+	//ステージブロック
+	Model *modelStageBox = nullptr;
+	ModelObj *objStageBox[Y_MAX][X_MAX] = { nullptr };
+	XMFLOAT3 stageBoxPos[Y_MAX][X_MAX];
+	//敵
+	Model *modelEnemy = nullptr;
+	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
 
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1,1,1 };
@@ -66,11 +73,16 @@ private:
 	float circleShadowAtten[3] = { 0.5f,0.6f,0.0f };
 	float circleShadowFactorAngle[2] = { 0.0f,0.5f };
 
-	float fighterPos[3] = { 1,1.0f,0 };
+	int gameTimer = 10980;
 
-	int gameTimer = 0;
-
-	const int map1[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+	const int selectMap[Y_MAX][X_MAX]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+						 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+	};
+	const int map1[Y_MAX][X_MAX] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -111,13 +123,11 @@ public:
 		//modelObj解放処理
 		//delete objSkydome;
 		//objSkydome = nullptr;
-		delete objGround;
-		objGround = nullptr;
-		delete objFighter;
-		objFighter = nullptr;
-		for (int y = 0; y < 6; y++)
+		delete objPlayer;
+		objPlayer = nullptr;
+		for (int y = 0; y < Y_MAX; y++)
 		{
-			for (int x = 0; x < 24; x++)
+			for (int x = 0; x < X_MAX; x++)
 			{
 				delete objStageBox[y][x];
 				objStageBox[y][x] = nullptr;
@@ -126,19 +136,15 @@ public:
 			}
 		}
 		//model解放処理
-		//delete modelSkydome;
-		//modelSkydome = nullptr;
-		//delete modelGround;
-		//modelGround = nullptr;
-		//delete modelFighter;
-		//modelFighter = nullptr;
 		delete modelStageBox;
 		modelStageBox = nullptr;
+		delete modelPlayer;
+		modelPlayer = nullptr;
+		delete modelCloud;
+		modelCloud = nullptr;
+		delete modelEnemy;
+		modelEnemy = nullptr;
 		//FBX用のオブジェクト解放
-		delete object1;
-		object1 = nullptr;
-		delete model1;
-		model1 = nullptr;
 		//基底クラス解放処理
 		Framework::SceneDelete();
 	};
@@ -147,5 +153,18 @@ public:
 	void Init() override;
 	bool Update() override;
 	void Draw() override;
+
+private://メンバ関数
+	int GetRand(int min, int max)
+	{
+		static int check;
+		if (check == 0)
+		{
+			srand((unsigned int)time(NULL));
+			check = 1;
+		}
+
+		return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+	}
 };
 

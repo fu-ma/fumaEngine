@@ -47,6 +47,7 @@ bool Player::Initialize()
 	enemyNotUpFlag = false;
 	invincibleFlag = false;
 	invincibleTimer = 0;
+	HP = 2;
 	return true;
 }
 
@@ -62,7 +63,7 @@ void Player::Update()
 	}
 	if (HP == 0)
 	{
-		
+		scale = { 0.0f,0.0f,0.0f };
 	}
 	// 行列の更新など
 	ModelObj::Update();
@@ -185,6 +186,15 @@ void Player::Move()
 				jumpChange = 0;
 				jumpChangeTimer = 0;
 			}
+
+			if (jumpMax == 60)
+			{
+				rotation.z -= 2.5f;
+			}
+			if (jumpMax == 100)
+			{
+				rotation.z -= 5;
+			}
 		}
 	}
 
@@ -201,6 +211,7 @@ void Player::Move()
 		{
 			invincibleFlag = false;
 			invincibleTimer = 0;
+			notHitFlag = false;
 		}
 	}
 
@@ -330,6 +341,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		speed = 0;
+		rotation.z = 0.0f;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 		{
@@ -428,6 +440,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 			if (enemy->GetHP() == 1)
 			{
 				treadFlag = true;
+				rotation.z = 0.0f;
 				enemy->Deth();
 			}
 		}

@@ -11,16 +11,74 @@ using namespace DirectX;
 void GameScene::TitleInit()
 {
 	audio->PlayLoadedSound(soundData2, 0.05f);
-	objFighter->SetPosition({ 1,1,0 });
-	//objSphere->SetPosition({ -1,1,0 });
+	objPlayer->Initialize();
+	objPlayer->SetPosition({ 1,1,0 });
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->SetPosition({(float)(8*i)-15.0f + (float)GetRand(-5,2),15 + (float)GetRand(-2,4),(float)GetRand(-2,0) });
+		cloudPos[i] = cloud[i]->GetPosition();
+	}
+	objPlayer->SetPosition({ 10,2,0 });
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (selectMap[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x , -2.0f * y + 10.0f, 0 });
+				stageBoxPos[y][x] = objStageBox[y][x]->GetPosition();
+			}
+		}
+	}
 	// カメラ注視点をセット
-	camera->SetTarget({ 0, 1, 0 });
-	camera->SetDistance(3.0f);
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
+	camera->SetDistance(20.0f);
 }
 
 void GameScene::TitleUpdate()
 {
 #pragma region 更新処理
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 15.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),15 + (float)GetRand(-2,4),(float)GetRand(-2,0) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),15 + (float)GetRand(-2,4),(float)GetRand(-2,0) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+	//ブロックのスクロール
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			stageBoxPos[y][x].x -= 0.01f;
+			if (selectMap[y][x] == 1 && objStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 15)
+			{
+				if (x == 0)
+				{
+					stageBoxPos[y][x] = { objStageBox[y][X_MAX - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+				else
+				{
+					stageBoxPos[y][x] = { objStageBox[y][x - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+
+			}
+			objStageBox[y][x]->SetPosition(stageBoxPos[y][x]);
+		}
+	}
 
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_N))
@@ -33,10 +91,19 @@ void GameScene::TitleUpdate()
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	//objSkydome->Update();
-	//objGround->Update();
-	objFighter->Update();
-	//objSphere->Update();
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->Update();
+		}
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
 }
 
 void GameScene::TitleDraw()
@@ -48,7 +115,7 @@ void GameScene::TitleDraw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	titleSprite->Draw();
+	backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア
@@ -57,6 +124,19 @@ void GameScene::TitleDraw()
 	/*モデル描画*/
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	objPlayer->Draw();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->Draw();
+		}
+	}
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
@@ -71,6 +151,7 @@ void GameScene::TitleDraw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	//debugText->DrawAll(common->GetCmdList().Get());
+	titleSprite->Draw();
 
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
@@ -80,23 +161,20 @@ void GameScene::GamePlayInit()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objFighter->Initialize();
-	for (int y = 0; y < 6; y++)
+	objPlayer->Initialize();
+	for (int y = 0; y < Y_MAX; y++)
 	{
-		for (int x = 0; x < 24; x++)
+		for (int x = 0; x < X_MAX; x++)
 		{
 			enemy[y][x]->Initialize();
 			enemy[y][x]->SetPosition({ -100.0f, -100.0f, 0 });
 		}
 	}
-	objFighter->SetPosition({ 10,2,0 });
+	objPlayer->SetPosition({ 10,2,0 });
 	
-	object1->SetPosition({ 0,5,0 });
-
-	object1->PlayAnimation();
-	for (int y = 0; y < 6; y++)
+	for (int y = 0; y < Y_MAX; y++)
 	{
-		for (int x = 0; x < 24; x++)
+		for (int x = 0; x < X_MAX; x++)
 		{
 			if (map1[y][x] == 1)
 			{
@@ -108,64 +186,79 @@ void GameScene::GamePlayInit()
 			}
 		}
 	}
-	gameTimer = 0;
+	gameTimer = 10980;
 }
 
 void GameScene::GamePlayUpdate()
 {
-	//マテリアルパラメータをモデルに反映
-	model1->SetBaseColor(XMFLOAT3(0,1,1));
-	model1->SetMetalness(1.0f);
-	model1->SetSpecular(0.5f);
-	model1->SetRoughness(0.3f);
-	model1->TransferMaterial();
-
-	//objFighter->moveSphere(objStageBox);
-	//camera->SetTarget(objFighter->GetPosition());
+	//objPlayer->moveSphere(objStageBox);
+	//camera->SetTarget(objPlayer->GetPosition());
 	// カメラ注視点をセット
-	camera->SetTarget({ objFighter->GetPosition().x + 10, 10, 0});
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0});
 	camera->SetDistance(20.0f);
-
 	//シーン遷移
-	if (input->isKeyTrigger(DIK_N))
+	if (objPlayer->GetHP() == 0 || objPlayer->GetPosition().y < -10 || gameTimer < 0)
 	{
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData1);
 		SceneNo = static_cast<int>(GameSceneNo::End);
 	}
 
-	gameTimer++;
+	gameTimer--;
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer/180);
 
-	if (gameTimer > 60)
+	//雲の移動
 	{
-		objFighter->Move();
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 20.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),15 + (float)GetRand(-2,4),(float)GetRand(-2,0) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),15 + (float)GetRand(-2,4),(float)GetRand(-2,0) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
 	}
 
-	for (int y = 0; y < 6; y++)
+	if (gameTimer < 7200)
 	{
-		for (int x = 0; x < 24; x++)
+		objPlayer->Move();
+	}
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
 		{
-			objFighter->CollisionObj(objStageBox[y][x]);
-			objFighter->CollisionEnemy(enemy[y][x]);
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
 		}
 	}
 
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	//objSkydome->Update();
-	//objGround->Update();
-	objFighter->Update();
-	for (int y = 0; y < 6; y++)
+	for (int i = 0; i < 10; i++)
 	{
-		for (int x = 0; x < 24; x++)
+		cloud[i]->Update();
+	}
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
 		{
 			enemy[y][x]->Update();
 			objStageBox[y][x]->Update();
 		}
 	}
-	//FBX用のオブジェクトの更新
-	object1->Update();
 }
 
 void GameScene::GamePlayDraw()
@@ -190,11 +283,14 @@ void GameScene::GamePlayDraw()
 	//objSkydome->Draw();
 	//objGround->Draw();
 	//FBX
-	object1->Draw(common->GetCmdList().Get());
-	objFighter->Draw();
-	for (int y = 0; y < 6; y++)
+	for (int i = 0; i < 10; i++)
 	{
-		for (int x = 0; x < 24; x++)
+		cloud[i]->Draw();
+	}
+	objPlayer->Draw();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
 		{
 			enemy[y][x]->Draw();
 			objStageBox[y][x]->Draw();
@@ -238,10 +334,7 @@ void GameScene::EndUpdate()
 	lightGroup->Update();
 	particleMan->Update();
 	camera->Update();
-	//objSkydome->Update();
-	//objGround->Update();
-	objFighter->Update();
-	//objSphere->Update();
+	objPlayer->Update();
 
 }
 
@@ -295,40 +388,31 @@ void GameScene::staticInit()
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
 	titleSprite= Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	// モデル読み込み
-	//modelSkydome = Model::CreateFromOBJ("skydome", true);
-	//modelGround = Model::CreateFromOBJ("ground", true);
-	modelFighter = Model::CreateFromOBJ("player", true);
-	//modelSphere = Model::CreateFromOBJ("sphere");
+	modelPlayer = Model::CreateFromOBJ("player", true);
+	modelEnemy = Model::CreateFromOBJ("player", true);
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
+	modelCloud = Model::CreateFromOBJ("cloud", true);
 	// 3Dオブジェクト生成
-	objFighter = Player::Create(modelFighter);
+	objPlayer = Player::Create(modelPlayer);
 
-	//objSkydome = ModelObj::Create(modelSkydome);
-	//objGround = TouchableObject::Create(modelGround);
-	//objSphere = ModelObj::Create(modelSphere);
-	for (int y = 0; y < 6; y++)
+	for (int i = 0; i < 10; i++)
 	{
-		for (int x = 0; x < 24; x++)
+		cloud[i] = ModelObj::Create(modelCloud);
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
 		{
 			objStageBox[y][x] = ModelObj::Create(modelStageBox);
-			enemy[y][x] = Enemy::Create(modelFighter);
+			enemy[y][x] = Enemy::Create(modelEnemy);
 		}
 	}
-	//objFighter->SetParent(objSphere);
 
 	// 3Dオブジェクトにカメラをセット
 	ModelObj::SetCamera(camera.get());
 
-	// モデル名を指定してファイル読み込み
-	//FbxLoader::GetInstance()->LoadModelFromFile("cube");
-	model1 = FbxLoader::GetInstance()->LoadModelFromFile("SpherePBR");
 	//ライトグループをセット
 	FBXObject3d::SetLightGroup(lightGroup.get());
-
-	//FBX用の3Dオブジェクト生成とモデルのセット
-	object1 = new FBXObject3d;
-	object1->Initialize();
-	object1->SetModel(model1);
 
 	// パーティクルマネージャ生成
 	// パーティクルマネージャ初期化

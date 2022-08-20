@@ -96,7 +96,7 @@ protected:
 	MultipleTexPtr postEffect;
 
 	//Œ»İ‚ÌƒV[ƒ“‚Ì”Ô†
-	int SceneNo = static_cast<int>(GameSceneNo::GamePlay);
+	int SceneNo = static_cast<int>(GameSceneNo::Title);
 	//‰Šú‰»‚Ì‚½‚ß‚ÌŒv‘ª
 	int SceneTime = 0;
 };

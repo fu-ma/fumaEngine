@@ -33,6 +33,8 @@ public:
 	void Move();
 	void CollisionObj(ModelObj *obj2);
 	void CollisionEnemy(Enemy *enemy);
+
+	const int &GetHP() { return HP; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
