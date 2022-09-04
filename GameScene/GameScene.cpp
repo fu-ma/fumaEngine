@@ -80,7 +80,7 @@ void GameScene::TitleUpdate()
 	}
 
 	//ƒV[ƒ“‘JˆÚ
-	if (input->isKeyTrigger(DIK_N))
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData2);
@@ -399,7 +399,7 @@ void GameScene::GameOverInit()
 void GameScene::GameOverUpdate()
 {
 	//ƒV[ƒ“‘JˆÚ
-	if (input->isKeyTrigger(DIK_N))
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
@@ -427,7 +427,7 @@ void GameScene::ClearInit()
 void GameScene::ClearUpdate()
 {
 	//ƒV[ƒ“‘JˆÚ
-	if (input->isKeyTrigger(DIK_N))
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
@@ -456,7 +456,7 @@ void GameScene::EndInit()
 void GameScene::EndUpdate()
 {
 	//ƒV[ƒ“‘JˆÚ
-	if (input->isKeyTrigger(DIK_N))
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
