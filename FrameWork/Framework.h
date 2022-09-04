@@ -35,7 +35,13 @@ protected:
 	enum class GameSceneNo
 	{
 		Title,
-		GamePlay,
+		Stage1,
+		Stage2,
+		Stage3,
+		Stage4,
+		Stage5,
+		GameOver,
+		Clear,
 		End,
 	};
 

@@ -46,8 +46,19 @@ bool Player::Initialize()
 	notHitFlag = false;
 	enemyNotUpFlag = false;
 	invincibleFlag = false;
+	leftWallJumpFlag = false;
+	rightWallJumpFlag = false;
+	leftWallJumpTimer = 0;
+	rightWallJumpTimer = 0;
+	leftWallColFlag = false;
+	rightWallColFlag = false;
+
 	invincibleTimer = 0;
 	HP = 2;
+	rotation.y = 0;
+	position.x = 10;
+	position.y = 2;
+	moveFlag = false;
 	return true;
 }
 
@@ -83,7 +94,7 @@ void Player::Move()
 	Controller *controller = Controller::GetInstance();
 
 	//重力処理
-	if (speed > gravity * 30)
+	if (speed > gravity * 20)
 	{
 		speed += gravity / 5;
 	}
@@ -146,54 +157,57 @@ void Player::Move()
 	}
 
 	//移動処理
-	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
+	if (moveFlag == false)
 	{
-		if (leftWallJumpFlag == false)
+		if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
 		{
-			position.x -= 0.1f;
+			if (leftWallJumpFlag == false)
+			{
+				position.x -= 0.1f;
+			}
+
+			//プレイヤーの向きを左側にする
+			rotation.y = 180;
 		}
-
-		//プレイヤーの向きを左側にする
-		rotation.y = 180;
-	}
-	else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
-	{
-		if (rightWallJumpFlag == false)
+		else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
 		{
-			position.x += 0.1f;
+			if (rightWallJumpFlag == false)
+			{
+				position.x += 0.1f;
+			}
+
+			//プレイヤーの向きを右側にする
+			rotation.y = 0;
 		}
-
-		//プレイヤーの向きを右側にする
-		rotation.y = 0;
-	}
-	if (jumpFlag == false)
-	{
-		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+		if (jumpFlag == false)
 		{
-			if (jumpTimer < jumpMax)
+			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 			{
-				position.y += jump;
-			}
-			jumpTimer++;
+				if (jumpTimer < jumpMax)
+				{
+					position.y += jump;
+				}
+				jumpTimer++;
 
-			if (jumpChangeTimer > 0 && jumpChangeTimer < 50)
-			{
-				jumpChange++;
-				jumpChangeTimer = 0;
-			}
-			else if (jumpChangeTimer > 50)
-			{
-				jumpChange = 0;
-				jumpChangeTimer = 0;
-			}
+				if (jumpChangeTimer > 0 && jumpChangeTimer < 50)
+				{
+					jumpChange++;
+					jumpChangeTimer = 0;
+				}
+				else if (jumpChangeTimer > 50)
+				{
+					jumpChange = 0;
+					jumpChangeTimer = 0;
+				}
 
-			if (jumpMax == 60)
-			{
-				rotation.z -= 2.5f;
-			}
-			if (jumpMax == 100)
-			{
-				rotation.z -= 5;
+				if (jumpMax == 60)
+				{
+					rotation.z -= 2.5f;
+				}
+				if (jumpMax == 100)
+				{
+					rotation.z -= 5;
+				}
 			}
 		}
 	}
@@ -234,7 +248,6 @@ void Player::CollisionObj(ModelObj *obj2)
 	Controller *controller = Controller::GetInstance();
 
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
-	XMVECTOR distance = { position.x - boxPos.m128_f32[0],0,0 };
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
 	//空中処理
@@ -290,13 +303,10 @@ void Player::CollisionObj(ModelObj *obj2)
 			if (jumpFlag == true)
 			{
 				speed = gravity * 1.8f;
+				rotation.y = 180;
+				rotation.z = 0;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
-					//壁キックする前に重力を初期化
-					if (leftWallJumpFlag == false)
-					{
-						speed = gravity / 5;
-					}
 					leftWallJumpFlag = true;
 				}
 			}
@@ -318,13 +328,10 @@ void Player::CollisionObj(ModelObj *obj2)
 			if (jumpFlag == true)
 			{
 				speed = gravity * 1.8f;
+				rotation.y = 0;
+				rotation.z = 0;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
-					//壁キックする前に重力を初期化
-					if (rightWallJumpFlag == false)
-					{
-						speed = gravity / 5;
-					}
 					rightWallJumpFlag = true;
 				}
 			}
@@ -362,6 +369,8 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		jumpFlag = true;
+		leftWallJumpFlag = false;
+		leftWallJumpFlag = false;
 	}
 }
 
@@ -435,7 +444,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 	{
 		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
 			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y + 0.1f,0 },
-			scale.x, scale.y + speed, enemy->GetScale().x, enemy->GetScale().y))
+			scale.x, scale.y + speed + jump, enemy->GetScale().x, enemy->GetScale().y))
 		{
 			if (enemy->GetHP() == 1)
 			{
@@ -446,4 +455,24 @@ void Player::CollisionEnemy(Enemy *enemy)
 		}
 	}
 
+}
+
+bool Player::CollisionGoal(ModelObj *obj2)
+{
+	if (Collision::CheckBox2Box({ position.x,position.y,0 },
+		{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
+		scale.x, scale.y, obj2->GetScale().x, 10.0f))
+	{
+		speed = 0;
+		moveFlag = true;
+		position.y -= 0.02f;
+		if (Collision::CheckBox2Box({ position.x,position.y,0 },
+			{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
+			scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }

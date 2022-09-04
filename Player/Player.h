@@ -33,7 +33,7 @@ public:
 	void Move();
 	void CollisionObj(ModelObj *obj2);
 	void CollisionEnemy(Enemy *enemy);
-
+	bool CollisionGoal(ModelObj *obj2);
 	const int &GetHP() { return HP; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
@@ -78,5 +78,8 @@ private:
 	bool invincibleFlag = false;
 	//無敵時間
 	int invincibleTimer = 0;
+
+	//ゴール時の移動制御フラグ
+	bool moveFlag = false;
 };
 

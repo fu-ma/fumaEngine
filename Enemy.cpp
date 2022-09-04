@@ -40,6 +40,8 @@ void Enemy::Update()
 
 void Enemy::Move()
 {
+
+
 }
 
 void Enemy::Draw()

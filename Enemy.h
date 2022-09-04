@@ -1,5 +1,7 @@
 #pragma once
 #include "ModelObj.h"
+#include"Collision.h"
+
 class Enemy : public ModelObj
 {
 	using XMVECTOR = DirectX::XMVECTOR;
