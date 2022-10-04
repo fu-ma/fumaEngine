@@ -97,6 +97,7 @@ protected:
 	AudioPtr audio;
 	DebugText *debugText;
 	ParticleManager *particleMan;
+	ParticleManager *playerParticle;
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
 	MultipleTexPtr postEffect;

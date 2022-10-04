@@ -161,19 +161,14 @@ void GameScene::Stage1Init()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	objPlayer->Initialize();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			enemy[y][x]->Initialize();
-		}
-	}
-	
+	gimmickCenterNum = 0;
+
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
 		{
 			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
 
@@ -185,6 +180,11 @@ void GameScene::Stage1Init()
 			{
 				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 			}
+			if (map1[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
 			if (map1[y][x] == 10)
 			{
 				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
@@ -192,6 +192,12 @@ void GameScene::Stage1Init()
 				objGoal->SetRotation({ 0, 90,0 });
 			}
 		}
+	}
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		firebar[i]->SetPosition({ -100,0,0 });
+		firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
 	}
 }
 
@@ -235,17 +241,36 @@ void GameScene::Stage1Update()
 		}
 	}
 
+	//動くようになる
 	if (gameTimer < 180 * 60)
 	{
+		for (int i = 0; i < GIMMICK_NUM; i++)
+		{
+			firebar[i]->SetMoveFlag(true);
+		}
 		objPlayer->Move();
 	}
 
+	//あたり判定
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
 		{
 			objPlayer->CollisionObj(objStageBox[y][x]);
 			objPlayer->CollisionEnemy(enemy[y][x]);
+		}
+	}
+
+	//あたり判定
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		if (firebar[i]->GetLength() == 0.0f)
+		{
+			objPlayer->CollisionObj(firebar[i]);
+		}
+		if (firebar[i]->GetLength() > 0.0f)
+		{
+			objPlayer->CollisionGimmick(firebar[i]);
 		}
 	}
 
@@ -276,6 +301,30 @@ void GameScene::Stage1Update()
 			{
 				enemy[y][x]->Update();
 			}
+		}
+	}
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		if (i < 5)
+		{
+			firebar[i]->Move(gimmickCenter[0].x, gimmickCenter[0].y, (2.0f * (i - 0)));
+			if (firebar[i]->GetLength() == 0.0f)
+			{
+				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
+				firebar[i]->SetModel(modelGimmickCenter);
+			}
+			firebar[i]->Update();
+		}
+		else if (i < 13)
+		{
+			firebar[i]->Move(gimmickCenter[1].x, gimmickCenter[0].y, (2.0f * (i - 5)),true);
+			if (firebar[i]->GetLength() == 0.0f)
+			{
+				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
+				firebar[i]->SetModel(modelGimmickCenter);
+			}
+			firebar[i]->Update();
 		}
 	}
 
@@ -321,6 +370,14 @@ void GameScene::Stage1Draw()
 			{
 				objStageBox[y][x]->Draw();
 			}
+		}
+	}
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		if (firebar[i]->GetPosition().x >= 0)
+		{
+			firebar[i]->Draw();
 		}
 	}
 
@@ -529,6 +586,8 @@ void GameScene::staticInit()
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	modelCloud = Model::CreateFromOBJ("cloud", true);
 	modelGoal = Model::CreateFromOBJ("goal", true);
+	modelGimmick = Model::CreateFromOBJ("gimmick", true);
+	modelGimmickCenter = Model::CreateFromOBJ("gimmickCenter", true);
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(modelPlayer);
 
@@ -543,6 +602,11 @@ void GameScene::staticInit()
 			objStageBox[y][x] = ModelObj::Create(modelStageBox);
 			enemy[y][x] = Enemy::Create(modelEnemy);
 		}
+	}
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		firebar[i] = Firebar::Create(modelGimmick);
 	}
 
 	for (int y = 0; y < 6; y++)
@@ -562,6 +626,10 @@ void GameScene::staticInit()
 	FBXObject3d::SetLightGroup(lightGroup.get());
 
 	// パーティクルマネージャ生成
+	// パーティクルマネージャ初期化
+	particleMan->Initialize(common->GetDev().Get(), L"Resources/e1.png");
+	particleMan->SetCamera(camera.get());
+
 	// パーティクルマネージャ初期化
 	particleMan->SetCamera(camera.get());
 }

@@ -46,6 +46,7 @@
     <ClCompile Include="FBX\Object\FBXObject3d.cpp" />
     <ClCompile Include="FrameWork\Framework.cpp" />
     <ClCompile Include="GameScene\GameScene.cpp" />
+    <ClCompile Include="Firebar.cpp" />
     <ClCompile Include="ImguiCommon\ImguiCommon.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -200,6 +201,7 @@
     <ClInclude Include="FBX\Object\FBXObject3d.h" />
     <ClInclude Include="FrameWork\Framework.h" />
     <ClInclude Include="GameScene\GameScene.h" />
+    <ClInclude Include="Firebar.h" />
     <ClInclude Include="ImguiCommon\ImguiCommon.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />

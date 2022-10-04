@@ -33,6 +33,7 @@ public:
 	void Move();
 	void CollisionObj(ModelObj *obj2);
 	void CollisionEnemy(Enemy *enemy);
+	void CollisionGimmick(ModelObj *obj2);
 	bool CollisionGoal(ModelObj *obj2);
 	const int &GetHP() { return HP; }
 private:
@@ -81,5 +82,8 @@ private:
 
 	//ゴール時の移動制御フラグ
 	bool moveFlag = false;
+
+	//エフェクトの判定フラグ
+	bool onCollisionFlag = false;
 };
 

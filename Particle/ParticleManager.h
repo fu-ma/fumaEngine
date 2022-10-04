@@ -87,7 +87,7 @@ public: // メンバ関数
 	/// 初期化
 	/// </summary>
 	/// <returns></returns>
-	void Initialize(ID3D12Device *device);
+	void Initialize(ID3D12Device *device, const wchar_t *modelname);
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
@@ -131,7 +131,7 @@ public: // メンバ関数
 	/// テクスチャ読み込み
 	/// </summary>
 	/// <returns>成否</returns>
-	void LoadTexture();
+	void LoadTexture(const wchar_t *modelname);
 
 	/// <summary>
 	/// モデル作成

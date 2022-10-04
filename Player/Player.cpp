@@ -240,6 +240,22 @@ void Player::Move()
 			treadFlag = false;
 		}
 	}
+
+	//エフェクト
+	if (onCollisionFlag == true)
+	{
+		//衝突時にパーティクルを発生させる
+		for (int i = 0; i < 5; ++i)
+		{
+			const float rnd_vel = 0.1f;
+			XMFLOAT3 vel{};
+			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+			ParticleManager::GetInstance()->Add(100, position, vel, XMFLOAT3(), 1.0f, 0.0f);
+		}
+		onCollisionFlag = false;
+	}
 }
 
 void Player::CollisionObj(ModelObj *obj2)
@@ -390,6 +406,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 				if (invincibleFlag == false)
 				{
 					HP--;
+					onCollisionFlag = true;
 				}
 				invincibleFlag = true;
 				notHitFlag = true;
@@ -408,6 +425,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 				if (invincibleFlag == false)
 				{
 					HP--;
+					onCollisionFlag = true;
 				}
 				invincibleFlag = true;
 				notHitFlag = true;
@@ -425,6 +443,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 			if (invincibleFlag == false)
 			{
 				HP--;
+				onCollisionFlag = true;
 			}
 			invincibleFlag = true;
 		}
@@ -455,6 +474,22 @@ void Player::CollisionEnemy(Enemy *enemy)
 		}
 	}
 
+}
+
+void Player::CollisionGimmick(ModelObj *obj2)
+{
+	if (Collision::CheckBox2Box({ position.x,position.y,0 },
+		{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
+		scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
+	{
+		if (invincibleFlag == false)
+		{
+			HP--;
+			onCollisionFlag = true;
+			ParticleManager::GetInstance()->LoadTexture(L"Resources/effect1.png");
+		}
+		invincibleFlag = true;
+	}
 }
 
 bool Player::CollisionGoal(ModelObj *obj2)

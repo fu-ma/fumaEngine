@@ -40,7 +40,7 @@ ParticleManager *ParticleManager::GetInstance()
 	return &instance;
 }
 
-void ParticleManager::Initialize(ID3D12Device *device)
+void ParticleManager::Initialize(ID3D12Device *device , const wchar_t *modelname)
 {
 	// nullptrチェック
 	assert(device);
@@ -56,7 +56,7 @@ void ParticleManager::Initialize(ID3D12Device *device)
 	InitializeGraphicsPipeline();
 
 	// テクスチャ読み込み
-	LoadTexture();
+	LoadTexture(modelname);
 
 	// モデル生成
 	CreateModel();
@@ -401,7 +401,7 @@ void ParticleManager::InitializeGraphicsPipeline()
 	}
 }
 
-void ParticleManager::LoadTexture()
+void ParticleManager::LoadTexture(const wchar_t *modelname)
 {
 	HRESULT result = S_FALSE;
 
@@ -410,7 +410,7 @@ void ParticleManager::LoadTexture()
 	ScratchImage scratchImg{};
 
 	result = LoadFromWICFile(
-		L"Resources/effect1.png", WIC_FLAGS_NONE,
+		modelname, WIC_FLAGS_NONE,
 		&metadata, scratchImg);
 	if (FAILED(result))
 	{
