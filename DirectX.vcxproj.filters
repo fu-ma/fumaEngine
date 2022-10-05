@@ -175,6 +175,7 @@
       <Filter>Engine\Enemy</Filter>
     </ClCompile>
     <ClCompile Include="Firebar.cpp" />
+    <ClCompile Include="Particle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -334,6 +335,7 @@
       <Filter>Engine\Enemy</Filter>
     </ClInclude>
     <ClInclude Include="Firebar.h" />
+    <ClInclude Include="Particle.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

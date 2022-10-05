@@ -36,6 +36,9 @@ public:
 	void CollisionGimmick(ModelObj *obj2);
 	bool CollisionGoal(ModelObj *obj2);
 	const int &GetHP() { return HP; }
+
+	const bool &GetOnCollision() { return onCollisionFlag; }
+	void notOnCollision() { this->onCollisionFlag = false; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);

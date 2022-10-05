@@ -60,6 +60,7 @@
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player\Player.cpp" />
   </ItemGroup>
@@ -219,6 +220,7 @@
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Light\SpotLight.h" />
+    <ClInclude Include="Particle.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player\Player.h" />
   </ItemGroup>

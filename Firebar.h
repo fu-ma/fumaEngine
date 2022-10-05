@@ -26,6 +26,7 @@ public:
 	void Draw() override;
 
 	const float &GetLength() { return length; }
+	const bool &GetMoveFlag() { return moveFlag; }
 	void SetMoveFlag(bool moveFlag) { this->moveFlag = moveFlag; }
 private:
 	float addX;

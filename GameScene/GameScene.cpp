@@ -88,7 +88,6 @@ void GameScene::TitleUpdate()
 	}
 
 	lightGroup->Update();
-	particleMan->Update();
 	camera->Update();
 	objPlayer->Update();
 	for (int y = 0; y < 6; y++)
@@ -171,6 +170,7 @@ void GameScene::Stage1Init()
 			enemy[y][x]->Initialize();
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
+			gimmickCenter[gimmickCenterNum] = { -100, -100, 0 };
 
 			if (map1[y][x] == 1)
 			{
@@ -196,7 +196,7 @@ void GameScene::Stage1Init()
 
 	for (int i = 0; i < GIMMICK_NUM; i++)
 	{
-		firebar[i]->SetPosition({ -100,0,0 });
+		firebar[i]->SetPosition({ -100,-100,0 });
 		firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
 	}
 }
@@ -209,7 +209,7 @@ void GameScene::Stage1Update()
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0});
 	camera->SetDistance(20.0f);
 	//シーン遷移
-	if (objPlayer->GetHP() == 0 || objPlayer->GetPosition().y < -Y_MAX * 2.0f-10 || gameTimer < 0)
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f-10 || gameTimer < 0)
 	{
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData1);
@@ -246,9 +246,19 @@ void GameScene::Stage1Update()
 	{
 		for (int i = 0; i < GIMMICK_NUM; i++)
 		{
-			firebar[i]->SetMoveFlag(true);
+			if (firebar[i]->GetPosition().x >= 0.0f)
+			{
+				firebar[i]->SetMoveFlag(true);
+			}
 		}
-		objPlayer->Move();
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
 	}
 
 	//あたり判定
@@ -281,8 +291,12 @@ void GameScene::Stage1Update()
 		SceneNo = static_cast<int>(GameSceneNo::Clear);
 	}
 
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
 	lightGroup->Update();
-	particleMan->Update();
 	camera->Update();
 	for (int i = 0; i < 10; i++)
 	{
@@ -329,6 +343,7 @@ void GameScene::Stage1Update()
 	}
 
 	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 }
 
 void GameScene::Stage1Draw()
@@ -357,7 +372,6 @@ void GameScene::Stage1Draw()
 	{
 		cloud[i]->Draw();
 	}
-	objPlayer->Draw();
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
@@ -382,9 +396,10 @@ void GameScene::Stage1Draw()
 	}
 
 	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
 	//objSphere->Draw();
 	// パーティクルの描画
-	particleMan->Draw(common->GetCmdList().Get());
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
@@ -397,10 +412,8 @@ void GameScene::Stage1Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
-
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
-
 }
 
 void GameScene::Stage2Init()
@@ -521,7 +534,6 @@ void GameScene::EndUpdate()
 	}
 
 	lightGroup->Update();
-	particleMan->Update();
 	camera->Update();
 
 }
@@ -574,12 +586,14 @@ void GameScene::staticInit()
 	Sprite::LoadTexture(2, L"Resources/titleSprite.png");
 	Sprite::LoadTexture(3, L"Resources/StageClear.png");
 	Sprite::LoadTexture(4, L"Resources/GameOver.png");
+	Sprite::LoadTexture(5, L"Resources/e1.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
 	titleSprite= Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	StageClear = Sprite::Create(3, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	GameOver = Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+
 	// モデル読み込み
 	modelPlayer = Model::CreateFromOBJ("player", true);
 	modelEnemy = Model::CreateFromOBJ("enemy", true);
@@ -619,19 +633,15 @@ void GameScene::staticInit()
 
 	objGoal = ModelObj::Create(modelGoal);
 
+	playerParticle = new Particle();
+	playerParticle->Initialize(modelEnemy);
+
 	// 3Dオブジェクトにカメラをセット
 	ModelObj::SetCamera(camera.get());
 
 	//ライトグループをセット
 	FBXObject3d::SetLightGroup(lightGroup.get());
 
-	// パーティクルマネージャ生成
-	// パーティクルマネージャ初期化
-	particleMan->Initialize(common->GetDev().Get(), L"Resources/e1.png");
-	particleMan->SetCamera(camera.get());
-
-	// パーティクルマネージャ初期化
-	particleMan->SetCamera(camera.get());
 }
 
 void GameScene::Init()

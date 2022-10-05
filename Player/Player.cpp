@@ -241,21 +241,6 @@ void Player::Move()
 		}
 	}
 
-	//エフェクト
-	if (onCollisionFlag == true)
-	{
-		//衝突時にパーティクルを発生させる
-		for (int i = 0; i < 5; ++i)
-		{
-			const float rnd_vel = 0.1f;
-			XMFLOAT3 vel{};
-			vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-			vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-
-			ParticleManager::GetInstance()->Add(100, position, vel, XMFLOAT3(), 1.0f, 0.0f);
-		}
-		onCollisionFlag = false;
-	}
 }
 
 void Player::CollisionObj(ModelObj *obj2)
@@ -388,6 +373,7 @@ void Player::CollisionObj(ModelObj *obj2)
 		leftWallJumpFlag = false;
 		leftWallJumpFlag = false;
 	}
+
 }
 
 void Player::CollisionEnemy(Enemy *enemy)
@@ -486,7 +472,6 @@ void Player::CollisionGimmick(ModelObj *obj2)
 		{
 			HP--;
 			onCollisionFlag = true;
-			ParticleManager::GetInstance()->LoadTexture(L"Resources/effect1.png");
 		}
 		invincibleFlag = true;
 	}

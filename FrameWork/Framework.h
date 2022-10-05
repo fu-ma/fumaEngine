@@ -5,7 +5,7 @@
 #include "DebugText.h"
 #include "DebugCamera.h"
 #include "Audio.h"
-#include "ParticleManager.h"
+#include "Particle.h"
 #include"ModelObj.h"
 #include"LightGroup.h"
 #include"FbxLoader.h"
@@ -96,8 +96,6 @@ protected:
 
 	AudioPtr audio;
 	DebugText *debugText;
-	ParticleManager *particleMan;
-	ParticleManager *playerParticle;
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
 	MultipleTexPtr postEffect;
