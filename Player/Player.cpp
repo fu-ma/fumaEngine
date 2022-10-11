@@ -218,16 +218,7 @@ void Player::Move()
 	}
 
 	//無敵時間
-	if (invincibleFlag == true)
-	{
-		invincibleTimer++;
-		if (invincibleTimer > 300)
-		{
-			invincibleFlag = false;
-			invincibleTimer = 0;
-			notHitFlag = false;
-		}
-	}
+	invincibleTime();
 
 	if (treadFlag == true)
 	{
@@ -387,16 +378,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y - 0.1f,0 },
 			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x, enemy->GetScale().y))
 		{
-			if (enemy->GetHP() == 1)
-			{
-				if (invincibleFlag == false)
-				{
-					HP--;
-					onCollisionFlag = true;
-				}
-				invincibleFlag = true;
-				notHitFlag = true;
-			}
+			HitEnemy(enemy);
 		}
 	}
 
@@ -406,16 +388,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 			{ enemy->GetPosition().x - 0.1f,enemy->GetPosition().y + 0.1f,0 },
 			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x, enemy->GetScale().y))
 		{
-			if (enemy->GetHP() == 1)
-			{
-				if (invincibleFlag == false)
-				{
-					HP--;
-					onCollisionFlag = true;
-				}
-				invincibleFlag = true;
-				notHitFlag = true;
-			}
+			HitEnemy(enemy);
 		}
 	}
 
@@ -423,16 +396,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
 		scale.x, scale.y - 0.3f, enemy->GetScale().x, enemy->GetScale().y))
 	{
-		if (enemy->GetHP() == 1)
-		{
-			notHitFlag = true;
-			if (invincibleFlag == false)
-			{
-				HP--;
-				onCollisionFlag = true;
-			}
-			invincibleFlag = true;
-		}
+		HitEnemy(enemy);
 		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 		{
 			enemyNotUpFlag = true;
@@ -495,4 +459,28 @@ bool Player::CollisionGoal(ModelObj *obj2)
 	}
 
 	return false;
+}
+
+void Player::HitEnemy(Enemy *enemy)
+{
+	if (enemy->GetHP() == 1)
+	{
+		if (invincibleFlag == false)
+		{
+			HP--;
+			onCollisionFlag = true;
+		}
+		invincibleFlag = true;
+		notHitFlag = true;
+	}
+}
+
+void Player::invincibleTime()
+{
+	if (invincibleFlag == false) return;
+	invincibleTimer++;
+	if (invincibleTimer <= 300) return;
+	invincibleFlag = false;
+	invincibleTimer = 0;
+	notHitFlag = false;
 }

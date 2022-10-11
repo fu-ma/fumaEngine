@@ -88,5 +88,12 @@ private:
 
 	//エフェクトの判定フラグ
 	bool onCollisionFlag = false;
+
+private:
+	//重複化を防ぐための関数
+	void HitEnemy(Enemy *enemy);
+
+	//ネスト対策
+	void invincibleTime();
 };
 

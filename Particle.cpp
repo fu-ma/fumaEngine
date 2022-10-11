@@ -13,7 +13,7 @@ bool Particle::Initialize(Model *model)
 	return true;
 }
 
-void Particle::Update(int moveNum, XMFLOAT3 particlePos)
+void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 {
 	if (setFlag == false)
 	{

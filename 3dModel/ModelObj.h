@@ -141,7 +141,7 @@ public: // メンバ関数
 	/// 座標の取得
 	/// </summary>
 	/// <returns>座標</returns>
-	const XMFLOAT3 &GetPosition() { return position; }
+	const XMFLOAT3 &GetPosition() const { return position; }
 
 	/// <summary>
 	/// 回転の取得

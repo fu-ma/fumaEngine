@@ -53,7 +53,7 @@ public:
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€ˆ—
 	/// </summary>
-	void Update(int moveNum, XMFLOAT3 particlePos);
+	void Update(const int& moveNum, const XMFLOAT3& particlePos);
 	void Draw();
 
 	void SetPositionAll(XMFLOAT3 pos)
