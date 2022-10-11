@@ -47,6 +47,11 @@ private:
 	Sprite *titleSprite = nullptr;
 	Sprite *StageClear = nullptr;
 	Sprite *GameOver = nullptr;
+	Sprite *Stage1Sprite = nullptr;
+	Sprite *Stage2Sprite = nullptr;
+	Sprite *Stage3Sprite = nullptr;
+	Sprite *Stage4Sprite = nullptr;
+	Sprite *Stage5Sprite = nullptr;
 
 	//プレイヤー
 	Model *modelPlayer = nullptr;
@@ -95,6 +100,8 @@ private:
 
 	int gameTimer = 10980;
 
+	float selectPos;
+	const int selectInterval = 512;
 	const int selectMap[6][24]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -120,6 +127,10 @@ private:
 	void TitleDraw();
 
 #pragma region ゲームプレイシーン
+	void StageSelectInit();
+	void StageSelectUpdate();
+	void StageSelectDraw();
+
 	void Stage1Init();
 	void Stage1Update();
 	void Stage1Draw();
@@ -171,6 +182,16 @@ public:
 		StageClear = nullptr;
 		delete GameOver;
 		GameOver = nullptr;
+		delete Stage1Sprite;
+		Stage1Sprite = nullptr;
+		delete Stage2Sprite;
+		Stage2Sprite = nullptr;
+		delete Stage3Sprite;
+		Stage3Sprite = nullptr;
+		delete Stage4Sprite;
+		Stage4Sprite = nullptr;
+		delete Stage5Sprite;
+		Stage5Sprite = nullptr;
 		//modelObj解放処理
 		//delete objSkydome;
 		//objSkydome = nullptr;

@@ -84,7 +84,7 @@ void GameScene::TitleUpdate()
 	{
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData2);
-		SceneNo = static_cast<int>(GameSceneNo::Stage1);
+		SceneNo = static_cast<int>(GameSceneNo::StageSelect);
 	}
 
 	lightGroup->Update();
@@ -151,6 +151,177 @@ void GameScene::TitleDraw()
 	//debugText->DrawAll(common->GetCmdList().Get());
 	titleSprite->Draw();
 
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
+}
+
+void GameScene::StageSelectInit()
+{
+	audio->PlayLoadedSound(soundData2, 0.05f);
+	objPlayer->Initialize();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
+		cloudPos[i] = cloud[i]->GetPosition();
+	}
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			if (selectMap[y][x] == 1)
+			{
+				titleStageBox[y][x]->SetPosition({ 2.0f * x , -2.0f * y + 10.0f, 0 });
+				stageBoxPos[y][x] = titleStageBox[y][x]->GetPosition();
+			}
+		}
+	}
+	// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
+	camera->SetDistance(20.0f);
+	gameTimer = 180 * 61;
+}
+
+void GameScene::StageSelectUpdate()
+{
+#pragma region 更新処理
+	
+	//指定の位置にいるステージ番号の画像を大きくする
+	if (selectPos == selectInterval * 0)
+	{
+		Stage1Sprite->SetSize({ 512,512 });
+		Stage2Sprite->SetSize({ 128,128 });
+		Stage3Sprite->SetSize({ 128,128 });
+		Stage4Sprite->SetSize({ 128,128 });
+		Stage5Sprite->SetSize({ 128,128 });
+	}
+	if (selectPos == selectInterval * 1)
+	{
+		Stage1Sprite->SetSize({ 128,128 });
+		Stage2Sprite->SetSize({ 512,512 });
+		Stage3Sprite->SetSize({ 128,128 });
+		Stage4Sprite->SetSize({ 128,128 });
+		Stage5Sprite->SetSize({ 128,128 });
+	}
+	if (selectPos == selectInterval * 2)
+	{
+		Stage1Sprite->SetSize({ 128,128 });
+		Stage2Sprite->SetSize({ 128,128 });
+		Stage3Sprite->SetSize({ 512,512 });
+		Stage4Sprite->SetSize({ 128,128 });
+		Stage5Sprite->SetSize({ 128,128 });
+	}
+	if (selectPos == selectInterval * 3)
+	{
+		Stage1Sprite->SetSize({ 128,128 });
+		Stage2Sprite->SetSize({ 128,128 });
+		Stage3Sprite->SetSize({ 128,128 });
+		Stage4Sprite->SetSize({ 512,512 });
+		Stage5Sprite->SetSize({ 128,128 });
+	}
+	if (selectPos == selectInterval * 4)
+	{
+		Stage1Sprite->SetSize({ 128,128 });
+		Stage2Sprite->SetSize({ 128,128 });
+		Stage3Sprite->SetSize({ 128,128 });
+		Stage4Sprite->SetSize({ 128,128 });
+		Stage5Sprite->SetSize({ 512,512 });
+	}
+
+	//ステージセレクト
+	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
+		&& selectPos > selectInterval * 0)
+	{
+		selectPos -= selectInterval;
+	}
+	if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
+		&& selectPos < selectInterval * 4)
+	{
+		selectPos += selectInterval;
+	}
+
+	//シーン遷移
+	//if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	//{
+	//	SceneTime = 0;
+	//	audio->StopLoadedSound(soundData2);
+	//	SceneNo = static_cast<int>(GameSceneNo::Stage1);
+	//}
+
+	lightGroup->Update();
+	camera->Update();
+	objPlayer->Update();
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			titleStageBox[y][x]->Update();
+		}
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	//ステージ番号をずらす
+	Stage1Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 0 - selectPos, WinApp::window_height / 2.0f });
+	Stage2Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 1 - selectPos, WinApp::window_height / 2.0f });
+	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - selectPos, WinApp::window_height / 2.0f });
+	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - selectPos, WinApp::window_height / 2.0f });
+	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - selectPos, WinApp::window_height / 2.0f });
+}
+
+void GameScene::StageSelectDraw()
+{
+#pragma region 描画処理
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	// 背景スプライト描画
+	backGround->Draw();
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	objPlayer->Draw();
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			titleStageBox[y][x]->Draw();
+		}
+	}
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+	// パーティクルの描画
+	//particleMan->Draw(common->GetCmdList().Get());
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	//debugText->DrawAll(common->GetCmdList().Get());
+	Stage1Sprite->Draw();
+	Stage2Sprite->Draw();
+	Stage3Sprite->Draw();
+	Stage4Sprite->Draw();
+	Stage5Sprite->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -320,7 +491,9 @@ void GameScene::Stage1Update()
 
 	for (int i = 0; i < GIMMICK_NUM; i++)
 	{
-		if (i < 5)
+		const int FIRE1_MAX = 5;
+		const int FIRE2_MAX = 8;
+		if (i < FIRE1_MAX)
 		{
 			firebar[i]->Move(gimmickCenter[0].x, gimmickCenter[0].y, (2.0f * (i - 0)));
 			if (firebar[i]->GetLength() == 0.0f)
@@ -330,9 +503,9 @@ void GameScene::Stage1Update()
 			}
 			firebar[i]->Update();
 		}
-		else if (i < 13)
+		else if (i < FIRE1_MAX + FIRE2_MAX)
 		{
-			firebar[i]->Move(gimmickCenter[1].x, gimmickCenter[0].y, (2.0f * (i - 5)),true);
+			firebar[i]->Move(gimmickCenter[1].x, gimmickCenter[0].y, (2.0f * (i - FIRE1_MAX)),true);
 			if (firebar[i]->GetLength() == 0.0f)
 			{
 				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
@@ -450,6 +623,7 @@ void GameScene::Stage4Update()
 void GameScene::Stage4Draw()
 {
 }
+
 void GameScene::Stage5Init()
 {
 }
@@ -587,12 +761,22 @@ void GameScene::staticInit()
 	Sprite::LoadTexture(3, L"Resources/StageClear.png");
 	Sprite::LoadTexture(4, L"Resources/GameOver.png");
 	Sprite::LoadTexture(5, L"Resources/e1.png");
+	Sprite::LoadTexture(6, L"Resources/Stage1.png");
+	Sprite::LoadTexture(7, L"Resources/Stage2.png");
+	Sprite::LoadTexture(8, L"Resources/Stage3.png");
+	Sprite::LoadTexture(9, L"Resources/Stage4.png");
+	Sprite::LoadTexture(10, L"Resources/Stage5.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
 	titleSprite= Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	StageClear = Sprite::Create(3, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	GameOver = Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage1Sprite = Sprite::Create(6, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage2Sprite = Sprite::Create(7, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage3Sprite = Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// モデル読み込み
 	modelPlayer = Model::CreateFromOBJ("player", true);
@@ -654,6 +838,9 @@ void GameScene::Init()
 	case static_cast<int>(GameScene::GameSceneNo::Title):
 		TitleInit();
 		break;
+	case static_cast<int>(GameScene::GameSceneNo::StageSelect):
+		StageSelectInit();
+		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage1):
 		Stage1Init();
 		break;
@@ -696,6 +883,10 @@ bool GameScene::Update()
 	case static_cast<int>(GameScene::GameSceneNo::Title):
 		SceneTime = 1;
 		TitleUpdate();
+		break;
+	case static_cast<int>(GameScene::GameSceneNo::StageSelect):
+		SceneTime = 1;
+		StageSelectUpdate();
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage1):
 		SceneTime = 1;
@@ -742,6 +933,9 @@ void GameScene::Draw()
 	{
 	case static_cast<int>(GameScene::GameSceneNo::Title):
 		TitleDraw();
+		break;
+	case static_cast<int>(GameScene::GameSceneNo::StageSelect):
+		StageSelectDraw();
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage1):
 		Stage1Draw();

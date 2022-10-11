@@ -163,6 +163,11 @@ public: // メンバ関数
 	/// </summary>
 	void Draw();
 
+	/// <summary>
+	/// 位置を取得
+	/// </summary>
+	const XMFLOAT2 &GetPos() { return position; }
+
 protected: // メンバ変数
 	// 頂点バッファ
 	ComPtr<ID3D12Resource> vertBuff;

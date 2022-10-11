@@ -1,6 +1,12 @@
 #pragma once
 #include <DirectXMath.h>
 #include<math.h>
+
+float Lerp(float a, float b, float c)
+{
+	return (1.f - c) * a + c * b;
+}
+
 //イージングの種類
 enum ease
 {
