@@ -180,64 +180,154 @@ void GameScene::StageSelectInit()
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
 	camera->SetDistance(20.0f);
 	gameTimer = 180 * 61;
+
+	if (selectNum == 0)
+	{
+		stage1SpriteSize = stageSpriteMaxSize;
+		stage2SpriteSize = stageSpriteMinSize;
+		stage3SpriteSize = stageSpriteMinSize;
+		stage4SpriteSize = stageSpriteMinSize;
+		stage5SpriteSize = stageSpriteMinSize;
+	}
+	if (selectNum == 1)
+	{
+		stage1SpriteSize = stageSpriteMinSize;
+		stage2SpriteSize = stageSpriteMaxSize;
+		stage3SpriteSize = stageSpriteMinSize;
+		stage4SpriteSize = stageSpriteMinSize;
+		stage5SpriteSize = stageSpriteMinSize;
+	}
+	if (selectNum == 2)
+	{
+		stage1SpriteSize = stageSpriteMinSize;
+		stage2SpriteSize = stageSpriteMinSize;
+		stage3SpriteSize = stageSpriteMaxSize;
+		stage4SpriteSize = stageSpriteMinSize;
+		stage5SpriteSize = stageSpriteMinSize;
+	}
+	if (selectNum == 3)
+	{
+		stage1SpriteSize = stageSpriteMinSize;
+		stage2SpriteSize = stageSpriteMinSize;
+		stage3SpriteSize = stageSpriteMinSize;
+		stage4SpriteSize = stageSpriteMaxSize;
+		stage5SpriteSize = stageSpriteMinSize;
+	}
+	if (selectNum == 4)
+	{
+		stage1SpriteSize = stageSpriteMinSize;
+		stage2SpriteSize = stageSpriteMinSize;
+		stage3SpriteSize = stageSpriteMinSize;
+		stage4SpriteSize = stageSpriteMinSize;
+		stage5SpriteSize = stageSpriteMaxSize;
+	}
+	selectMoveTime = 0.2f;
 }
 
 void GameScene::StageSelectUpdate()
 {
 #pragma region 更新処理
 	
-	//指定の位置にいるステージ番号の画像を大きくする
-	if (selectPos == selectInterval * 0)
-	{
-		Stage1Sprite->SetSize({ 512,512 });
-		Stage2Sprite->SetSize({ 128,128 });
-		Stage3Sprite->SetSize({ 128,128 });
-		Stage4Sprite->SetSize({ 128,128 });
-		Stage5Sprite->SetSize({ 128,128 });
-	}
-	if (selectPos == selectInterval * 1)
-	{
-		Stage1Sprite->SetSize({ 128,128 });
-		Stage2Sprite->SetSize({ 512,512 });
-		Stage3Sprite->SetSize({ 128,128 });
-		Stage4Sprite->SetSize({ 128,128 });
-		Stage5Sprite->SetSize({ 128,128 });
-	}
-	if (selectPos == selectInterval * 2)
-	{
-		Stage1Sprite->SetSize({ 128,128 });
-		Stage2Sprite->SetSize({ 128,128 });
-		Stage3Sprite->SetSize({ 512,512 });
-		Stage4Sprite->SetSize({ 128,128 });
-		Stage5Sprite->SetSize({ 128,128 });
-	}
-	if (selectPos == selectInterval * 3)
-	{
-		Stage1Sprite->SetSize({ 128,128 });
-		Stage2Sprite->SetSize({ 128,128 });
-		Stage3Sprite->SetSize({ 128,128 });
-		Stage4Sprite->SetSize({ 512,512 });
-		Stage5Sprite->SetSize({ 128,128 });
-	}
-	if (selectPos == selectInterval * 4)
-	{
-		Stage1Sprite->SetSize({ 128,128 });
-		Stage2Sprite->SetSize({ 128,128 });
-		Stage3Sprite->SetSize({ 128,128 });
-		Stage4Sprite->SetSize({ 128,128 });
-		Stage5Sprite->SetSize({ 512,512 });
-	}
-
 	//ステージセレクト
 	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
-		&& selectPos > selectInterval * 0)
+		&& selectNum > 0 && selectMoveTime >= 0.2f)
 	{
-		selectPos -= selectInterval;
+		selectMoveTime = 0;
+		selectNum -= 1;
 	}
-	if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
-		&& selectPos < selectInterval * 4)
+	else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
+		&& selectNum < 4 && selectMoveTime >= 0.2f)
 	{
-		selectPos += selectInterval;
+		selectMoveTime = 0;
+		selectNum += 1;
+	}
+	else
+	{
+		selectMoveTime += 0.001f;
+	}
+	easing::Updete(selectPos, selectInterval*selectNum,InSine, selectMoveTime);
+
+	//指定の位置にいるステージ番号の画像を大きくする
+	if (selectNum == 0)
+	{
+		easing::Updete(stage1SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+	}
+	if (selectNum == 1)
+	{
+		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage2SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+	}
+	if (selectNum == 2)
+	{
+		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage3SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+	}
+	if (selectNum == 3)
+	{
+		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage4SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+	}
+	if (selectNum == 4)
+	{
+		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		easing::Updete(stage5SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+	}
+
+	Stage1Sprite->SetSize({ (float)stage1SpriteSize,(float)stage1SpriteSize });
+	Stage2Sprite->SetSize({ (float)stage2SpriteSize,(float)stage2SpriteSize });
+	Stage3Sprite->SetSize({ (float)stage3SpriteSize,(float)stage3SpriteSize });
+	Stage4Sprite->SetSize({ (float)stage4SpriteSize,(float)stage4SpriteSize });
+	Stage5Sprite->SetSize({ (float)stage5SpriteSize,(float)stage5SpriteSize });
+
+	//指定の位置でSpaceを押すとそのステージにとぶ
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	{
+		if (selectNum == 0 && selectMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData2);
+			SceneNo = static_cast<int>(GameSceneNo::Stage1);
+		}
+		if (selectNum == 1 && selectMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData2);
+			SceneNo = static_cast<int>(GameSceneNo::Stage2);
+		}
+		if (selectNum == 2 && selectMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData2);
+			SceneNo = static_cast<int>(GameSceneNo::Stage3);
+		}
+		if (selectNum == 3 && selectMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData2);
+			SceneNo = static_cast<int>(GameSceneNo::Stage4);
+		}
+		if (selectNum == 4 && selectMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData2);
+			SceneNo = static_cast<int>(GameSceneNo::Stage5);
+		}
 	}
 
 	//シーン遷移
@@ -265,11 +355,11 @@ void GameScene::StageSelectUpdate()
 	}
 
 	//ステージ番号をずらす
-	Stage1Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 0 - selectPos, WinApp::window_height / 2.0f });
-	Stage2Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 1 - selectPos, WinApp::window_height / 2.0f });
-	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - selectPos, WinApp::window_height / 2.0f });
-	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - selectPos, WinApp::window_height / 2.0f });
-	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - selectPos, WinApp::window_height / 2.0f });
+	Stage1Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 0 - (float)selectPos, WinApp::window_height / 2.0f });
+	Stage2Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 1 - (float)selectPos, WinApp::window_height / 2.0f });
+	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos, WinApp::window_height / 2.0f });
+	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos, WinApp::window_height / 2.0f });
+	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
 }
 
 void GameScene::StageSelectDraw()
@@ -460,6 +550,11 @@ void GameScene::Stage1Update()
 		SceneTime = 0;
 		audio->StopLoadedSound(soundData1);
 		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
 	}
 
 	if (objPlayer->GetOnCollision())

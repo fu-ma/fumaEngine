@@ -100,8 +100,19 @@ private:
 
 	int gameTimer = 10980;
 
-	float selectPos;
+	double selectPos;
+	int selectNum;
+	double selectMoveTime;
 	const int selectInterval = 512;
+	
+	double stage1SpriteSize;
+	double stage2SpriteSize;
+	double stage3SpriteSize;
+	double stage4SpriteSize;
+	double stage5SpriteSize;
+	const int stageSpriteMinSize = 256;
+	const int stageSpriteMaxSize = 512;
+
 	const int selectMap[6][24]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

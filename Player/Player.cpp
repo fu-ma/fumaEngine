@@ -222,6 +222,7 @@ void Player::Move()
 
 	if (treadFlag == true)
 	{
+		t += 0.01f;
 		easing::Updete(treadSpeed, 0.4, 2, t);
 		position.y += (float)treadSpeed;
 		if (treadSpeed >= 0.4)

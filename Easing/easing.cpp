@@ -266,8 +266,8 @@ void easing::Updete(double &pos, double rearPos, int anyEase, double &time)
 	{
 		pos = initialPos + (easingSet * (rearPos-initialPos));
 	}
-	if (time < 1.0f)
-	{
-		time += 0.01f;
-	}
+	//if (time < 1.0f)
+	//{
+	//	time += 0.01f;
+	//}
 }
