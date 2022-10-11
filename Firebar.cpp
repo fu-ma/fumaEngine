@@ -1,73 +1,123 @@
 #include "Firebar.h"
 
-Firebar *Firebar::Create(Model *model)
+Firebar::Firebar()
 {
-	// 3Dオブジェクトのインスタンスを生成
-	Firebar *instance = new Firebar();
-	if (instance == nullptr) {
-		return nullptr;
-	}
-
-	// 初期化
-	if (!instance->Initialize()) {
-		delete instance;
-		assert(0);
-	}
-
-	if (model) {
-		instance->SetModel(model);
-	}
-
-	return instance;
 }
 
-bool Firebar::Initialize()
+Firebar::~Firebar()
 {
-	if (!ModelObj::Initialize())
+	for (int i = 0; i < GIMMICK_NUM; i++)
 	{
-		return false;
+		delete firebar[i];
+		firebar[i] = nullptr;
 	}
 
-	angle = 0;
-	addX = 0;
-	addY = 0;
-	length = 0;
-	moveFlag = false;
+	delete modelGimmick;
+	modelGimmick = nullptr;
+	delete modelGimmickCenter;
+	modelGimmickCenter = nullptr;
+}
 
+void Firebar::StaticInit()
+{
+	modelGimmick = Model::CreateFromOBJ("gimmick", true);
+	modelGimmickCenter = Model::CreateFromOBJ("gimmickCenter", true);
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		firebar[i] = ModelObj::Create(modelGimmick);
+	}
+}
+
+bool Firebar::Initialize(float centerX, float centerY, int num)
+{
+	this->num = num + 1;//中心のブロック分も含める
+	this->centerX = centerX;
+	this->centerY = centerY;
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		angle[i] = 0;
+		addX[i] = 0;
+		addY[i] = 0;
+		moveFlag[i] = false;
+		length[i] = 0;
+		firebar[i]->SetPosition({ -100,-100,0 });
+	}
+
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
+		if (i < this->num)
+		{
+			if (i == 0)
+			{
+				firebar[i]->SetModel(modelGimmickCenter);
+				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
+			}
+			length[i] = 2.0f * i;
+			moveFlag[i] = true;
+		}
+		else
+		{
+			firebar[i]->SetPosition({ -100, -100, 0 });
+		}
+
+		if (moveFlag[i] == true)
+		{
+			radius[i] = angle[i] * 3.14f / 180.0f;
+			addX[i] = cos(radius[i]) * length[i];
+			addY[i] = sin(radius[i]) * length[i];
+
+			firebar[i]->SetPosition({ centerX + addX[i], centerY + addY[i], 0 });
+		}
+	}
 	return true;
 }
 
 void Firebar::Update()
 {
 	// 行列の更新など
-	ModelObj::Update();
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		if (firebar[i]->GetPosition().x >= 0)
+		{
+			firebar[i]->Update();
+		}
+	}
 }
 
-void Firebar::Move(float centerX,float centerY,float length, bool direction)
+void Firebar::Move(bool direction)
 {
-	float radius = angle * 3.14f / 180.0f;
-	this->length = length;
-
-	addX = cos(radius) * this->length;
-	addY = sin(radius) * this->length;
-
-	position.x = centerX + addX;
-	position.y = centerY + addY;
-
-	if (moveFlag == true)
+	for (int i = 0; i < GIMMICK_NUM; i++)
 	{
-		if (direction == false)
+		if (moveFlag[i] == true)
 		{
-			angle -= 0.5f;
-		}
-		if (direction == true)
-		{
-			angle += 0.5f;
+			radius[i] = angle[i] * 3.14f / 180.0f;
+			addX[i] = cos(radius[i]) * length[i];
+			addY[i] = sin(radius[i]) * length[i];
+
+			if (direction == false)
+			{
+				angle[i] -= 0.5f;
+			}
+			if (direction == true)
+			{
+				angle[i] += 0.5f;
+			}
+
+			firebar[i]->SetPosition({ centerX + addX[i], centerY + addY[i], 0 });
 		}
 	}
 }
 
 void Firebar::Draw()
 {
-	ModelObj::Draw();
+	for (int i = 0; i < GIMMICK_NUM; i++)
+	{
+		if (firebar[i]->GetPosition().x >= 0)
+		{
+			firebar[i]->Draw();
+		}
+	}
 }

@@ -431,7 +431,6 @@ void GameScene::Stage1Init()
 			enemy[y][x]->Initialize();
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
-			gimmickCenter[gimmickCenterNum] = { -100, -100, 0 };
 
 			if (map1[y][x] == 1)
 			{
@@ -455,11 +454,7 @@ void GameScene::Stage1Init()
 		}
 	}
 
-	for (int i = 0; i < GIMMICK_NUM; i++)
-	{
-		firebar[i]->SetPosition({ -100,-100,0 });
-		firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
-	}
+	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
 }
 
 void GameScene::Stage1Update()
@@ -505,13 +500,7 @@ void GameScene::Stage1Update()
 	//動くようになる
 	if (gameTimer < 180 * 60)
 	{
-		for (int i = 0; i < GIMMICK_NUM; i++)
-		{
-			if (firebar[i]->GetPosition().x >= 0.0f)
-			{
-				firebar[i]->SetMoveFlag(true);
-			}
-		}
+		firebar->Move();
 		if (playerParticle->GetFlag() == false)
 		{
 			objPlayer->notOnCollision();
@@ -533,15 +522,12 @@ void GameScene::Stage1Update()
 	}
 
 	//あたり判定
-	for (int i = 0; i < GIMMICK_NUM; i++)
+	objPlayer->CollisionObj(firebar->GetCenter());
+	for (int i = 0; i < firebar->GetNum(); i++)
 	{
-		if (firebar[i]->GetLength() == 0.0f)
+		if (i != 0)
 		{
-			objPlayer->CollisionObj(firebar[i]);
-		}
-		if (firebar[i]->GetLength() > 0.0f)
-		{
-			objPlayer->CollisionGimmick(firebar[i]);
+			objPlayer->CollisionGimmick(firebar->GetFire(i));
 		}
 	}
 
@@ -568,6 +554,8 @@ void GameScene::Stage1Update()
 	{
 		cloud[i]->Update();
 	}
+
+	firebar->Update();
 	objPlayer->Update();
 	for (int y = 0; y < Y_MAX; y++)
 	{
@@ -581,32 +569,6 @@ void GameScene::Stage1Update()
 			{
 				enemy[y][x]->Update();
 			}
-		}
-	}
-
-	for (int i = 0; i < GIMMICK_NUM; i++)
-	{
-		const int FIRE1_MAX = 5;
-		const int FIRE2_MAX = 8;
-		if (i < FIRE1_MAX)
-		{
-			firebar[i]->Move(gimmickCenter[0].x, gimmickCenter[0].y, (2.0f * (i - 0)));
-			if (firebar[i]->GetLength() == 0.0f)
-			{
-				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
-				firebar[i]->SetModel(modelGimmickCenter);
-			}
-			firebar[i]->Update();
-		}
-		else if (i < FIRE1_MAX + FIRE2_MAX)
-		{
-			firebar[i]->Move(gimmickCenter[1].x, gimmickCenter[0].y, (2.0f * (i - FIRE1_MAX)),true);
-			if (firebar[i]->GetLength() == 0.0f)
-			{
-				firebar[i]->SetScale({ 0.75f,0.75f,0.75f });
-				firebar[i]->SetModel(modelGimmickCenter);
-			}
-			firebar[i]->Update();
 		}
 	}
 
@@ -655,14 +617,7 @@ void GameScene::Stage1Draw()
 		}
 	}
 
-	for (int i = 0; i < GIMMICK_NUM; i++)
-	{
-		if (firebar[i]->GetPosition().x >= 0)
-		{
-			firebar[i]->Draw();
-		}
-	}
-
+	firebar->Draw();
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
@@ -879,8 +834,6 @@ void GameScene::staticInit()
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	modelCloud = Model::CreateFromOBJ("cloud", true);
 	modelGoal = Model::CreateFromOBJ("goal", true);
-	modelGimmick = Model::CreateFromOBJ("gimmick", true);
-	modelGimmickCenter = Model::CreateFromOBJ("gimmickCenter", true);
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(modelPlayer);
 
@@ -897,11 +850,6 @@ void GameScene::staticInit()
 		}
 	}
 
-	for (int i = 0; i < GIMMICK_NUM; i++)
-	{
-		firebar[i] = Firebar::Create(modelGimmick);
-	}
-
 	for (int y = 0; y < 6; y++)
 	{
 		for (int x = 0; x < 24; x++)
@@ -912,6 +860,9 @@ void GameScene::staticInit()
 
 	objGoal = ModelObj::Create(modelGoal);
 
+	firebar = new Firebar();
+	firebar->StaticInit();
+	
 	playerParticle = new Particle();
 	playerParticle->Initialize(modelEnemy);
 

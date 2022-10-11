@@ -72,9 +72,7 @@ private:
 	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
 
 	//ギミック
-	Model *modelGimmick = nullptr;
-	Model *modelGimmickCenter = nullptr;
-	Firebar *firebar[GIMMICK_NUM] = { nullptr };
+	Firebar *firebar;
 	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
 	int gimmickCenterNum;
 	//ゴール
@@ -219,11 +217,6 @@ public:
 			}
 		}
 
-		for (int i = 0; i < GIMMICK_NUM; i++)
-		{
-			delete firebar[i];
-			firebar[i] = nullptr;
-		}
 		//model解放処理
 		delete modelStageBox;
 		modelStageBox = nullptr;
@@ -233,10 +226,6 @@ public:
 		modelCloud = nullptr;
 		delete modelEnemy;
 		modelEnemy = nullptr;
-		delete modelGimmick;
-		modelGimmick = nullptr;
-		delete modelGimmickCenter;
-		modelGimmickCenter = nullptr;
 		//FBX用のオブジェクト解放
 		//基底クラス解放処理
 		Framework::SceneDelete();

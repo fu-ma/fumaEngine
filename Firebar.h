@@ -1,38 +1,43 @@
 #pragma once
 #include "ModelObj.h"
-class Firebar : public ModelObj
+class Firebar
 {
 	using XMVECTOR = DirectX::XMVECTOR;
-	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
 public:
-	/// <summary>
-	/// 3Dオブジェクト生成
-	/// </summary>
-	/// <returns></returns>
-	static Firebar *Create(Model *model = nullptr);
-public:
-
+	Firebar();
+	~Firebar();
+	void StaticInit();
 	/// <summary>
 	/// 初期化
 	/// </summary>
 	/// <returns>成否</returns>
-	bool Initialize() override;
+	bool Initialize(float centerX, float centerY, int num);
 
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>
-	void Update() override;
-	void Move(float centerX, float centerY, float length, bool direction = false);
-	void Draw() override;
+	void Update();
+	void Move(bool direction = false);
+	void Draw();
 
-	const float &GetLength() { return length; }
-	const bool &GetMoveFlag() { return moveFlag; }
-	void SetMoveFlag(bool moveFlag) { this->moveFlag = moveFlag; }
+	ModelObj *GetCenter() { return firebar[0]; }
+	const int &GetNum() { return num; }
+	ModelObj *GetFire(int num) { return firebar[num]; }
 private:
-	float addX;
-	float addY;
-	float length;
-	float angle;
-	bool moveFlag;
+	static const int GIMMICK_NUM = 100;
+	Model *modelGimmick = nullptr;
+	Model *modelGimmickCenter = nullptr;
+	int num;
+	float centerX;
+	float centerY;
+	float addX[GIMMICK_NUM];
+	float addY[GIMMICK_NUM];
+	float angle[GIMMICK_NUM];
+	float radius[GIMMICK_NUM];
+	bool moveFlag[GIMMICK_NUM];
+	float length[GIMMICK_NUM];
+	ModelObj *firebar[GIMMICK_NUM] = { nullptr };
+	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
 };
 
