@@ -26,11 +26,16 @@ public:
 	void Update() override;
 	void Move();
 	void Draw() override;
+	void CollisionObject(ModelObj *obj2);
 
 	const int &GetHP() { return HP; }
 	void Deth();
 private:
 	int HP = 1;
-
+	const float gravity = (-9.8f / 60 / 20);
+	//const float gravity = (-9.8f / 60 / 40);
+	//重力を加算するためのスピード
+	float speed;
+	XMFLOAT3 oldPos;
 };
 

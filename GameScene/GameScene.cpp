@@ -243,7 +243,7 @@ void GameScene::StageSelectUpdate()
 	}
 	else
 	{
-		selectMoveTime += 0.001f;
+		selectMoveTime += 0.002f;
 	}
 	easing::Updete(selectPos, selectInterval*selectNum,InSine, selectMoveTime);
 
@@ -263,6 +263,10 @@ void GameScene::StageSelectUpdate()
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		if ((input->isKeyTrigger(DIK_R) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true))
+		{
+			Stage1Init();
+		}
 	}
 	if (selectNum == 2)
 	{
@@ -455,6 +459,7 @@ void GameScene::Stage1Init()
 	}
 
 	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
+	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
 }
 
 void GameScene::Stage1Update()
@@ -501,6 +506,7 @@ void GameScene::Stage1Update()
 	if (gameTimer < 180 * 60)
 	{
 		firebar->Move();
+		firebar2->Move(true);
 		if (playerParticle->GetFlag() == false)
 		{
 			objPlayer->notOnCollision();
@@ -508,6 +514,24 @@ void GameScene::Stage1Update()
 		if (objPlayer->GetHP() > 0)
 		{
 			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move();
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
 		}
 	}
 
@@ -530,6 +554,16 @@ void GameScene::Stage1Update()
 			objPlayer->CollisionGimmick(firebar->GetFire(i));
 		}
 	}
+
+	objPlayer->CollisionObj(firebar2->GetCenter());
+	for (int i = 0; i < firebar2->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar2->GetFire(i));
+		}
+	}
+
 
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
@@ -556,6 +590,8 @@ void GameScene::Stage1Update()
 	}
 
 	firebar->Update();
+	firebar2->Update();
+
 	objPlayer->Update();
 	for (int y = 0; y < Y_MAX; y++)
 	{
@@ -618,6 +654,8 @@ void GameScene::Stage1Draw()
 	}
 
 	firebar->Draw();
+	firebar2->Draw();
+
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
@@ -862,7 +900,9 @@ void GameScene::staticInit()
 
 	firebar = new Firebar();
 	firebar->StaticInit();
-	
+	firebar2 = new Firebar();
+	firebar2->StaticInit();
+
 	playerParticle = new Particle();
 	playerParticle->Initialize(modelEnemy);
 
