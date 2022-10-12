@@ -61,7 +61,7 @@
       <Filter>Engine\DirectXCommon</Filter>
     </ClCompile>
     <ClCompile Include="GameScene\GameScene.cpp">
-      <Filter>Engine\GameScene</Filter>
+      <Filter>Game\GameScene</Filter>
     </ClCompile>
     <ClCompile Include="3dModel\Model.cpp">
       <Filter>Engine\3D\Model\Model</Filter>
@@ -79,7 +79,7 @@
       <Filter>Engine\3D\Particle</Filter>
     </ClCompile>
     <ClCompile Include="Player\Player.cpp">
-      <Filter>Engine\Player</Filter>
+      <Filter>Game\Player</Filter>
     </ClCompile>
     <ClCompile Include="base\WindowAPI.cpp">
       <Filter>Engine\WinApp</Filter>
@@ -171,11 +171,15 @@
     <ClCompile Include="2d\DebugText\DebugText.cpp">
       <Filter>Engine\2D\DebugText</Filter>
     </ClCompile>
-    <ClCompile Include="Enemy.cpp">
-      <Filter>Engine\Enemy</Filter>
+    <ClCompile Include="Enemy\Enemy.cpp">
+      <Filter>Game\Enemy</Filter>
     </ClCompile>
-    <ClCompile Include="Firebar.cpp" />
-    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Firebar\Firebar.cpp">
+      <Filter>Game\Firebar</Filter>
+    </ClCompile>
+    <ClCompile Include="Particle\Particle.cpp">
+      <Filter>Game\Particle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="audio\Audio.h">
@@ -191,7 +195,7 @@
       <Filter>Engine\DirectXCommon</Filter>
     </ClInclude>
     <ClInclude Include="GameScene\GameScene.h">
-      <Filter>Engine\GameScene</Filter>
+      <Filter>Game\GameScene</Filter>
     </ClInclude>
     <ClInclude Include="3dModel\Model.h">
       <Filter>Engine\3D\Model\Model</Filter>
@@ -209,7 +213,7 @@
       <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Player\Player.h">
-      <Filter>Engine\Player</Filter>
+      <Filter>Game\Player</Filter>
     </ClInclude>
     <ClInclude Include="base\WindowAPI.h">
       <Filter>Engine\WinApp</Filter>
@@ -331,11 +335,15 @@
     <ClInclude Include="2d\DebugText\DebugText.h">
       <Filter>Engine\2D\DebugText</Filter>
     </ClInclude>
-    <ClInclude Include="Enemy.h">
-      <Filter>Engine\Enemy</Filter>
+    <ClInclude Include="Enemy\Enemy.h">
+      <Filter>Game\Enemy</Filter>
     </ClInclude>
-    <ClInclude Include="Firebar.h" />
-    <ClInclude Include="Particle.h" />
+    <ClInclude Include="Firebar\Firebar.h">
+      <Filter>Game\Firebar</Filter>
+    </ClInclude>
+    <ClInclude Include="Particle\Particle.h">
+      <Filter>Game\Particle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -372,9 +380,6 @@
     </Filter>
     <Filter Include="Engine\DirectXCommon">
       <UniqueIdentifier>{1b6ca239-9fc0-4ab6-b334-228e5ed10cc5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\GameScene">
-      <UniqueIdentifier>{e91a323c-e731-4b8e-835d-c53e00a17d20}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\Input">
       <UniqueIdentifier>{2068b091-9d88-4e66-b586-2a998ad28d03}</UniqueIdentifier>
@@ -478,9 +483,6 @@
     <Filter Include="Engine\2D">
       <UniqueIdentifier>{a23a54fd-b6a6-4aef-ada6-b5b61c08176b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Player">
-      <UniqueIdentifier>{21330239-ab9a-4ab5-927c-4f664a341cc0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\3D\Particle">
       <UniqueIdentifier>{459d2abb-6547-40f0-bd3a-2aacf9be2505}</UniqueIdentifier>
     </Filter>
@@ -499,11 +501,26 @@
     <Filter Include="Engine\2D\DebugText">
       <UniqueIdentifier>{1008a95d-91bd-414e-8715-406166c1edf9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Engine\Enemy">
-      <UniqueIdentifier>{bc395424-84ba-4033-9405-a970760b30af}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Engine\Audio">
       <UniqueIdentifier>{b6632811-a865-44f1-8806-18ee457b0b5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game">
+      <UniqueIdentifier>{8433aaab-c18d-4d61-b257-3ef3bc30090b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Enemy">
+      <UniqueIdentifier>{bc395424-84ba-4033-9405-a970760b30af}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Player">
+      <UniqueIdentifier>{21330239-ab9a-4ab5-927c-4f664a341cc0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene">
+      <UniqueIdentifier>{e91a323c-e731-4b8e-835d-c53e00a17d20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Firebar">
+      <UniqueIdentifier>{78461f04-fd4b-486a-b6ad-8bf7579ef0e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Particle">
+      <UniqueIdentifier>{6615c23c-1669-4b58-b897-c385f925ab12}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

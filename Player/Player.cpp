@@ -59,6 +59,8 @@ bool Player::Initialize()
 	position.x = 10;
 	position.y = 2;
 	moveFlag = false;
+
+	moveSpeed = 0.1f;
 	return true;
 }
 
@@ -82,7 +84,7 @@ void Player::Update()
 
 void Player::Draw()
 {
-	if (invincibleTimer % 10 == 0 || invincibleTimer % 15 == 0 || invincibleTimer >= 500)
+	if (invincibleTimer % 20 == 0 || invincibleTimer % 20 == 1 || invincibleTimer % 20 == 2 || invincibleTimer >= 500)
 	{
 		ModelObj::Draw();
 	}
@@ -96,7 +98,7 @@ void Player::Move()
 	//重力処理
 	if (speed > gravity * 20)
 	{
-		speed += gravity / 5;
+		speed += gravity / 4;
 	}
 	position.y += speed;
 
@@ -163,7 +165,9 @@ void Player::Move()
 		{
 			if (leftWallJumpFlag == false)
 			{
-				position.x -= 0.1f;
+				t2 += 0.001f;
+				easing::Updete(moveSpeed, 0.2, 1, t2);
+				position.x -= (float)moveSpeed;
 			}
 
 			//プレイヤーの向きを左側にする
@@ -173,12 +177,20 @@ void Player::Move()
 		{
 			if (rightWallJumpFlag == false)
 			{
-				position.x += 0.1f;
+				t2 += 0.001f;
+				easing::Updete(moveSpeed, 0.2, 1, t2);
+				position.x += (float)moveSpeed;
 			}
 
 			//プレイヤーの向きを右側にする
 			rotation.y = 0;
 		}
+		else
+		{
+			t2 = 0;
+			moveSpeed = 0.1;
+		}
+
 		if (jumpFlag == false)
 		{
 			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)

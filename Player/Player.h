@@ -89,6 +89,9 @@ private:
 	//エフェクトの判定フラグ
 	bool onCollisionFlag = false;
 
+	//ダッシュとある気を切り替えるための変数
+	double moveSpeed;
+	double t2;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

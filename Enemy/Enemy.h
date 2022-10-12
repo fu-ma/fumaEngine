@@ -36,6 +36,7 @@ private:
 	//const float gravity = (-9.8f / 60 / 40);
 	//重力を加算するためのスピード
 	float speed;
+	float angleSpeed;
 	XMFLOAT3 oldPos;
 };
 

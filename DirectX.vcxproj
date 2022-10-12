@@ -40,13 +40,13 @@
     <ClCompile Include="Collision\MeshCollider.cpp" />
     <ClCompile Include="Collision\SphereCollider.cpp" />
     <ClCompile Include="Easing\easing.cpp" />
-    <ClCompile Include="Enemy.cpp" />
+    <ClCompile Include="Enemy\Enemy.cpp" />
     <ClCompile Include="FBX\Loader\FbxLoader.cpp" />
     <ClCompile Include="FBX\Model\FBXModel.cpp" />
     <ClCompile Include="FBX\Object\FBXObject3d.cpp" />
+    <ClCompile Include="Firebar\Firebar.cpp" />
     <ClCompile Include="FrameWork\Framework.cpp" />
     <ClCompile Include="GameScene\GameScene.cpp" />
-    <ClCompile Include="Firebar.cpp" />
     <ClCompile Include="ImguiCommon\ImguiCommon.cpp" />
     <ClCompile Include="imgui\imgui.cpp" />
     <ClCompile Include="imgui\imgui_demo.cpp" />
@@ -60,7 +60,7 @@
     <ClCompile Include="Light\Light.cpp" />
     <ClCompile Include="Light\LightGroup.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Particle\Particle.cpp" />
     <ClCompile Include="Particle\ParticleManager.cpp" />
     <ClCompile Include="Player\Player.cpp" />
   </ItemGroup>
@@ -196,13 +196,13 @@
     <ClInclude Include="Collision\RaycastHit.h" />
     <ClInclude Include="Collision\SphereCollider.h" />
     <ClInclude Include="Easing\easing.h" />
-    <ClInclude Include="Enemy.h" />
+    <ClInclude Include="Enemy\Enemy.h" />
     <ClInclude Include="FBX\Loader\FbxLoader.h" />
     <ClInclude Include="FBX\Model\FBXModel.h" />
     <ClInclude Include="FBX\Object\FBXObject3d.h" />
+    <ClInclude Include="Firebar\Firebar.h" />
     <ClInclude Include="FrameWork\Framework.h" />
     <ClInclude Include="GameScene\GameScene.h" />
-    <ClInclude Include="Firebar.h" />
     <ClInclude Include="ImguiCommon\ImguiCommon.h" />
     <ClInclude Include="imgui\imconfig.h" />
     <ClInclude Include="imgui\imgui.h" />
@@ -220,7 +220,7 @@
     <ClInclude Include="Light\LightGroup.h" />
     <ClInclude Include="Light\PointLight.h" />
     <ClInclude Include="Light\SpotLight.h" />
-    <ClInclude Include="Particle.h" />
+    <ClInclude Include="Particle\Particle.h" />
     <ClInclude Include="Particle\ParticleManager.h" />
     <ClInclude Include="Player\Player.h" />
   </ItemGroup>
@@ -289,12 +289,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2d\MultipleRender\;$(ProjectDir)2d\MultipleTexture\;$(ProjectDir)2d\PostEffect\;$(ProjectDir)2d\Sprite\;$(ProjectDir)3dModel\;$(ProjectDir)audio\;$(ProjectDir)2d\DebugText\;$(ProjectDir)base\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)FrameWork\;$(ProjectDir)Easing\;$(ProjectDir)Input\;$(ProjectDir)Light\;$(ProjectDir)FBX\Object\;$(ProjectDir)FBX\Model\;$(ProjectDir)ImguiCommon\;$(ProjectDir)FBX\Loader\;$(ProjectDir)Particle\;$(ProjectDir)Player\;$(ProjectDir)GameScene\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir)DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2d\MultipleRender\;$(ProjectDir)2d\MultipleTexture\;$(ProjectDir)2d\PostEffect\;$(ProjectDir)2d\Sprite\;$(ProjectDir)3dModel\;$(ProjectDir)audio\;$(ProjectDir)2d\DebugText\;$(ProjectDir)base\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)FrameWork\;$(ProjectDir)Easing\;$(ProjectDir)Input\;$(ProjectDir)Light\;$(ProjectDir)FBX\Object\;$(ProjectDir)FBX\Model\;$(ProjectDir)ImguiCommon\;$(ProjectDir)FBX\Loader\;$(ProjectDir)Particle\;$(ProjectDir)Player\;$(ProjectDir)Firebar\;$(ProjectDir)Enemy\;$(ProjectDir)GameScene\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir)DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)2d\MultipleRender\;$(ProjectDir)2d\MultipleTexture\;$(ProjectDir)2d\PostEffect\;$(ProjectDir)2d\Sprite\;$(ProjectDir)3dModel\;$(ProjectDir)audio\;$(ProjectDir)2d\DebugText\;$(ProjectDir)base\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)FrameWork\;$(ProjectDir)Easing\;$(ProjectDir)Input\;$(ProjectDir)Light\;$(ProjectDir)FBX\Object\;$(ProjectDir)FBX\Model\;$(ProjectDir)ImguiCommon\;$(ProjectDir)FBX\Loader\;$(ProjectDir)Particle\;$(ProjectDir)Player\;$(ProjectDir)GameScene\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir)DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)2d\MultipleRender\;$(ProjectDir)2d\MultipleTexture\;$(ProjectDir)2d\PostEffect\;$(ProjectDir)2d\Sprite\;$(ProjectDir)3dModel\;$(ProjectDir)audio\;$(ProjectDir)2d\DebugText\;$(ProjectDir)base\;$(ProjectDir)Camera\;$(ProjectDir)Collision\;$(ProjectDir)FrameWork\;$(ProjectDir)Easing\;$(ProjectDir)Input\;$(ProjectDir)Light\;$(ProjectDir)FBX\Object\;$(ProjectDir)FBX\Model\;$(ProjectDir)ImguiCommon\;$(ProjectDir)FBX\Loader\;$(ProjectDir)Particle\;$(ProjectDir)Player\;$(ProjectDir)Firebar\;$(ProjectDir)Enemy\;$(ProjectDir)GameScene\;$(ProjectDir)lib\fbx_sdk\include;$(ProjectDir)DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

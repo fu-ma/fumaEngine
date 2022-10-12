@@ -31,6 +31,7 @@ bool Enemy::Initialize()
 	}
 
 	HP = 1;
+	angleSpeed = -0.01f;
 	return true;
 }
 
@@ -54,7 +55,7 @@ void Enemy::Move()
 		speed += gravity / 5;
 	}
 	position.y += speed;
-
+	position.x += angleSpeed;
 }
 
 void Enemy::Draw()
@@ -82,6 +83,9 @@ void Enemy::CollisionObject(ModelObj *obj2)
 				position.y ,
 				0
 			};
+
+			angleSpeed = 0.01f;
+			rotation.y = 0;
 		}
 	}
 	if (oldPos.x < position.x)
@@ -96,6 +100,8 @@ void Enemy::CollisionObject(ModelObj *obj2)
 				position.y ,
 				0
 			};
+			angleSpeed = -0.01f;
+			rotation.y = 180;
 		}
 	}
 	if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
