@@ -24,7 +24,7 @@ public:
 	/// –ˆƒtƒŒ[ƒ€ˆ—
 	/// </summary>
 	void Update() override;
-	void Move();
+	void Move(const std::string& enemyName = "NORMAL");
 	void Draw() override;
 	void CollisionObject(ModelObj *obj2);
 

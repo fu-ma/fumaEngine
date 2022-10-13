@@ -1,9 +1,9 @@
 #pragma once
 #include<wrl.h>
-#include"imgui/imgui.h"
-#include"imgui/imgui_impl_win32.h"
-#include"imgui/imgui_impl_dx12.h"
-#include"DirectXCommon.h"
+#include"Engine/imgui/imgui.h"
+#include"Engine/imgui/imgui_impl_win32.h"
+#include"Engine/imgui/imgui_impl_dx12.h"
+#include"DirectXApp.h"
 
 class ImguiCommon
 {

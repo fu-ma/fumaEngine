@@ -1,8 +1,8 @@
 #pragma once
 #include "Sprite.h"
-#include"Input.h"
+#include"Engine/Input/Input.h"
 
-class MultipleRender :
+class MultipleTexture :
     public Sprite
 {
 private://静的メンバ
@@ -28,7 +28,7 @@ public://メンバ関数
     ///<summary>
     ///コンストラクタ
     ///</summary>
-    MultipleRender();
+    MultipleTexture();
 
     ///<summary>
     ///パイプライン生成

@@ -8,7 +8,7 @@
 #include"WindowAPI.h"
 
 //DirectX基盤
-class DirectXCommon
+class DirectXApp
 {
 private: // エイリアス
 	// Microsoft::WRL::を省略
@@ -94,10 +94,10 @@ public://Getter
 public://メンバ関数
 
 	//コンストラクタ
-	DirectXCommon();
+	DirectXApp();
 
 	//引数付きコンストラクタ
-	DirectXCommon(WinApp *winApp);
+	DirectXApp(WinApp *winApp);
 
 	/// <summary>
 	/// 初期化

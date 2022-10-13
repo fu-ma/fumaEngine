@@ -43,7 +43,7 @@ void Framework::GameRun()
 void Framework::staticInit()
 {
 	winApp = std::make_unique<WinApp>();
-	common = std::make_unique<DirectXCommon>(winApp.get());
+	common = std::make_unique<DirectXApp>(winApp.get());
 	winApp->Innitialize();
 	common->Initialize();
 

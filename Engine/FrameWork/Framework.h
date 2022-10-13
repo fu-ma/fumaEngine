@@ -1,7 +1,7 @@
 #pragma once
 #include"WindowAPI.h"
-#include "DirectXCommon.h"
-#include "Input.h"
+#include "DirectXApp.h"
+#include "Engine/Input/Input.h"
 #include "DebugText.h"
 #include "DebugCamera.h"
 #include "Audio.h"
@@ -14,7 +14,7 @@
 #include"PostEffect.h"
 #include"MultipleRender.h"
 #include"MultipleTexture.h"
-#include"Controller.h"
+#include"Engine/Input/Controller.h"
 #include"ImguiCommon.h"
 
 /// <summary>
@@ -24,7 +24,7 @@ class Framework
 {
 protected:
 	using WinPtr = std::unique_ptr<WinApp>;
-	using CommonPtr = std::unique_ptr<DirectXCommon>;
+	using CommonPtr = std::unique_ptr<DirectXApp>;
 	using AudioPtr = std::unique_ptr<Audio>;
 	using DebugCamPtr = std::unique_ptr<DebugCamera>;
 	using LightGroupPtr = std::unique_ptr<LightGroup>;

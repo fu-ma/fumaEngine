@@ -1,10 +1,10 @@
-#include "DirectXCommon.h"
+#include "DirectXApp.h"
 #include<cassert>
 
 #pragma comment(lib,"d3d12.lib")
 #pragma comment(lib,"dxgi.lib")
 
-bool DirectXCommon::InitializeDevice()
+bool DirectXApp::InitializeDevice()
 {
 	HRESULT result;
 
@@ -85,7 +85,7 @@ bool DirectXCommon::InitializeDevice()
 	return true;
 }
 
-bool DirectXCommon::InitializeCommand()
+bool DirectXApp::InitializeCommand()
 {
 	HRESULT result = S_FALSE;
 
@@ -117,7 +117,7 @@ bool DirectXCommon::InitializeCommand()
 	return true;
 }
 
-bool DirectXCommon::InitializeSwapchain()
+bool DirectXApp::InitializeSwapchain()
 {
 	HRESULT result = S_FALSE;
 
@@ -150,7 +150,7 @@ bool DirectXCommon::InitializeSwapchain()
 	return true;
 }
 
-bool DirectXCommon::InitializeRenderTargetView()
+bool DirectXApp::InitializeRenderTargetView()
 {
 	HRESULT result = S_FALSE;
 
@@ -197,7 +197,7 @@ bool DirectXCommon::InitializeRenderTargetView()
 	return true;
 }
 
-bool DirectXCommon::InitializeDepthBuffer()
+bool DirectXApp::InitializeDepthBuffer()
 {
 	HRESULT result = S_FALSE;
 
@@ -249,7 +249,7 @@ bool DirectXCommon::InitializeDepthBuffer()
 	return true;
 }
 
-bool DirectXCommon::InitializeFence()
+bool DirectXApp::InitializeFence()
 {
 	HRESULT result = S_FALSE;
 
@@ -264,15 +264,15 @@ bool DirectXCommon::InitializeFence()
 	return true;
 }
 
-DirectXCommon::DirectXCommon()
+DirectXApp::DirectXApp()
 {
 }
 
-DirectXCommon::DirectXCommon(WinApp *winApp):winApp(winApp)
+DirectXApp::DirectXApp(WinApp *winApp):winApp(winApp)
 {
 }
 
-void DirectXCommon::Initialize()
+void DirectXApp::Initialize()
 {
 	//NULL検出
 	assert(winApp);
@@ -291,7 +291,7 @@ void DirectXCommon::Initialize()
 	InitializeFence();
 }
 
-void DirectXCommon::PreDraw()
+void DirectXApp::PreDraw()
 {
 	// バックバッファの番号を取得（2つなので0番か1番）
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
@@ -318,7 +318,7 @@ void DirectXCommon::PreDraw()
 
 }
 
-void DirectXCommon::PostDraw()
+void DirectXApp::PostDraw()
 {
 	// リソースバリアを変更（描画対象→表示状態）
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
@@ -348,7 +348,7 @@ void DirectXCommon::PostDraw()
 	cmdList->Reset(cmdAllocator.Get(), nullptr);	// 再びコマンドリストを貯める準備
 }
 
-void DirectXCommon::ClearScreen()
+void DirectXApp::ClearScreen()
 {
 	UINT bbIndex = swapchain->GetCurrentBackBufferIndex();
 
@@ -360,7 +360,7 @@ void DirectXCommon::ClearScreen()
 	cmdList->ClearRenderTargetView(rtvH, clearColor, 0, nullptr);
 }
 
-void DirectXCommon::ClearDepthBuffer()
+void DirectXApp::ClearDepthBuffer()
 {
 	// 深度ステンシルビュー用デスクリプタヒープのハンドルを取得
 	CD3DX12_CPU_DESCRIPTOR_HANDLE dsvH = CD3DX12_CPU_DESCRIPTOR_HANDLE(dsvHeap->GetCPUDescriptorHandleForHeapStart());

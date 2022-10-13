@@ -1,6 +1,6 @@
 ﻿#pragma once
 #include "Camera.h"
-#include "Input.h"
+#include "Engine/Input/Input.h"
 
 /// <summary>
 /// デバッグ用カメラ

@@ -1,6 +1,6 @@
 #include "Enemy.h"
-#include "Input.h"
-#include"Controller.h"
+#include"Engine/Input/Input.h"
+#include"Engine/Input/Controller.h"
 
 Enemy *Enemy::Create(Model *model)
 {
@@ -41,7 +41,7 @@ void Enemy::Update()
 	ModelObj::Update();
 }
 
-void Enemy::Move()
+void Enemy::Move(const std::string& enemyName)
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
@@ -49,13 +49,16 @@ void Enemy::Move()
 	//‰ß‹Ž‚ÌˆÊ’u‚ð•Û‘¶
 	oldPos = position;
 
-	//d—Íˆ—
-	if (speed > gravity * 20)
+	if (enemyName == "NORMAL")
 	{
-		speed += gravity / 5;
+		//d—Íˆ—
+		if (speed > gravity * 20)
+		{
+			speed += gravity / 5;
+		}
+		position.y += speed;
+		position.x += angleSpeed;
 	}
-	position.y += speed;
-	position.x += angleSpeed;
 }
 
 void Enemy::Draw()

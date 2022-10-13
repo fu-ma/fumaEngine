@@ -1,11 +1,11 @@
 ﻿#include "Player.h"
-#include "Input.h"
+#include "Engine/Input/Input.h"
 #include "DebugText.h"
 #include "SphereCollider.h"
 #include "ParticleManager.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
-#include"Controller.h"
+#include"Engine/Input/Controller.h"
 
 using namespace DirectX;
 
