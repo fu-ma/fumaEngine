@@ -444,11 +444,6 @@ void GameScene::Stage1Init()
 			{
 				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 			}
-			if (map1[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
 			if (map1[y][x] == 10)
 			{
 				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
@@ -458,6 +453,17 @@ void GameScene::Stage1Init()
 		}
 	}
 
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			if (map1[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
 	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
 	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
 }
@@ -679,49 +685,934 @@ void GameScene::Stage1Draw()
 
 void GameScene::Stage2Init()
 {
+	//音声再生
+	audio->PlayLoadedSound(soundData1, 0.05f);
+	objPlayer->Initialize();
+	gimmickCenterNum = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			if (map2[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map2[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+			}
+			if (map2[y][x] == 10)
+			{
+				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetScale({ 1.0f,3.0f,1.0f });
+				objGoal->SetRotation({ 0, 90,0 });
+			}
+		}
+	}
+
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			if (map2[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
 }
 
 void GameScene::Stage2Update()
 {
+	//objPlayer->moveSphere(objStageBox);
+//camera->SetTarget(objPlayer->GetPosition());
+// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetDistance(20.0f);
+	//シーン遷移
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::GameOver);
+	}
+
+	gameTimer--;
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer / 180);
+
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+
+	//動くようになる
+	if (gameTimer < 180 * 60)
+	{
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move();
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//あたり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
+		}
+	}
+
+	if (objPlayer->CollisionGoal(objGoal) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
+	}
+
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
+	lightGroup->Update();
+	camera->Update();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Update();
+			}
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Update();
+			}
+		}
+	}
+
+	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 }
 
 void GameScene::Stage2Draw()
 {
+#pragma region 描画処理
+
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	//// 背景スプライト描画
+	backGround->Draw();
+	///*スプライト描画後処理*/
+	Sprite::PostDraw();
+	////深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//objSkydome->Draw();
+	//objGround->Draw();
+	//FBX
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Draw();
+			}
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Draw();
+			}
+		}
+	}
+
+	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
+	//objSphere->Draw();
+	// パーティクルの描画
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	debugText->DrawAll(common->GetCmdList().Get());
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
 }
 
 void GameScene::Stage3Init()
 {
+	//音声再生
+	audio->PlayLoadedSound(soundData1, 0.05f);
+	objPlayer->Initialize();
+	gimmickCenterNum = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			if (map3[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map3[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+			}
+			if (map3[y][x] == 10)
+			{
+				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetScale({ 1.0f,3.0f,1.0f });
+				objGoal->SetRotation({ 0, 90,0 });
+			}
+		}
+	}
+
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			if (map3[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
 }
 
 void GameScene::Stage3Update()
 {
+	//objPlayer->moveSphere(objStageBox);
+//camera->SetTarget(objPlayer->GetPosition());
+// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetDistance(20.0f);
+	//シーン遷移
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::GameOver);
+	}
+
+	gameTimer--;
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer / 180);
+
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+
+	//動くようになる
+	if (gameTimer < 180 * 60)
+	{
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move();
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//あたり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
+		}
+	}
+
+	if (objPlayer->CollisionGoal(objGoal) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
+	}
+
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
+	lightGroup->Update();
+	camera->Update();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Update();
+			}
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Update();
+			}
+		}
+	}
+
+	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 }
 
 void GameScene::Stage3Draw()
 {
+#pragma region 描画処理
+
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	//// 背景スプライト描画
+	backGround->Draw();
+	///*スプライト描画後処理*/
+	Sprite::PostDraw();
+	////深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//objSkydome->Draw();
+	//objGround->Draw();
+	//FBX
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Draw();
+			}
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Draw();
+			}
+		}
+	}
+
+	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
+	//objSphere->Draw();
+	// パーティクルの描画
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	debugText->DrawAll(common->GetCmdList().Get());
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
 }
+
 void GameScene::Stage4Init()
 {
+	//音声再生
+	audio->PlayLoadedSound(soundData1, 0.05f);
+	objPlayer->Initialize();
+	gimmickCenterNum = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			if (map4[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map4[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+			}
+			if (map4[y][x] == 10)
+			{
+				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetScale({ 1.0f,3.0f,1.0f });
+				objGoal->SetRotation({ 0, 90,0 });
+			}
+		}
+	}
+
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			if (map4[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
 }
 
 void GameScene::Stage4Update()
 {
+	//objPlayer->moveSphere(objStageBox);
+//camera->SetTarget(objPlayer->GetPosition());
+// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetDistance(20.0f);
+	//シーン遷移
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::GameOver);
+	}
+
+	gameTimer--;
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer / 180);
+
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+
+	//動くようになる
+	if (gameTimer < 180 * 60)
+	{
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move();
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//あたり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
+		}
+	}
+
+	if (objPlayer->CollisionGoal(objGoal) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
+	}
+
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
+	lightGroup->Update();
+	camera->Update();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Update();
+			}
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Update();
+			}
+		}
+	}
+
+	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 }
 
 void GameScene::Stage4Draw()
 {
+#pragma region 描画処理
+
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	//// 背景スプライト描画
+	backGround->Draw();
+	///*スプライト描画後処理*/
+	Sprite::PostDraw();
+	////深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//objSkydome->Draw();
+	//objGround->Draw();
+	//FBX
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Draw();
+			}
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Draw();
+			}
+		}
+	}
+
+	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
+	//objSphere->Draw();
+	// パーティクルの描画
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	debugText->DrawAll(common->GetCmdList().Get());
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
 }
 
 void GameScene::Stage5Init()
 {
+	//音声再生
+	audio->PlayLoadedSound(soundData1, 0.05f);
+	objPlayer->Initialize();
+	gimmickCenterNum = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			if (map5[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map5[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+			}
+			if (map5[y][x] == 10)
+			{
+				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetScale({ 1.0f,3.0f,1.0f });
+				objGoal->SetRotation({ 0, 90,0 });
+			}
+		}
+	}
+
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			if (map5[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
 }
 
 void GameScene::Stage5Update()
 {
+	//objPlayer->moveSphere(objStageBox);
+//camera->SetTarget(objPlayer->GetPosition());
+// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetDistance(20.0f);
+	//シーン遷移
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::GameOver);
+	}
+
+	gameTimer--;
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer / 180);
+
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+
+	//動くようになる
+	if (gameTimer < 180 * 60)
+	{
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move();
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//あたり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
+		}
+	}
+
+	if (objPlayer->CollisionGoal(objGoal) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
+	}
+
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
+	lightGroup->Update();
+	camera->Update();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Update();
+			}
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Update();
+			}
+		}
+	}
+
+	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 }
 
 void GameScene::Stage5Draw()
 {
+#pragma region 描画処理
+
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	//// 背景スプライト描画
+	backGround->Draw();
+	///*スプライト描画後処理*/
+	Sprite::PostDraw();
+	////深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//objSkydome->Draw();
+	//objGround->Draw();
+	//FBX
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Draw();
+			}
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Draw();
+			}
+		}
+	}
+
+	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
+	//objSphere->Draw();
+	// パーティクルの描画
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	debugText->DrawAll(common->GetCmdList().Get());
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
 }
 
 void GameScene::GameOverInit()
@@ -735,7 +1626,7 @@ void GameScene::GameOverUpdate()
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
-		SceneNo = static_cast<int>(GameSceneNo::Title);
+		SceneNo = static_cast<int>(GameSceneNo::StageSelect);
 	}
 }
 
@@ -763,7 +1654,7 @@ void GameScene::ClearUpdate()
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
-		SceneNo = static_cast<int>(GameSceneNo::Title);
+		SceneNo = static_cast<int>(GameSceneNo::StageSelect);
 	}
 }
 
@@ -983,6 +1874,7 @@ bool GameScene::Update()
 		Stage2Update();
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage3):
+		SceneTime = 1;
 		Stage3Update();
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage4):

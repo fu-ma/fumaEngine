@@ -35,21 +35,20 @@ bool Firebar::Initialize(float centerX, float centerY, int num)
 	this->centerX = centerX;
 	this->centerY = centerY;
 
-	for (int i = 0; i < GIMMICK_NUM; i++)
+	for (int i = 0; i < this->num; i++)
 	{
 		angle[i] = 0;
 		addX[i] = 0;
 		addY[i] = 0;
 		moveFlag[i] = false;
 		length[i] = 0;
-		firebar[i]->SetPosition({ -100,-100,0 });
 	}
 
 	for (int i = 0; i < GIMMICK_NUM; i++)
 	{
-		firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
 		if (i < this->num)
 		{
+			firebar[i]->SetScale({ 0.5f,0.5f,0.5f });
 			if (i == 0)
 			{
 				firebar[i]->SetModel(modelGimmickCenter);
@@ -60,7 +59,11 @@ bool Firebar::Initialize(float centerX, float centerY, int num)
 		}
 		else
 		{
-			firebar[i]->SetPosition({ -100, -100, 0 });
+			if (firebar[i] != nullptr)
+			{
+				delete firebar[i];
+				firebar[i] = nullptr;
+			}
 		}
 
 		if (moveFlag[i] == true)
@@ -78,18 +81,19 @@ bool Firebar::Initialize(float centerX, float centerY, int num)
 void Firebar::Update()
 {
 	// çsóÒÇÃçXêVÇ»Ç«
-	for (int i = 0; i < GIMMICK_NUM; i++)
+	for (int i = 0; i < this->num; i++)
 	{
-		if (firebar[i]->GetPosition().x >= 0)
+		if (firebar[i] == nullptr)
 		{
-			firebar[i]->Update();
+			return;
 		}
+		firebar[i]->Update();
 	}
 }
 
 void Firebar::Move(bool direction)
 {
-	for (int i = 0; i < GIMMICK_NUM; i++)
+	for (int i = 0; i < this->num; i++)
 	{
 		if (moveFlag[i] == true)
 		{
@@ -99,11 +103,11 @@ void Firebar::Move(bool direction)
 
 			if (direction == false)
 			{
-				angle[i] -= 0.5f;
+				angle[i] -= angleSpeed;
 			}
 			if (direction == true)
 			{
-				angle[i] += 0.5f;
+				angle[i] += angleSpeed;
 			}
 
 			firebar[i]->SetPosition({ centerX + addX[i], centerY + addY[i], 0 });
@@ -113,11 +117,8 @@ void Firebar::Move(bool direction)
 
 void Firebar::Draw()
 {
-	for (int i = 0; i < GIMMICK_NUM; i++)
+	for (int i = 0; i < this->num; i++)
 	{
-		if (firebar[i]->GetPosition().x >= 0)
-		{
-			firebar[i]->Draw();
-		}
+		firebar[i]->Draw();
 	}
 }

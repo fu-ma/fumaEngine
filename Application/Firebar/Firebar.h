@@ -24,6 +24,7 @@ public:
 	ModelObj *GetCenter() { return firebar[0]; }
 	const int &GetNum() { return num; }
 	ModelObj *GetFire(int num) { return firebar[num]; }
+	void SetAngleSpeed(float angleSpeed) { this->angleSpeed = angleSpeed; }
 private:
 	static const int GIMMICK_NUM = 100;
 	Model *modelGimmick = nullptr;
@@ -34,6 +35,7 @@ private:
 	float addX[GIMMICK_NUM];
 	float addY[GIMMICK_NUM];
 	float angle[GIMMICK_NUM];
+	float angleSpeed = 0.5f;
 	float radius[GIMMICK_NUM];
 	bool moveFlag[GIMMICK_NUM];
 	float length[GIMMICK_NUM];
