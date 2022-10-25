@@ -5,6 +5,7 @@ void Framework::GameRun()
 	staticInit();
 	while (true)//ƒQ[ƒ€ƒ‹[ƒv
 	{
+		fps->TimeWait();
 		if (SceneTime == 0)
 		{
 			Init();
@@ -84,6 +85,8 @@ void Framework::staticInit()
 
 	//Imgui‰Šú‰»
 	ImguiCommon::Initialize(common->GetDev().Get(),winApp->GetHwnd());
+
+	fps = std::make_unique<Fps>();
 }
 
 void Framework::Init()

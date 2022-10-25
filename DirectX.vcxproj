@@ -45,6 +45,7 @@
     <ClCompile Include="Engine\FBX\Loader\FbxLoader.cpp" />
     <ClCompile Include="Engine\FBX\Model\FBXModel.cpp" />
     <ClCompile Include="Engine\FBX\Object\FBXObject3d.cpp" />
+    <ClCompile Include="Engine\FPS\Fps.cpp" />
     <ClCompile Include="Engine\FrameWork\Framework.cpp" />
     <ClCompile Include="Engine\ImguiCommon\ImguiCommon.cpp" />
     <ClCompile Include="Engine\Input\Controller.cpp" />
@@ -201,6 +202,7 @@
     <ClInclude Include="Engine\FBX\Loader\FbxLoader.h" />
     <ClInclude Include="Engine\FBX\Model\FBXModel.h" />
     <ClInclude Include="Engine\FBX\Object\FBXObject3d.h" />
+    <ClInclude Include="Engine\FPS\Fps.h" />
     <ClInclude Include="Engine\FrameWork\Framework.h" />
     <ClInclude Include="Engine\ImguiCommon\ImguiCommon.h" />
     <ClInclude Include="Engine\Input\Controller.h" />
@@ -289,12 +291,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

@@ -38,6 +38,7 @@ bool Player::Initialize()
 	}
 	
 	speed = 0;
+	jump = 0.3f;
 	jumpChange = 0;
 	jumpChangeTimer = 0;
 	t = 0;
@@ -60,7 +61,7 @@ bool Player::Initialize()
 	position.y = 2;
 	moveFlag = false;
 
-	moveSpeed = 0.1f;
+	moveSpeed = 0.15f;
 	return true;
 }
 
@@ -98,22 +99,22 @@ void Player::Move()
 	//重力処理
 	if (speed > gravity * 20)
 	{
-		speed += gravity / 4;
+		speed += gravity / 3;
 	}
 	position.y += speed;
 
 	//1.2.3段ジャンプ処理
 	if (jumpChange == 0)
 	{
-		jumpMax = 40;
+		jumpMax = 20;
 	}
 	if (jumpChange == 1)
 	{
-		jumpMax = 60;
+		jumpMax = 40;
 	}
 	if (jumpChange == 2)
 	{
-		jumpMax = 100;
+		jumpMax = 60;
 	}
 
 	//左壁キック
@@ -127,8 +128,8 @@ void Player::Move()
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
 		{
-			position.y += jump * 1.5f;
-			position.x += jump * 1.5f;
+			position.y += jump;
+			position.x += jump;
 			leftWallColFlag = true;
 		}
 		else if (leftWallJumpTimer > wallJumpMax * 2.5f)
@@ -148,8 +149,8 @@ void Player::Move()
 		leftWallColFlag = false;
 		if (rightWallJumpTimer < wallJumpMax)
 		{
-			position.y += jump * 1.5f;
-			position.x -= jump * 1.5f;
+			position.y += jump;
+			position.x -= jump;
 			rightWallColFlag = true;
 		}
 		else if (rightWallJumpTimer > wallJumpMax * 2.5f)
@@ -165,8 +166,6 @@ void Player::Move()
 		{
 			if (leftWallJumpFlag == false)
 			{
-				t2 += 0.001f;
-				easing::Updete(moveSpeed, 0.2, 1, t2);
 				position.x -= (float)moveSpeed;
 			}
 
@@ -177,18 +176,11 @@ void Player::Move()
 		{
 			if (rightWallJumpFlag == false)
 			{
-				t2 += 0.001f;
-				easing::Updete(moveSpeed, 0.2, 1, t2);
 				position.x += (float)moveSpeed;
 			}
 
 			//プレイヤーの向きを右側にする
 			rotation.y = 0;
-		}
-		else
-		{
-			t2 = 0;
-			moveSpeed = 0.1;
 		}
 
 		if (jumpFlag == false)
@@ -201,22 +193,22 @@ void Player::Move()
 				}
 				jumpTimer++;
 
-				if (jumpChangeTimer > 0 && jumpChangeTimer < 50)
+				if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
 				{
 					jumpChange++;
 					jumpChangeTimer = 0;
 				}
-				else if (jumpChangeTimer > 50)
+				else if (jumpChangeTimer > 20)
 				{
 					jumpChange = 0;
 					jumpChangeTimer = 0;
 				}
 
-				if (jumpMax == 60)
+				if (jumpMax == 40)
 				{
 					rotation.z -= 2.5f;
 				}
-				if (jumpMax == 100)
+				if (jumpMax == 60)
 				{
 					rotation.z -= 5;
 				}
@@ -235,9 +227,9 @@ void Player::Move()
 	if (treadFlag == true)
 	{
 		t += 0.01f;
-		easing::Updete(treadSpeed, 0.4, 2, t);
-		position.y += (float)treadSpeed;
-		if (treadSpeed >= 0.4)
+		easing::Updete(treadSpeed, 0.3, 2, t);
+		position.y += (float)treadSpeed + (float)t / 4;
+		if (treadSpeed >= 0.3)
 		{
 			t = 0;
 			treadSpeed = 0;
@@ -266,7 +258,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	{
 		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
 			{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y + 0.1f,0 },
-			scale.x - jump * 1.5f, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+			scale.x - jump * 0.5f, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
 		{
 			position =
 			{
@@ -281,7 +273,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	{
 		if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
 			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y - 0.1f,0 },
-			scale.x - jump * 1.5f, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+			scale.x - jump * 0.5f, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
 		{
 			position =
 			{
@@ -344,7 +336,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	}
 	if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
 		{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
-		scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - 0.1f, scale.y + speed + 0.1f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		position =
 		{
@@ -365,7 +357,7 @@ void Player::CollisionObj(ModelObj *obj2)
 
 	if (Collision::CheckBox2Box({ position.x - 0.1f,position.y + 0.1f,0 },
 		{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y - 0.1f,0 },
-		scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - 0.1f, scale.y + speed + 0.1f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		position =
 		{

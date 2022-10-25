@@ -180,6 +180,9 @@
     <ClCompile Include="Engine\Input\Controller.cpp">
       <Filter>Engine\Input\Controller</Filter>
     </ClCompile>
+    <ClCompile Include="Engine\FPS\Fps.cpp">
+      <Filter>Engine\FPS</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -344,6 +347,9 @@
     <ClInclude Include="Engine\Input\Controller.h">
       <Filter>Engine\Input\Controller</Filter>
     </ClInclude>
+    <ClInclude Include="Engine\FPS\Fps.h">
+      <Filter>Engine\FPS</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -503,6 +509,9 @@
     </Filter>
     <Filter Include="Engine\imgui">
       <UniqueIdentifier>{b9ffc5b9-4862-4fb5-94c4-4397c4f434dc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\FPS">
+      <UniqueIdentifier>{0e1f5d2f-a469-48ea-895a-e84108bf0a1d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

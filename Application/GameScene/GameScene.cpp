@@ -32,7 +32,6 @@ void GameScene::TitleInit()
 	// ƒJƒƒ‰’Ž‹“_‚ðƒZƒbƒg
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
 	camera->SetDistance(20.0f);
-	gameTimer = 180 * 61;
 }
 
 void GameScene::TitleUpdate()
@@ -466,6 +465,8 @@ void GameScene::Stage1Init()
 	}
 	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
 	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
+
+	gameTimer = (int)fps->GetFrame() * 61 * 2;
 }
 
 void GameScene::Stage1Update()
@@ -486,7 +487,7 @@ void GameScene::Stage1Update()
 	gameTimer--;
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer/180);
+	debugText->Printf("%d", gameTimer/ (int)fps->GetFrame() / 2);
 
 	//‰_‚ÌˆÚ“®
 	{
@@ -509,7 +510,7 @@ void GameScene::Stage1Update()
 	}
 
 	//“®‚­‚æ‚¤‚É‚È‚é
-	if (gameTimer < 180 * 60)
+	if (gameTimer < (int)fps->GetFrame() * 60 * 2)
 	{
 		firebar->Move();
 		firebar2->Move(true);
@@ -727,6 +728,8 @@ void GameScene::Stage2Init()
 			}
 		}
 	}
+
+	gameTimer = (int)fps->GetFrame() * 61 * 2;
 }
 
 void GameScene::Stage2Update()
@@ -747,7 +750,7 @@ void GameScene::Stage2Update()
 	gameTimer--;
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / 180);
+	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
 
 	//‰_‚ÌˆÚ“®
 	{
@@ -770,7 +773,7 @@ void GameScene::Stage2Update()
 	}
 
 	//“®‚­‚æ‚¤‚É‚È‚é
-	if (gameTimer < 180 * 60)
+	if (gameTimer < (int)fps->GetFrame() * 2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -960,6 +963,8 @@ void GameScene::Stage3Init()
 			}
 		}
 	}
+
+	gameTimer = (int)fps->GetFrame() * 61 * 2;
 }
 
 void GameScene::Stage3Update()
@@ -980,7 +985,7 @@ void GameScene::Stage3Update()
 	gameTimer--;
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / 180);
+	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
 
 	//‰_‚ÌˆÚ“®
 	{
@@ -1003,7 +1008,7 @@ void GameScene::Stage3Update()
 	}
 
 	//“®‚­‚æ‚¤‚É‚È‚é
-	if (gameTimer < 180 * 60)
+	if (gameTimer < (int)fps->GetFrame() * 2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -1193,6 +1198,8 @@ void GameScene::Stage4Init()
 			}
 		}
 	}
+
+	gameTimer = (int)fps->GetFrame() * 61 * 2;
 }
 
 void GameScene::Stage4Update()
@@ -1213,7 +1220,7 @@ void GameScene::Stage4Update()
 	gameTimer--;
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / 180);
+	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
 
 	//‰_‚ÌˆÚ“®
 	{
@@ -1236,7 +1243,7 @@ void GameScene::Stage4Update()
 	}
 
 	//“®‚­‚æ‚¤‚É‚È‚é
-	if (gameTimer < 180 * 60)
+	if (gameTimer < (int)fps->GetFrame() * 2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -1426,6 +1433,8 @@ void GameScene::Stage5Init()
 			}
 		}
 	}
+
+	gameTimer = (int)fps->GetFrame() * 61 * 2;
 }
 
 void GameScene::Stage5Update()
@@ -1446,7 +1455,7 @@ void GameScene::Stage5Update()
 	gameTimer--;
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / 180);
+	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
 
 	//‰_‚ÌˆÚ“®
 	{
@@ -1469,7 +1478,7 @@ void GameScene::Stage5Update()
 	}
 
 	//“®‚­‚æ‚¤‚É‚È‚é
-	if (gameTimer < 180 * 60)
+	if (gameTimer < (int)fps->GetFrame() * 2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{

@@ -55,7 +55,7 @@ private:
 	int jumpMax;
 	//直前にジャンプしたかどうか
 	bool jumpFlag = false;
-	float jump = 0.2f;
+	float jump;
 
 	//壁キック用
 	bool leftWallJumpFlag = false;
@@ -89,9 +89,7 @@ private:
 	//エフェクトの判定フラグ
 	bool onCollisionFlag = false;
 
-	//ダッシュとある気を切り替えるための変数
-	double moveSpeed;
-	double t2;
+	float moveSpeed;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

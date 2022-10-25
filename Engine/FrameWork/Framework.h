@@ -16,6 +16,7 @@
 #include"MultipleTexture.h"
 #include"Engine/Input/Controller.h"
 #include"ImguiCommon.h"
+#include"Fps.h"
 
 /// <summary>
 /// フレームワーク
@@ -31,6 +32,7 @@ protected:
 	using PostEffectPtr = std::unique_ptr<PostEffect>;
 	using MultipleTexPtr = std::unique_ptr<MultipleTexture>;
 	using MultipleRenderPtr = std::unique_ptr<MultipleRender>;
+	using FpsPtr = std::unique_ptr<Fps>;
 
 	enum class GameSceneNo
 	{
@@ -100,7 +102,7 @@ protected:
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
 	MultipleTexPtr postEffect;
-
+	FpsPtr fps;
 	//現在のシーンの番号
 	int SceneNo = static_cast<int>(GameSceneNo::Title);
 	//初期化のための計測
