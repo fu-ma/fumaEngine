@@ -13,6 +13,7 @@
 #include"Particle.h"
 #include<stdlib.h>
 #include<time.h>
+#include"CountDown.h"
 
 class GameScene : public Framework
 {
@@ -82,6 +83,9 @@ private:
 
 	//パーティクル
 	Particle *playerParticle = nullptr;
+
+	//カウントダウンクラス
+	CountDown *countDown = nullptr;
 
 	float pointLightPos[3] = { 0,0,0 };
 	float pointLightColor[3] = { 1,1,1 };
@@ -249,6 +253,17 @@ public:
 		Stage4Sprite = nullptr;
 		delete Stage5Sprite;
 		Stage5Sprite = nullptr;
+
+		delete playerParticle;
+		playerParticle = nullptr;
+		delete objGoal;
+		objGoal = nullptr;
+		delete modelGoal;
+		modelGoal = nullptr;
+		delete firebar;
+		firebar = nullptr;
+		delete firebar2;
+		firebar2 = nullptr;
 		//modelObj解放処理
 		//delete objSkydome;
 		//objSkydome = nullptr;
@@ -262,6 +277,14 @@ public:
 				objStageBox[y][x] = nullptr;
 				delete enemy[y][x];
 				enemy[y][x] = nullptr;
+			}
+		}
+		for (int y = 0; y < 6; y++)
+		{
+			for (int x = 0; x < 24; x++)
+			{
+				delete titleStageBox[y][x];
+				titleStageBox[y][x] = nullptr;
 			}
 		}
 

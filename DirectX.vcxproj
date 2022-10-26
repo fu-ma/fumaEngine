@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\CountDown\CountDown.cpp" />
     <ClCompile Include="Application\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\Firebar\Firebar.cpp" />
     <ClCompile Include="Engine\2d\DebugText\DebugText.cpp" />
@@ -170,6 +171,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\CountDown\CountDown.h" />
     <ClInclude Include="Application\Enemy\Enemy.h" />
     <ClInclude Include="Application\Firebar\Firebar.h" />
     <ClInclude Include="Engine\2d\DebugText\DebugText.h" />
@@ -291,12 +293,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">

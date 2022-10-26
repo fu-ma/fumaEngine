@@ -242,7 +242,7 @@ void GameScene::StageSelectUpdate()
 	}
 	else
 	{
-		selectMoveTime += 0.002f;
+		selectMoveTime += 0.008f;
 	}
 	easing::Updete(selectPos, selectInterval*selectNum,InSine, selectMoveTime);
 
@@ -466,7 +466,10 @@ void GameScene::Stage1Init()
 	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
 	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
 
-	gameTimer = (int)fps->GetFrame() * 61 * 2;
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
 }
 
 void GameScene::Stage1Update()
@@ -484,7 +487,15 @@ void GameScene::Stage1Update()
 		SceneNo = static_cast<int>(GameSceneNo::GameOver);
 	}
 
-	gameTimer--;
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer/ (int)fps->GetFrame() / 2);
@@ -510,7 +521,7 @@ void GameScene::Stage1Update()
 	}
 
 	//動くようになる
-	if (gameTimer < (int)fps->GetFrame() * 60 * 2)
+	if (countDown->GetStart() >= 0.2)
 	{
 		firebar->Move();
 		firebar2->Move(true);
@@ -680,6 +691,10 @@ void GameScene::Stage1Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -729,7 +744,10 @@ void GameScene::Stage2Init()
 		}
 	}
 
-	gameTimer = (int)fps->GetFrame() * 61 * 2;
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
 }
 
 void GameScene::Stage2Update()
@@ -747,7 +765,15 @@ void GameScene::Stage2Update()
 		SceneNo = static_cast<int>(GameSceneNo::GameOver);
 	}
 
-	gameTimer--;
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
@@ -773,7 +799,7 @@ void GameScene::Stage2Update()
 	}
 
 	//動くようになる
-	if (gameTimer < (int)fps->GetFrame() * 2)
+	if (countDown->GetStart() >= 0.2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -915,6 +941,10 @@ void GameScene::Stage2Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -964,7 +994,10 @@ void GameScene::Stage3Init()
 		}
 	}
 
-	gameTimer = (int)fps->GetFrame() * 61 * 2;
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
 }
 
 void GameScene::Stage3Update()
@@ -982,7 +1015,15 @@ void GameScene::Stage3Update()
 		SceneNo = static_cast<int>(GameSceneNo::GameOver);
 	}
 
-	gameTimer--;
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
@@ -1008,7 +1049,7 @@ void GameScene::Stage3Update()
 	}
 
 	//動くようになる
-	if (gameTimer < (int)fps->GetFrame() * 2)
+	if (countDown->GetStart() >= 0.2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -1150,6 +1191,10 @@ void GameScene::Stage3Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -1199,7 +1244,10 @@ void GameScene::Stage4Init()
 		}
 	}
 
-	gameTimer = (int)fps->GetFrame() * 61 * 2;
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
 }
 
 void GameScene::Stage4Update()
@@ -1217,7 +1265,15 @@ void GameScene::Stage4Update()
 		SceneNo = static_cast<int>(GameSceneNo::GameOver);
 	}
 
-	gameTimer--;
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
@@ -1243,7 +1299,7 @@ void GameScene::Stage4Update()
 	}
 
 	//動くようになる
-	if (gameTimer < (int)fps->GetFrame() * 2)
+	if (countDown->GetStart() >= 0.2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -1385,6 +1441,10 @@ void GameScene::Stage4Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -1434,7 +1494,10 @@ void GameScene::Stage5Init()
 		}
 	}
 
-	gameTimer = (int)fps->GetFrame() * 61 * 2;
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
 }
 
 void GameScene::Stage5Update()
@@ -1452,7 +1515,15 @@ void GameScene::Stage5Update()
 		SceneNo = static_cast<int>(GameSceneNo::GameOver);
 	}
 
-	gameTimer--;
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
@@ -1478,7 +1549,7 @@ void GameScene::Stage5Update()
 	}
 
 	//動くようになる
-	if (gameTimer < (int)fps->GetFrame() * 2)
+	if (countDown->GetStart() >= 0.2)
 	{
 		if (playerParticle->GetFlag() == false)
 		{
@@ -1620,6 +1691,10 @@ void GameScene::Stage5Draw()
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -1754,6 +1829,7 @@ void GameScene::staticInit()
 	Sprite::LoadTexture(8, L"Resources/Stage3.png");
 	Sprite::LoadTexture(9, L"Resources/Stage4.png");
 	Sprite::LoadTexture(10, L"Resources/Stage5.png");
+	Sprite::LoadTexture(11, L"Resources/CountStart.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
@@ -1765,6 +1841,9 @@ void GameScene::staticInit()
 	Stage3Sprite = Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+
+	//カウントダウンクラス初期化
+	countDown = new CountDown();
 
 	// モデル読み込み
 	modelPlayer = Model::CreateFromOBJ("player", true);

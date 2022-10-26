@@ -57,9 +57,6 @@
     <ClCompile Include="Application\Player\Player.cpp">
       <Filter>Game\Player</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Engine</Filter>
-    </ClCompile>
     <ClCompile Include="Engine\imgui\imgui.cpp">
       <Filter>Engine\imgui</Filter>
     </ClCompile>
@@ -182,6 +179,12 @@
     </ClCompile>
     <ClCompile Include="Engine\FPS\Fps.cpp">
       <Filter>Engine\FPS</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\CountDown\CountDown.cpp">
+      <Filter>Game\CountDown</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -350,6 +353,9 @@
     <ClInclude Include="Engine\FPS\Fps.h">
       <Filter>Engine\FPS</Filter>
     </ClInclude>
+    <ClInclude Include="Application\CountDown\CountDown.h">
+      <Filter>Game\CountDown</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -512,6 +518,9 @@
     </Filter>
     <Filter Include="Engine\FPS">
       <UniqueIdentifier>{0e1f5d2f-a469-48ea-895a-e84108bf0a1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\CountDown">
+      <UniqueIdentifier>{c3c1ac77-d386-4c22-ba35-df1c46fe77da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
