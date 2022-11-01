@@ -29,6 +29,7 @@ public:
 	void CollisionObject(ModelObj *obj2);
 
 	const int &GetHP() { return HP; }
+	const float &GetSpeed() { return speed; }
 	void Deth();
 private:
 	int HP = 1;
@@ -38,5 +39,9 @@ private:
 	float speed;
 	float angleSpeed;
 	XMFLOAT3 oldPos;
+
+	//‚Ò‚å‚ñ‚Ò‚å‚ñ‚·‚é“G
+	int jumpTimer;
+	float jump;
 };
 

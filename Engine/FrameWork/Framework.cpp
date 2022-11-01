@@ -58,7 +58,7 @@ void Framework::staticInit()
 	LightGroup::StaticInitialize(common->GetDev().Get());
 	/*スプライト初期化*/
 	Sprite::StaticInitialize(common->GetDev().Get(), WinApp::window_width, WinApp::window_height);
-	Sprite::LoadTexture(0, L"Resources/debugfont.png");
+	Sprite::LoadTexture(0, L"Resources/img/debugfont.png");
 	debugText = DebugText::GetInstance();
 	debugText->Initialize(0);
 

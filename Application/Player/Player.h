@@ -71,7 +71,7 @@ private:
 	//easing用の変数
 	bool treadFlag = false;
 	double t = 0;
-	double treadSpeed = 0;
+	double treadTime = 0;
 
 	bool notHitFlag = false;
 

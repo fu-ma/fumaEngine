@@ -158,6 +158,7 @@ void GameScene::StageSelectInit()
 {
 	audio->PlayLoadedSound(soundData2, 0.05f);
 	objPlayer->Initialize();
+	objPlayer->SetRotation({0,0,0});
 	for (int i = 0; i < 10; i++)
 	{
 		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
@@ -227,6 +228,11 @@ void GameScene::StageSelectUpdate()
 {
 #pragma region 更新処理
 	
+	//プレイヤーの総数を表示
+	debugText->SetPos(150, 64);
+	debugText->SetSize(5);
+	debugText->Printf("%d", totalPlayerNum);
+
 	//ステージセレクト
 	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
 		&& selectNum > 0 && selectMoveTime >= 0.2f)
@@ -333,14 +339,6 @@ void GameScene::StageSelectUpdate()
 		}
 	}
 
-	//シーン遷移
-	//if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
-	//{
-	//	SceneTime = 0;
-	//	audio->StopLoadedSound(soundData2);
-	//	SceneNo = static_cast<int>(GameSceneNo::Stage1);
-	//}
-
 	lightGroup->Update();
 	camera->Update();
 	objPlayer->Update();
@@ -399,8 +397,6 @@ void GameScene::StageSelectDraw()
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
-	// パーティクルの描画
-	//particleMan->Draw(common->GetCmdList().Get());
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();
@@ -409,7 +405,10 @@ void GameScene::StageSelectDraw()
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
-	//debugText->DrawAll(common->GetCmdList().Get());
+	debugText->DrawAll(common->GetCmdList().Get());
+	//プレイヤーアイコン表示
+	playerIconSprite->Draw();
+
 	Stage1Sprite->Draw();
 	Stage2Sprite->Draw();
 	Stage3Sprite->Draw();
@@ -470,21 +469,45 @@ void GameScene::Stage1Init()
 
 	//カウントダウン用の画像の初期値の設定
 	countDown->Initialize();
+
+	gameOverFlag = false;
+	skullSizeX = 1280 * 5;
+	skullSizeY = 720 * 5;
+	gameOverTime = 0;
 }
 
 void GameScene::Stage1Update()
 {
-	//objPlayer->moveSphere(objStageBox);
-	//camera->SetTarget(objPlayer->GetPosition());
 	// カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0});
 	camera->SetDistance(20.0f);
 	//シーン遷移
 	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f-10 || gameTimer < 0)
 	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::GameOver);
+		gameOverFlag = true;
+	}
+
+	if (gameOverFlag == true)
+	{
+		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
+		easing::Updete(skullSizeY, 720, 3, gameOverTime);
+		gameOverTime += 0.001f;
+		if (gameOverTime > 0.2)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData1);
+			if (totalPlayerNum == 0)
+			{
+				SceneNo = static_cast<int>(GameSceneNo::GameOver);
+			}
+			else
+			{
+				SceneNo = static_cast<int>(GameSceneNo::StageSelect);
+			}
+			//残機を減らす
+			totalPlayerNum--;
+		}
+		GameOver->SetSize({ (float)skullSizeX, (float)skullSizeY });
 	}
 
 	//3,2,1,スタート
@@ -496,9 +519,15 @@ void GameScene::Stage1Update()
 		gameTimer--;
 	}
 
+	//タイマーを表示
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
 	debugText->Printf("%d", gameTimer/ (int)fps->GetFrame() / 2);
+
+	//プレイヤーの総数を表示
+	debugText->SetPos(150, 64);
+	debugText->SetSize(5);
+	debugText->Printf("%d", totalPlayerNum);
 
 	//雲の移動
 	{
@@ -540,7 +569,7 @@ void GameScene::Stage1Update()
 			{
 				if (enemy[y][x]->GetPosition().x >= 0)
 				{
-					enemy[y][x]->Move();
+					enemy[y][x]->Move("JUMP");
 					for (int w = 0; w < Y_MAX; w++)
 					{
 						for (int z = 0; z < X_MAX; z++)
@@ -649,8 +678,6 @@ void GameScene::Stage1Draw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
 	//FBX
 	for (int i = 0; i < 10; i++)
 	{
@@ -677,7 +704,6 @@ void GameScene::Stage1Draw()
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
-	//objSphere->Draw();
 	// パーティクルの描画
 
 	/*モデル描画後処理*/
@@ -694,7 +720,13 @@ void GameScene::Stage1Draw()
 
 	//カウントダウン描画
 	countDown->Draw();
+	//プレイヤーアイコン表示
+	playerIconSprite->Draw();
 
+	if (gameOverFlag == true)
+	{
+		GameOver->Draw();
+	}
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
@@ -752,8 +784,6 @@ void GameScene::Stage2Init()
 
 void GameScene::Stage2Update()
 {
-	//objPlayer->moveSphere(objStageBox);
-//camera->SetTarget(objPlayer->GetPosition());
 // カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
@@ -902,8 +932,6 @@ void GameScene::Stage2Draw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
 	//FBX
 	for (int i = 0; i < 10; i++)
 	{
@@ -927,7 +955,6 @@ void GameScene::Stage2Draw()
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
-	//objSphere->Draw();
 	// パーティクルの描画
 
 	/*モデル描画後処理*/
@@ -1002,8 +1029,6 @@ void GameScene::Stage3Init()
 
 void GameScene::Stage3Update()
 {
-	//objPlayer->moveSphere(objStageBox);
-//camera->SetTarget(objPlayer->GetPosition());
 // カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
@@ -1152,8 +1177,6 @@ void GameScene::Stage3Draw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
 	//FBX
 	for (int i = 0; i < 10; i++)
 	{
@@ -1177,7 +1200,6 @@ void GameScene::Stage3Draw()
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
-	//objSphere->Draw();
 	// パーティクルの描画
 
 	/*モデル描画後処理*/
@@ -1252,8 +1274,6 @@ void GameScene::Stage4Init()
 
 void GameScene::Stage4Update()
 {
-	//objPlayer->moveSphere(objStageBox);
-//camera->SetTarget(objPlayer->GetPosition());
 // カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
@@ -1402,8 +1422,6 @@ void GameScene::Stage4Draw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
 	//FBX
 	for (int i = 0; i < 10; i++)
 	{
@@ -1427,7 +1445,6 @@ void GameScene::Stage4Draw()
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
-	//objSphere->Draw();
 	// パーティクルの描画
 
 	/*モデル描画後処理*/
@@ -1502,8 +1519,6 @@ void GameScene::Stage5Init()
 
 void GameScene::Stage5Update()
 {
-	//objPlayer->moveSphere(objStageBox);
-//camera->SetTarget(objPlayer->GetPosition());
 // カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
@@ -1652,8 +1667,6 @@ void GameScene::Stage5Draw()
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//objSkydome->Draw();
-	//objGround->Draw();
 	//FBX
 	for (int i = 0; i < 10; i++)
 	{
@@ -1677,7 +1690,6 @@ void GameScene::Stage5Draw()
 	objGoal->Draw();
 	playerParticle->Draw();
 	objPlayer->Draw();
-	//objSphere->Draw();
 	// パーティクルの描画
 
 	/*モデル描画後処理*/
@@ -1719,7 +1731,7 @@ void GameScene::GameOverDraw()
 	/*スプライト描画*/
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
-	GameOver->Draw();
+	EndSprite->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア
@@ -1796,40 +1808,32 @@ void GameScene::staticInit()
 	lightGroup.reset(LightGroup::Create());
 	//3Dオブジェクトにライトをセット
 	ModelObj::SetLightGroup(lightGroup.get());
-	//lightGroup->SetDirLightActive(0, false);
-	//lightGroup->SetDirLightActive(1, false);
-	//lightGroup->SetDirLightActive(2, false);
 	lightGroup->SetDirLightActive(0, true);
 	lightGroup->SetDirLightActive(1, true);
 	lightGroup->SetDirLightActive(2, true);
 
-	//lightGroup->SetPointLightActive(0, false);
-	//lightGroup->SetPointLightActive(1, false);
-	//lightGroup->SetPointLightActive(2, false);
 	lightGroup->SetSpotLightActive(0, true);
 	lightGroup->SetCircleShadowActive(0, true);
 
-	pointLightPos[0] = 0.5f;
-	pointLightPos[1] = 1.0f;
-	pointLightPos[2] = 0.0f;
-
 	//音声読み込み
-	soundData1 = audio->SoundLoadWave("Resources/GAMEBGM.wav",true);
-	soundData2 = audio->SoundLoadWave("Resources/TITLEBGM.wav",true);
-	soundData3 = audio->SoundLoadWave("Resources/SPACESE.wav", false);
+	soundData1 = audio->SoundLoadWave("Resources/sound/GAMEBGM.wav",true);
+	soundData2 = audio->SoundLoadWave("Resources/sound/TITLEBGM.wav",true);
+	soundData3 = audio->SoundLoadWave("Resources/sound/SPACESE.wav", false);
 
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/backGround3.png");
-	Sprite::LoadTexture(2, L"Resources/titleSprite.png");
-	Sprite::LoadTexture(3, L"Resources/StageClear.png");
-	Sprite::LoadTexture(4, L"Resources/GameOver.png");
-	Sprite::LoadTexture(5, L"Resources/e1.png");
-	Sprite::LoadTexture(6, L"Resources/Stage1.png");
-	Sprite::LoadTexture(7, L"Resources/Stage2.png");
-	Sprite::LoadTexture(8, L"Resources/Stage3.png");
-	Sprite::LoadTexture(9, L"Resources/Stage4.png");
-	Sprite::LoadTexture(10, L"Resources/Stage5.png");
-	Sprite::LoadTexture(11, L"Resources/CountStart.png");
+	Sprite::LoadTexture(1, L"Resources/img/backGround3.png");
+	Sprite::LoadTexture(2, L"Resources/img/titleSprite.png");
+	Sprite::LoadTexture(3, L"Resources/img/StageClear.png");
+	Sprite::LoadTexture(4, L"Resources/img/skull.png");
+	Sprite::LoadTexture(5, L"Resources/img/e1.png");
+	Sprite::LoadTexture(6, L"Resources/img/Stage1.png");
+	Sprite::LoadTexture(7, L"Resources/img/Stage2.png");
+	Sprite::LoadTexture(8, L"Resources/img/Stage3.png");
+	Sprite::LoadTexture(9, L"Resources/img/Stage4.png");
+	Sprite::LoadTexture(10, L"Resources/img/Stage5.png");
+	Sprite::LoadTexture(11, L"Resources/img/CountStart.png");
+	Sprite::LoadTexture(12, L"Resources/img/playerIcon.png");
+	Sprite::LoadTexture(13, L"Resources/img/GameOver.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
@@ -1841,6 +1845,8 @@ void GameScene::staticInit()
 	Stage3Sprite = Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	playerIconSprite = Sprite::Create(12, { 64,64 });
+	EndSprite = Sprite::Create(13, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	//カウントダウンクラス初期化
 	countDown = new CountDown();
@@ -1891,6 +1897,8 @@ void GameScene::staticInit()
 	//ライトグループをセット
 	FBXObject3d::SetLightGroup(lightGroup.get());
 
+	//残機を設定
+	totalPlayerNum = 5;
 }
 
 void GameScene::Init()

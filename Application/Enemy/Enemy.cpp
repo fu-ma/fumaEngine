@@ -31,7 +31,9 @@ bool Enemy::Initialize()
 	}
 
 	HP = 1;
-	angleSpeed = -0.01f;
+	angleSpeed = -0.03f;
+	jumpTimer = 60;
+	jump = 0.1f;
 	return true;
 }
 
@@ -55,6 +57,23 @@ void Enemy::Move(const std::string& enemyName)
 		if (speed > gravity * 20)
 		{
 			speed += gravity / 5;
+		}
+		position.y += speed;
+		position.x += angleSpeed;
+	}
+
+	if (enemyName == "JUMP")
+	{
+		//ƒWƒƒƒ“ƒvˆ—
+		if (jumpTimer < 60)
+		{
+			position.y += jump;
+			jumpTimer++;
+		}
+		//d—Íˆ—
+		if (speed > gravity * 15)
+		{
+			speed += gravity / 6;
 		}
 		position.y += speed;
 		position.x += angleSpeed;
@@ -87,7 +106,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 				0
 			};
 
-			angleSpeed = 0.01f;
+			angleSpeed = 0.03f;
 			rotation.y = 0;
 		}
 	}
@@ -103,13 +122,13 @@ void Enemy::CollisionObject(ModelObj *obj2)
 				position.y ,
 				0
 			};
-			angleSpeed = -0.01f;
+			angleSpeed = -0.03f;
 			rotation.y = 180;
 		}
 	}
 	if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
 		{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
-		scale.x, scale.y + 0.5f + speed, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		position =
 		{
@@ -118,6 +137,8 @@ void Enemy::CollisionObject(ModelObj *obj2)
 			0
 		};
 		speed = 0;
+		jump = 0.1f;
+		jumpTimer = 0;
 	}
 }
 
