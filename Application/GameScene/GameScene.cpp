@@ -422,1293 +422,85 @@ void GameScene::Stage1Init()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objPlayer->Initialize();
-	gimmickCenterNum = 0;
-
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			if (map1[y][x] == 1)
-			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
-			}
-			if (map1[y][x] == 2)
-			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
-			}
-			if (map1[y][x] == 10)
-			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
-				objGoal->SetScale({ 1.0f,3.0f,1.0f });
-				objGoal->SetRotation({ 0, 90,0 });
-			}
-		}
-	}
-
-	for (int x = 0; x < X_MAX; x++)
-	{
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			if (map1[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
-		}
-	}
-	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
-	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
-
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
-
-	//カウントダウン用の画像の初期値の設定
-	countDown->Initialize();
-
-	gameOverFlag = false;
-	skullSizeX = 1280 * 5;
-	skullSizeY = 720 * 5;
-	gameOverTime = 0;
+	StageSet(map1);
 }
 
 void GameScene::Stage1Update()
 {
-	// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0});
-	camera->SetDistance(20.0f);
-	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f-10 || gameTimer < 0)
-	{
-		gameOverFlag = true;
-	}
-
-	if (gameOverFlag == true)
-	{
-		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
-		easing::Updete(skullSizeY, 720, 3, gameOverTime);
-		gameOverTime += 0.001f;
-		if (gameOverTime > 0.2)
-		{
-			SceneTime = 0;
-			audio->StopLoadedSound(soundData1);
-			if (totalPlayerNum == 0)
-			{
-				SceneNo = static_cast<int>(GameSceneNo::GameOver);
-			}
-			else
-			{
-				SceneNo = static_cast<int>(GameSceneNo::StageSelect);
-			}
-			//残機を減らす
-			totalPlayerNum--;
-		}
-		GameOver->SetSize({ (float)skullSizeX, (float)skullSizeY });
-	}
-
-	//3,2,1,スタート
-	countDown->Update();
-
-	//スターと表示がされてからしばらくして
-	if (countDown->GetStart() >= 0.8)
-	{
-		gameTimer--;
-	}
-
-	//タイマーを表示
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer/ (int)fps->GetFrame() / 2);
-
-	//プレイヤーの総数を表示
-	debugText->SetPos(150, 64);
-	debugText->SetSize(5);
-	debugText->Printf("%d", totalPlayerNum);
-
-	//雲の移動
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			cloudPos[i].x -= 0.01f;
-			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
-			{
-				if (i == 0)
-				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-				else
-				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-			}
-			cloud[i]->SetPosition(cloudPos[i]);
-		}
-	}
-
-	//動くようになる
-	if (countDown->GetStart() >= 0.2)
-	{
-		firebar->Move();
-		firebar2->Move(true);
-		if (playerParticle->GetFlag() == false)
-		{
-			objPlayer->notOnCollision();
-		}
-		if (objPlayer->GetHP() > 0)
-		{
-			objPlayer->Move();
-		}
-
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (enemy[y][x]->GetPosition().x >= 0)
-				{
-					enemy[y][x]->Move("JUMP");
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//あたり判定
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-		}
-	}
-
-	//あたり判定
-	objPlayer->CollisionObj(firebar->GetCenter());
-	for (int i = 0; i < firebar->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar->GetFire(i));
-		}
-	}
-
-	objPlayer->CollisionObj(firebar2->GetCenter());
-	for (int i = 0; i < firebar2->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar2->GetFire(i));
-		}
-	}
-
-
-	if (objPlayer->CollisionGoal(objGoal) == true)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::Clear);
-		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
-		{
-			selectNum += 1;
-		}
-	}
-
-	if (objPlayer->GetOnCollision())
-	{
-		playerParticle->SetFlag(true);
-	}
-
-	lightGroup->Update();
-	camera->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
-	}
-
-	firebar->Update();
-	firebar2->Update();
-
-	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-		}
-	}
-
-	objGoal->Update();
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	StageUpdate();
 }
 
 void GameScene::Stage1Draw()
 {
-#pragma region 描画処理
-
-	///*スプライト描画*/
-	///*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-
-	//// 背景スプライト描画
-	backGround->Draw();
-	///*スプライト描画後処理*/
-	Sprite::PostDraw();
-	////深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*モデル描画*/
-	/*モデル描画前処理*/
-	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//FBX
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Draw();
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-		}
-	}
-
-	firebar->Draw();
-	firebar2->Draw();
-
-	objGoal->Draw();
-	playerParticle->Draw();
-	objPlayer->Draw();
-	// パーティクルの描画
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
-
-	//深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
-
-	//カウントダウン描画
-	countDown->Draw();
-	//プレイヤーアイコン表示
-	playerIconSprite->Draw();
-
-	if (gameOverFlag == true)
-	{
-		GameOver->Draw();
-	}
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
+	StageDraw();
 }
 
 void GameScene::Stage2Init()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objPlayer->Initialize();
-	gimmickCenterNum = 0;
-
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			if (map2[y][x] == 1)
-			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
-			}
-			if (map2[y][x] == 2)
-			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
-			}
-			if (map2[y][x] == 10)
-			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
-				objGoal->SetScale({ 1.0f,3.0f,1.0f });
-				objGoal->SetRotation({ 0, 90,0 });
-			}
-		}
-	}
-
-	for (int x = 0; x < X_MAX; x++)
-	{
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			if (map2[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
-		}
-	}
-
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
-
-	//カウントダウン用の画像の初期値の設定
-	countDown->Initialize();
+	StageSet(map2);
 }
 
 void GameScene::Stage2Update()
 {
-// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
-	camera->SetDistance(20.0f);
-	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::GameOver);
-	}
-
-	//3,2,1,スタート
-	countDown->Update();
-
-	//スターと表示がされてからしばらくして
-	if (countDown->GetStart() >= 0.8)
-	{
-		gameTimer--;
-	}
-
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
-
-	//雲の移動
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			cloudPos[i].x -= 0.01f;
-			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
-			{
-				if (i == 0)
-				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-				else
-				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-			}
-			cloud[i]->SetPosition(cloudPos[i]);
-		}
-	}
-
-	//動くようになる
-	if (countDown->GetStart() >= 0.2)
-	{
-		if (playerParticle->GetFlag() == false)
-		{
-			objPlayer->notOnCollision();
-		}
-		if (objPlayer->GetHP() > 0)
-		{
-			objPlayer->Move();
-		}
-
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (enemy[y][x]->GetPosition().x >= 0)
-				{
-					enemy[y][x]->Move();
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//あたり判定
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-		}
-	}
-
-	if (objPlayer->CollisionGoal(objGoal) == true)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::Clear);
-		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
-		{
-			selectNum += 1;
-		}
-	}
-
-	if (objPlayer->GetOnCollision())
-	{
-		playerParticle->SetFlag(true);
-	}
-
-	lightGroup->Update();
-	camera->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
-	}
-
-	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-		}
-	}
-
-	objGoal->Update();
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	StageUpdate();
 }
 
 void GameScene::Stage2Draw()
 {
-#pragma region 描画処理
-
-	///*スプライト描画*/
-	///*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-
-	//// 背景スプライト描画
-	backGround->Draw();
-	///*スプライト描画後処理*/
-	Sprite::PostDraw();
-	////深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*モデル描画*/
-	/*モデル描画前処理*/
-	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//FBX
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Draw();
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-		}
-	}
-
-	objGoal->Draw();
-	playerParticle->Draw();
-	objPlayer->Draw();
-	// パーティクルの描画
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
-
-	//深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
-
-	//カウントダウン描画
-	countDown->Draw();
-
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
+	StageDraw();
 }
 
 void GameScene::Stage3Init()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objPlayer->Initialize();
-	gimmickCenterNum = 0;
-
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			if (map3[y][x] == 1)
-			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
-			}
-			if (map3[y][x] == 2)
-			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
-			}
-			if (map3[y][x] == 10)
-			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
-				objGoal->SetScale({ 1.0f,3.0f,1.0f });
-				objGoal->SetRotation({ 0, 90,0 });
-			}
-		}
-	}
-
-	for (int x = 0; x < X_MAX; x++)
-	{
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			if (map3[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
-		}
-	}
-
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
-
-	//カウントダウン用の画像の初期値の設定
-	countDown->Initialize();
+	StageSet(map3);
 }
 
 void GameScene::Stage3Update()
 {
-// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
-	camera->SetDistance(20.0f);
-	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::GameOver);
-	}
-
-	//3,2,1,スタート
-	countDown->Update();
-
-	//スターと表示がされてからしばらくして
-	if (countDown->GetStart() >= 0.8)
-	{
-		gameTimer--;
-	}
-
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
-
-	//雲の移動
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			cloudPos[i].x -= 0.01f;
-			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
-			{
-				if (i == 0)
-				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-				else
-				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-			}
-			cloud[i]->SetPosition(cloudPos[i]);
-		}
-	}
-
-	//動くようになる
-	if (countDown->GetStart() >= 0.2)
-	{
-		if (playerParticle->GetFlag() == false)
-		{
-			objPlayer->notOnCollision();
-		}
-		if (objPlayer->GetHP() > 0)
-		{
-			objPlayer->Move();
-		}
-
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (enemy[y][x]->GetPosition().x >= 0)
-				{
-					enemy[y][x]->Move();
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//あたり判定
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-		}
-	}
-
-	if (objPlayer->CollisionGoal(objGoal) == true)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::Clear);
-		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
-		{
-			selectNum += 1;
-		}
-	}
-
-	if (objPlayer->GetOnCollision())
-	{
-		playerParticle->SetFlag(true);
-	}
-
-	lightGroup->Update();
-	camera->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
-	}
-
-	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-		}
-	}
-
-	objGoal->Update();
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	StageUpdate();
 }
 
 void GameScene::Stage3Draw()
 {
-#pragma region 描画処理
-
-	///*スプライト描画*/
-	///*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-
-	//// 背景スプライト描画
-	backGround->Draw();
-	///*スプライト描画後処理*/
-	Sprite::PostDraw();
-	////深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*モデル描画*/
-	/*モデル描画前処理*/
-	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//FBX
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Draw();
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-		}
-	}
-
-	objGoal->Draw();
-	playerParticle->Draw();
-	objPlayer->Draw();
-	// パーティクルの描画
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
-
-	//深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
-
-	//カウントダウン描画
-	countDown->Draw();
-
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
+	StageDraw();
 }
 
 void GameScene::Stage4Init()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objPlayer->Initialize();
-	gimmickCenterNum = 0;
-
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			if (map4[y][x] == 1)
-			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
-			}
-			if (map4[y][x] == 2)
-			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
-			}
-			if (map4[y][x] == 10)
-			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
-				objGoal->SetScale({ 1.0f,3.0f,1.0f });
-				objGoal->SetRotation({ 0, 90,0 });
-			}
-		}
-	}
-
-	for (int x = 0; x < X_MAX; x++)
-	{
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			if (map4[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
-		}
-	}
-
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
-
-	//カウントダウン用の画像の初期値の設定
-	countDown->Initialize();
+	StageSet(map4);
 }
 
 void GameScene::Stage4Update()
 {
-// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
-	camera->SetDistance(20.0f);
-	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::GameOver);
-	}
-
-	//3,2,1,スタート
-	countDown->Update();
-
-	//スターと表示がされてからしばらくして
-	if (countDown->GetStart() >= 0.8)
-	{
-		gameTimer--;
-	}
-
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
-
-	//雲の移動
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			cloudPos[i].x -= 0.01f;
-			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
-			{
-				if (i == 0)
-				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-				else
-				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-			}
-			cloud[i]->SetPosition(cloudPos[i]);
-		}
-	}
-
-	//動くようになる
-	if (countDown->GetStart() >= 0.2)
-	{
-		if (playerParticle->GetFlag() == false)
-		{
-			objPlayer->notOnCollision();
-		}
-		if (objPlayer->GetHP() > 0)
-		{
-			objPlayer->Move();
-		}
-
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (enemy[y][x]->GetPosition().x >= 0)
-				{
-					enemy[y][x]->Move();
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//あたり判定
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-		}
-	}
-
-	if (objPlayer->CollisionGoal(objGoal) == true)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::Clear);
-		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
-		{
-			selectNum += 1;
-		}
-	}
-
-	if (objPlayer->GetOnCollision())
-	{
-		playerParticle->SetFlag(true);
-	}
-
-	lightGroup->Update();
-	camera->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
-	}
-
-	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-		}
-	}
-
-	objGoal->Update();
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	StageUpdate();
 }
 
 void GameScene::Stage4Draw()
 {
-#pragma region 描画処理
-
-	///*スプライト描画*/
-	///*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-
-	//// 背景スプライト描画
-	backGround->Draw();
-	///*スプライト描画後処理*/
-	Sprite::PostDraw();
-	////深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*モデル描画*/
-	/*モデル描画前処理*/
-	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//FBX
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Draw();
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-		}
-	}
-
-	objGoal->Draw();
-	playerParticle->Draw();
-	objPlayer->Draw();
-	// パーティクルの描画
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
-
-	//深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
-
-	//カウントダウン描画
-	countDown->Draw();
-
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
+	StageDraw();
 }
 
 void GameScene::Stage5Init()
 {
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
-	objPlayer->Initialize();
-	gimmickCenterNum = 0;
-
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			if (map5[y][x] == 1)
-			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
-			}
-			if (map5[y][x] == 2)
-			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
-			}
-			if (map5[y][x] == 10)
-			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
-				objGoal->SetScale({ 1.0f,3.0f,1.0f });
-				objGoal->SetRotation({ 0, 90,0 });
-			}
-		}
-	}
-
-	for (int x = 0; x < X_MAX; x++)
-	{
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			if (map5[y][x] == 3)
-			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
-				gimmickCenterNum++;
-			}
-		}
-	}
-
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
-
-	//カウントダウン用の画像の初期値の設定
-	countDown->Initialize();
+	StageSet(map5);
 }
 
 void GameScene::Stage5Update()
 {
-// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
-	camera->SetDistance(20.0f);
-	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::GameOver);
-	}
-
-	//3,2,1,スタート
-	countDown->Update();
-
-	//スターと表示がされてからしばらくして
-	if (countDown->GetStart() >= 0.8)
-	{
-		gameTimer--;
-	}
-
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
-
-	//雲の移動
-	{
-		for (int i = 0; i < 10; i++)
-		{
-			cloudPos[i].x -= 0.01f;
-			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
-			{
-				if (i == 0)
-				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-				else
-				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
-				}
-			}
-			cloud[i]->SetPosition(cloudPos[i]);
-		}
-	}
-
-	//動くようになる
-	if (countDown->GetStart() >= 0.2)
-	{
-		if (playerParticle->GetFlag() == false)
-		{
-			objPlayer->notOnCollision();
-		}
-		if (objPlayer->GetHP() > 0)
-		{
-			objPlayer->Move();
-		}
-
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (enemy[y][x]->GetPosition().x >= 0)
-				{
-					enemy[y][x]->Move();
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	//あたり判定
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-		}
-	}
-
-	if (objPlayer->CollisionGoal(objGoal) == true)
-	{
-		SceneTime = 0;
-		audio->StopLoadedSound(soundData1);
-		SceneNo = static_cast<int>(GameSceneNo::Clear);
-		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
-		{
-			selectNum += 1;
-		}
-	}
-
-	if (objPlayer->GetOnCollision())
-	{
-		playerParticle->SetFlag(true);
-	}
-
-	lightGroup->Update();
-	camera->Update();
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
-	}
-
-	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-		}
-	}
-
-	objGoal->Update();
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	StageUpdate();
 }
 
 void GameScene::Stage5Draw()
 {
-#pragma region 描画処理
-
-	///*スプライト描画*/
-	///*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-
-	//// 背景スプライト描画
-	backGround->Draw();
-	///*スプライト描画後処理*/
-	Sprite::PostDraw();
-	////深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*モデル描画*/
-	/*モデル描画前処理*/
-	ModelObj::PreDraw(common->GetCmdList().Get());
-
-	//FBX
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Draw();
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-		}
-	}
-
-	objGoal->Draw();
-	playerParticle->Draw();
-	objPlayer->Draw();
-	// パーティクルの描画
-
-	/*モデル描画後処理*/
-	ModelObj::PostDraw();
-
-	//深度バッファクリア
-	common->ClearDepthBuffer();
-
-	/*スプライト描画*/
-	/*スプライト描画前処理*/
-	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	debugText->DrawAll(common->GetCmdList().Get());
-
-	//カウントダウン描画
-	countDown->Draw();
-
-	/*スプライト描画後処理*/
-	Sprite::PostDraw();
+	StageDraw();
 }
 
 void GameScene::GameOverInit()
@@ -1799,6 +591,362 @@ void GameScene::EndDraw()
 	common->ClearDepthBuffer();
 }
 
+void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
+{
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			map[y][x] = Map[y][x];
+		}
+	}
+	objPlayer->Initialize();
+	gimmickCenterNum = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			
+			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->Initialize();
+			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetRotation({ 0,180,0 });
+			objRedBlock[y][x]->SetPosition({ -100,0,0 });
+			objBlueBlock[y][x]->SetPosition({ -100,0,0 });
+
+			if (map[y][x] == 1)
+			{
+				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map[y][x] == 2)
+			{
+				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+			}
+			if (map[y][x] == 4)
+			{
+				objRedBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map[y][x] == 5)
+			{
+				objBlueBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			if (map[y][x] == 10)
+			{
+				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetScale({ 1.0f,3.0f,1.0f });
+				objGoal->SetRotation({ 0, 90,0 });
+			}
+		}
+	}
+
+	for (int x = 0; x < X_MAX; x++)
+	{
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			gimmickCenter[x] = { -100,0,0 };
+
+			if (map[y][x] == 3)
+			{
+				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenterNum++;
+			}
+		}
+	}
+	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
+	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
+
+	gameTimer = (int)fps->GetFrame() * 60 * 2;
+
+	//カウントダウン用の画像の初期値の設定
+	countDown->Initialize();
+
+	gameOverFlag = false;
+	skullSizeX = 1280 * 5;
+	skullSizeY = 720 * 5;
+	gameOverTime = 0;
+}
+
+void GameScene::StageUpdate()
+{
+	// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetDistance(20.0f);
+	//シーン遷移
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	{
+		gameOverFlag = true;
+	}
+
+	//デス時の画面遷移
+	if (gameOverFlag == true)
+	{
+		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
+		easing::Updete(skullSizeY, 720, 3, gameOverTime);
+		gameOverTime += 0.001f;
+		if (gameOverTime > 0.2)
+		{
+			SceneTime = 0;
+			audio->StopLoadedSound(soundData1);
+			if (totalPlayerNum == 0)
+			{
+				SceneNo = static_cast<int>(GameSceneNo::GameOver);
+			}
+			else
+			{
+				SceneNo = static_cast<int>(GameSceneNo::StageSelect);
+			}
+			//残機を減らす
+			totalPlayerNum--;
+		}
+		GameOver->SetSize({ (float)skullSizeX, (float)skullSizeY });
+	}
+
+	//3,2,1,スタート
+	countDown->Update();
+
+	//スターと表示がされてからしばらくして
+	if (countDown->GetStart() >= 0.8)
+	{
+		gameTimer--;
+	}
+
+	//タイマーを表示
+	debugText->SetPos(1200, 50);
+	debugText->SetSize(3);
+	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
+
+	//プレイヤーの総数を表示
+	debugText->SetPos(150, 64);
+	debugText->SetSize(5);
+	debugText->Printf("%d", totalPlayerNum);
+
+	//雲の移動
+	{
+		for (int i = 0; i < 10; i++)
+		{
+			cloudPos[i].x -= 0.01f;
+			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
+			{
+				if (i == 0)
+				{
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+				else
+				{
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				}
+			}
+			cloud[i]->SetPosition(cloudPos[i]);
+		}
+	}
+
+	//動くようになる
+	if (countDown->GetStart() >= 0.2)
+	{
+		firebar->Move();
+		firebar2->Move(true);
+		if (playerParticle->GetFlag() == false)
+		{
+			objPlayer->notOnCollision();
+		}
+		if (objPlayer->GetHP() > 0)
+		{
+			objPlayer->Move();
+		}
+
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				if (enemy[y][x]->GetPosition().x >= 0)
+				{
+					enemy[y][x]->Move("JUMP");
+					for (int w = 0; w < Y_MAX; w++)
+					{
+						for (int z = 0; z < X_MAX; z++)
+						{
+							enemy[y][x]->CollisionObject(objStageBox[w][z]);
+						}
+					}
+				}
+			}
+		}
+	}
+
+	//あたり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objPlayer->CollisionObj(objStageBox[y][x]);
+			objPlayer->CollisionEnemy(enemy[y][x]);
+			if (objPlayer->GetJumpChangeBlockFlag() == false)
+			{
+				objPlayer->CollisionObj(objRedBlock[y][x]);
+			}
+			if (objPlayer->GetJumpChangeBlockFlag() == true)
+			{
+				objPlayer->CollisionObj(objBlueBlock[y][x]);
+			}
+		}
+	}
+
+	//あたり判定
+	objPlayer->CollisionObj(firebar->GetCenter());
+	for (int i = 0; i < firebar->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar->GetFire(i));
+		}
+	}
+
+	objPlayer->CollisionObj(firebar2->GetCenter());
+	for (int i = 0; i < firebar2->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar2->GetFire(i));
+		}
+	}
+
+
+	if (objPlayer->CollisionGoal(objGoal) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData1);
+		SceneNo = static_cast<int>(GameSceneNo::Clear);
+		//ステージ番号を次のステージの番号にする
+		if (selectNum < 4)
+		{
+			selectNum += 1;
+		}
+	}
+
+	if (objPlayer->GetOnCollision())
+	{
+		playerParticle->SetFlag(true);
+	}
+
+	lightGroup->Update();
+	camera->Update();
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
+	}
+
+	firebar->Update();
+	firebar2->Update();
+
+	objPlayer->Update();
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Update();
+			}
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Update();
+			}
+			if (objRedBlock[y][x]->GetPosition().x >= 0)
+			{
+				objRedBlock[y][x]->Update();
+			}
+			if (objBlueBlock[y][x]->GetPosition().x >= 0)
+			{
+				objBlueBlock[y][x]->Update();
+			}
+		}
+	}
+
+	objGoal->Update();
+	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+}
+
+void GameScene::StageDraw()
+{
+#pragma region 描画処理
+
+	///*スプライト描画*/
+	///*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+
+	//// 背景スプライト描画
+	backGround->Draw();
+	///*スプライト描画後処理*/
+	Sprite::PostDraw();
+	////深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*モデル描画*/
+	/*モデル描画前処理*/
+	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//FBX
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Draw();
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemy[y][x]->Draw();
+			}
+			if (objStageBox[y][x]->GetPosition().x >= 0)
+			{
+				objStageBox[y][x]->Draw();
+			}
+			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
+			{
+				objRedBlock[y][x]->Draw();
+			}
+			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
+			{
+				objBlueBlock[y][x]->Draw();
+			}
+		}
+	}
+
+	firebar->Draw();
+	firebar2->Draw();
+
+	objGoal->Draw();
+	playerParticle->Draw();
+	objPlayer->Draw();
+	// パーティクルの描画
+
+	/*モデル描画後処理*/
+	ModelObj::PostDraw();
+
+	//深度バッファクリア
+	common->ClearDepthBuffer();
+
+	/*スプライト描画*/
+	/*スプライト描画前処理*/
+	Sprite::PreDraw(common->GetCmdList().Get());
+	// デバッグテキストの描画
+	debugText->DrawAll(common->GetCmdList().Get());
+
+	//カウントダウン描画
+	countDown->Draw();
+	//プレイヤーアイコン表示
+	playerIconSprite->Draw();
+
+	if (gameOverFlag == true)
+	{
+		GameOver->Draw();
+	}
+	/*スプライト描画後処理*/
+	Sprite::PostDraw();
+}
+
 void GameScene::staticInit()
 {
 	//基底クラスの初期化
@@ -1857,6 +1005,8 @@ void GameScene::staticInit()
 	modelStageBox = Model::CreateFromOBJ("StageBox", true);
 	modelCloud = Model::CreateFromOBJ("cloud", true);
 	modelGoal = Model::CreateFromOBJ("goal", true);
+	modelRedBlock = Model::CreateFromOBJ("redBlock", true);
+	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(modelPlayer);
 
@@ -1870,6 +1020,8 @@ void GameScene::staticInit()
 		{
 			objStageBox[y][x] = ModelObj::Create(modelStageBox);
 			enemy[y][x] = Enemy::Create(modelEnemy);
+			objRedBlock[y][x] = ModelObj::Create(modelRedBlock);
+			objBlueBlock[y][x] = ModelObj::Create(modelBlueBlock);
 		}
 	}
 

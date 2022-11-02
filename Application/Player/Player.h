@@ -39,6 +39,7 @@ public:
 
 	const bool &GetOnCollision() { return onCollisionFlag; }
 	void notOnCollision() { this->onCollisionFlag = false; }
+	const bool &GetJumpChangeBlockFlag() { return jumpChangeBlockFlag; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);
@@ -90,6 +91,9 @@ private:
 	bool onCollisionFlag = false;
 
 	float moveSpeed;
+
+	//ジャンプで切り替わる床用のフラグ
+	bool jumpChangeBlockFlag;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

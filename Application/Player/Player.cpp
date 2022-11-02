@@ -62,6 +62,8 @@ bool Player::Initialize()
 	moveFlag = false;
 
 	moveSpeed = 0.15f;
+
+	jumpChangeBlockFlag = false;
 	return true;
 }
 
@@ -185,6 +187,10 @@ void Player::Move()
 
 		if (jumpFlag == false)
 		{
+			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+			{
+				jumpChangeBlockFlag = !jumpChangeBlockFlag;
+			}
 			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
 			{
 				if (jumpTimer < jumpMax)
