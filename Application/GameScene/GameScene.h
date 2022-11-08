@@ -55,6 +55,9 @@ private:
 	Sprite *Stage5Sprite = nullptr;
 	Sprite *playerIconSprite = nullptr;
 	Sprite *EndSprite = nullptr;
+	Sprite *goTitle = nullptr;
+	Sprite *reStart = nullptr;
+	Sprite *Return = nullptr;
 
 	//プレイヤー
 	Model *modelPlayer = nullptr;
@@ -120,6 +123,17 @@ private:
 	double stage5SpriteSize;
 	const int stageSpriteMinSize = 256;
 	const int stageSpriteMaxSize = 512;
+
+	//一時停止フラグ
+	bool stopFlag;
+	double stopMoveTime;
+	int stopNum;
+
+	double goTitleSpriteSize;
+	double reStartSpriteSize;
+	double ReturnSpriteSize;
+	const int stopSpriteMaxSize = 128;
+	const int stopSpriteMinSize = 64;
 
 	//ステージ選択画面の配列
 	const int selectMap[6][24]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -281,7 +295,13 @@ public:
 		playerIconSprite = nullptr;
 		delete EndSprite;
 		EndSprite = nullptr;
-		
+		delete goTitle;
+		goTitle = nullptr;
+		delete reStart;
+		reStart = nullptr;
+		delete Return;
+		Return = nullptr;
+
 		delete playerParticle;
 		playerParticle = nullptr;
 		delete objGoal;

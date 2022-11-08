@@ -233,6 +233,12 @@ void GameScene::StageSelectUpdate()
 	debugText->SetSize(5);
 	debugText->Printf("%d", totalPlayerNum);
 
+	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
+	{
+		SceneTime = 0;
+		audio->StopLoadedSound(soundData2);
+		SceneNo = static_cast<int>(GameSceneNo::Title);
+	}
 	//ステージセレクト
 	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
 		&& selectNum > 0 && selectMoveTime >= 0.2f)
@@ -268,10 +274,6 @@ void GameScene::StageSelectUpdate()
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
-		if ((input->isKeyTrigger(DIK_R) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true))
-		{
-			Stage1Init();
-		}
 	}
 	if (selectNum == 2)
 	{
@@ -665,6 +667,16 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 	skullSizeX = 1280 * 5;
 	skullSizeY = 720 * 5;
 	gameOverTime = 0;
+
+	stopFlag = false;
+	stopNum = 0;
+	stopMoveTime = 0;
+	if (stopNum == 0)
+	{
+		goTitleSpriteSize = stopSpriteMinSize;
+		reStartSpriteSize = stopSpriteMinSize;
+		ReturnSpriteSize = stopSpriteMaxSize;
+	}
 }
 
 void GameScene::StageUpdate()
@@ -676,6 +688,76 @@ void GameScene::StageUpdate()
 	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
 	{
 		gameOverFlag = true;
+	}
+
+	//Escかスタートボタン（コントローラー）を押したときに一時停止する
+	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
+	{
+		stopFlag = !stopFlag;
+	}
+
+	if (stopFlag == true)
+	{
+		if (input->isKeyTrigger(DIK_W) || controller->TriggerButton(static_cast<int>(Button::UP)) == true)
+		{
+			if (stopNum < 2 && stopMoveTime >= 0.2f)
+			{
+				stopMoveTime = 0;
+				stopNum++;
+			}
+		}
+		else if (input->isKeyTrigger(DIK_S) || controller->TriggerButton(static_cast<int>(Button::DOWN)) == true)
+		{
+			if (stopNum > 0 && stopMoveTime >= 0.2f)
+			{
+				stopMoveTime = 0;
+				stopNum--;
+			}
+		}
+		else
+		{
+			stopMoveTime += 0.008f;
+		}
+	}
+	if (stopNum == 0)
+	{
+		easing::Updete(goTitleSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+		easing::Updete(reStartSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+		easing::Updete(ReturnSpriteSize, stopSpriteMaxSize, InSine, stopMoveTime);
+	}
+	if (stopNum == 1)
+	{
+		easing::Updete(goTitleSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+		easing::Updete(reStartSpriteSize, stopSpriteMaxSize, InSine, stopMoveTime);
+		easing::Updete(ReturnSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+	}
+	if (stopNum == 2)
+	{
+		easing::Updete(goTitleSpriteSize, stopSpriteMaxSize, InSine, stopMoveTime);
+		easing::Updete(reStartSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+		easing::Updete(ReturnSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
+	}
+
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	{
+		//モドルボタンを押したとき
+		if (stopNum == 0 && stopMoveTime >= 0.2f)
+		{
+			stopFlag = false;
+		}
+
+		//リスタートボタンを押したとき
+		if (stopNum == 1 && stopMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+		}
+
+		//セレクトに戻るボタンを押したとき
+		if (stopNum == 2 && stopMoveTime >= 0.2f)
+		{
+			SceneTime = 0;
+			SceneNo = static_cast<int>(GameSceneNo::StageSelect);
+		}
 	}
 
 	//デス時の画面遷移
@@ -703,12 +785,19 @@ void GameScene::StageUpdate()
 	}
 
 	//3,2,1,スタート
-	countDown->Update();
+	if (stopFlag == false)
+	{
+		countDown->Update();
+	}
 
 	//スターと表示がされてからしばらくして
 	if (countDown->GetStart() >= 0.8)
 	{
-		gameTimer--;
+		//一時停止していなかったら
+		if (stopFlag == false)
+		{
+			gameTimer--;
+		}
 	}
 
 	//タイマーを表示
@@ -742,7 +831,7 @@ void GameScene::StageUpdate()
 	}
 
 	//動くようになる
-	if (countDown->GetStart() >= 0.2)
+	if (countDown->GetStart() >= 0.2 && stopFlag == false)
 	{
 		firebar->Move();
 		firebar2->Move(true);
@@ -865,6 +954,10 @@ void GameScene::StageUpdate()
 
 	objGoal->Update();
 	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+
+	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
+	reStart->SetSize({ (float)reStartSpriteSize * 3,(float)reStartSpriteSize });
+	Return->SetSize({ (float)ReturnSpriteSize * 3,(float)ReturnSpriteSize });
 }
 
 void GameScene::StageDraw()
@@ -935,10 +1028,22 @@ void GameScene::StageDraw()
 	debugText->DrawAll(common->GetCmdList().Get());
 
 	//カウントダウン描画
-	countDown->Draw();
+	if (stopFlag == false)
+	{
+		countDown->Draw();
+	}
 	//プレイヤーアイコン表示
 	playerIconSprite->Draw();
 
+	//一時停止したら
+	if (stopFlag == true)
+	{
+		goTitle->Draw();
+		reStart->Draw();
+		Return->Draw();
+	}
+
+	//ゲームオーバーの遷移
 	if (gameOverFlag == true)
 	{
 		GameOver->Draw();
@@ -982,6 +1087,9 @@ void GameScene::staticInit()
 	Sprite::LoadTexture(11, L"Resources/img/CountStart.png");
 	Sprite::LoadTexture(12, L"Resources/img/playerIcon.png");
 	Sprite::LoadTexture(13, L"Resources/img/GameOver.png");
+	Sprite::LoadTexture(14, L"Resources/img/title.png");
+	Sprite::LoadTexture(15, L"Resources/img/restart.png");
+	Sprite::LoadTexture(16, L"Resources/img/Return.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
@@ -995,6 +1103,9 @@ void GameScene::staticInit()
 	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
 	EndSprite = Sprite::Create(13, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	goTitle = Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f });
+	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
 
 	//カウントダウンクラス初期化
 	countDown = new CountDown();

@@ -99,7 +99,7 @@ bool Framework::Update()
 	input->Update();
 	controller->Update(0);
 
-	if (winApp->ProcessMessage() || input->isKeyTrigger(DIK_ESCAPE))
+	if (winApp->ProcessMessage())
 	{
 		return false;
 	}
