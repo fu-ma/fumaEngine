@@ -5,6 +5,8 @@ enum class TYPE
 {
 	explosion = 0,
 	move,
+	LEFT,
+	RIGHT,
 };
 class Particle
 {
@@ -23,6 +25,7 @@ private:
 
 	bool moveFlag[PARTICLE_NUM];
 	bool setFlag;
+	int time;
 public:
 	Particle()
 	{
@@ -53,7 +56,8 @@ public:
 	/// <summary>
 	/// ñàÉtÉåÅ[ÉÄèàóù
 	/// </summary>
-	void Update(const int& moveNum, const XMFLOAT3& particlePos);
+	void Set(const XMFLOAT3 &particlePos);
+	void Update(const int& moveNum, const XMFLOAT3 &particlePos);
 	void Draw();
 
 	void SetPositionAll(XMFLOAT3 pos)

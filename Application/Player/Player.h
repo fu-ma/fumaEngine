@@ -6,6 +6,7 @@
 #include"Collision.h"
 #include"Enemy.h"
 #include"easing.h"
+#include"Particle.h"
 
 class Player : public ModelObj
 {
@@ -18,7 +19,7 @@ public:
 	/// <returns></returns>
 	static Player* Create(Model * model = nullptr);
 public:
-
+	bool StaticInit();
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -94,6 +95,10 @@ private:
 
 	//ジャンプで切り替わる床用のフラグ
 	bool jumpChangeBlockFlag;
+
+	//移動時パーティクル
+	Model *modelParticle = nullptr;
+	Particle *moveParticle;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

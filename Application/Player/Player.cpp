@@ -17,17 +17,33 @@ Player * Player::Create(Model * model)
 		return nullptr;
 	}
 
+	if (!instance->StaticInit())
+	{
+		delete instance;
+		assert(0);
+	}
 	// 初期化
-	if (!instance->Initialize()) {
+	if (!instance->Initialize())
+	{
 		delete instance;
 		assert(0);
 	}
 
-	if (model) {
+	if (model)
+	{
 		instance->SetModel(model);
 	}
 
 	return instance;
+}
+
+bool Player::StaticInit()
+{
+	modelParticle = Model::CreateFromOBJ("player", true);
+	moveParticle = new Particle();
+	moveParticle->Initialize(modelParticle);
+
+	return true;
 }
 
 bool Player::Initialize()
@@ -64,6 +80,8 @@ bool Player::Initialize()
 	moveSpeed = 0.15f;
 
 	jumpChangeBlockFlag = false;
+
+	moveParticle->SetFlag(true);
 	return true;
 }
 
@@ -81,6 +99,9 @@ void Player::Update()
 	{
 		scale = { 0.0f,0.0f,0.0f };
 	}
+
+	moveParticle->Update(2, { position.x,position.y , 0 });
+
 	// 行列の更新など
 	ModelObj::Update();
 }
@@ -91,6 +112,7 @@ void Player::Draw()
 	{
 		ModelObj::Draw();
 	}
+	moveParticle->Draw();
 }
 
 void Player::Move()
@@ -164,7 +186,8 @@ void Player::Move()
 	//移動処理
 	if (moveFlag == false)
 	{
-		if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
+		if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
+			input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
 		{
 			if (leftWallJumpFlag == false)
 			{
@@ -173,8 +196,10 @@ void Player::Move()
 
 			//プレイヤーの向きを左側にする
 			rotation.y = 180;
+			moveParticle->Set({ position.x,position.y , 0 });
 		}
-		else if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
+		else if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
+			(input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false))
 		{
 			if (rightWallJumpFlag == false)
 			{
@@ -183,6 +208,7 @@ void Player::Move()
 
 			//プレイヤーの向きを右側にする
 			rotation.y = 0;
+			moveParticle->Set({ position.x,position.y , 0 });
 		}
 
 		if (jumpFlag == false)
@@ -313,6 +339,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				rotation.y = 180;
 				rotation.z = 0;
+				rightWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
 					leftWallJumpFlag = true;
@@ -338,6 +365,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				rotation.y = 0;
 				rotation.z = 0;
+				leftWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
 					rightWallJumpFlag = true;
@@ -364,6 +392,10 @@ void Player::CollisionObj(ModelObj *obj2)
 			jumpTimer = 0;
 			jumpFlag = false;
 		}
+		rightWallJumpFlag = false;
+		rightWallColFlag = false;
+		leftWallJumpFlag = false;
+		leftWallColFlag = false;
 	}
 
 	if (Collision::CheckBox2Box({ position.x - 0.1f,position.y + 0.1f,0 },
@@ -377,7 +409,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		jumpFlag = true;
-		leftWallJumpFlag = false;
+		rightWallJumpFlag = false;
 		leftWallJumpFlag = false;
 	}
 
