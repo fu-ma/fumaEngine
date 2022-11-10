@@ -1,0 +1,7 @@
+C:\Users\s-fum\OneDrive\デスクトップ\自作エンジンいじる用\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\自作ゲーム - コピー\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\fumaEngineいじる用 - コピー\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\fumaEngineいじる用2\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\fumaEngine\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\fumaEngine\lib\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
+C:\Users\s-fum\OneDrive\デスクトップ\fumaEngine\Engine\lib\DirectXTex\Bin\Desktop_2019_Win10\x64\Release\DirectXTex.lib
