@@ -259,12 +259,12 @@ void Player::Move()
 	if (treadFlag == true)
 	{
 		t += 0.01f;
-		easing::Updete(treadTime, 0.2, 3, t);
-		if (treadTime < 0.1)
+		easing::Updete(treadTime, 0.5, 3, t);
+		if (treadTime < 0.4)
 		{
 			position.y += jump + (float)treadTime;
 		}
-		if (treadTime >= 0.2)
+		if (treadTime >= 0.5)
 		{
 			t = 0;
 			treadTime = 0;
@@ -463,8 +463,11 @@ void Player::CollisionEnemy(Enemy *enemy)
 			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y + 0.1f,0 },
 			scale.x, scale.y, enemy->GetScale().x, enemy->GetScale().y))
 		{
+
 			if (enemy->GetHP() == 1)
 			{
+				t = 0;
+				treadTime = 0;
 				treadFlag = true;
 				rotation.z = 0.0f;
 				enemy->Deth();

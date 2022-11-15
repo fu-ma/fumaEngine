@@ -429,12 +429,38 @@ void GameScene::Stage1Init()
 
 void GameScene::Stage1Update()
 {
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemyNum++;
+				switch (enemyNum)
+				{
+				case 1:
+					enemy[y][x]->SetAction("NORMAL");
+					break;
+				case 2:
+					enemy[y][x]->SetAction("JUMP");
+					break;
+				case 3:
+					enemy[y][x]->SetAction("NORMAL");
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
 	StageUpdate();
 }
 
 void GameScene::Stage1Draw()
 {
+	StageBackDraw();
 	StageDraw();
+	StageUIDraw();
 }
 
 void GameScene::Stage2Init()
@@ -442,16 +468,83 @@ void GameScene::Stage2Init()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	StageSet(map2);
+	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 6);
+	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 4);
+	firebar2->SetAngleSpeed(1.0f);
 }
 
 void GameScene::Stage2Update()
 {
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (enemy[y][x]->GetPosition().x >= 0)
+			{
+				enemyNum++;
+				switch (enemyNum)
+				{
+				case 1:
+					enemy[y][x]->SetAction("JUMP");
+					break;
+				case 2:
+					enemy[y][x]->SetAction("JUMP");
+					break;
+				case 3:
+					enemy[y][x]->SetAction("NORMAL");
+					break;
+				case 4:
+					enemy[y][x]->SetAction("");
+					break;
+				case 5:
+					enemy[y][x]->SetAction("");
+					break;
+				default:
+					break;
+				}
+			}
+		}
+	}
+
+	if (countDown->GetStart() >= 0.2 && stopFlag == false)
+	{
+		firebar->Move();
+		firebar2->Move(true);
+	}
+
+	//ファイアーバーのあたり判定だけ独立
+	objPlayer->CollisionObj(firebar->GetCenter());
+	for (int i = 0; i < firebar->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar->GetFire(i));
+		}
+	}
+
+	objPlayer->CollisionObj(firebar2->GetCenter());
+	for (int i = 0; i < firebar2->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar2->GetFire(i));
+		}
+	}
+
 	StageUpdate();
+	firebar->Update();
+	firebar2->Update();
 }
 
 void GameScene::Stage2Draw()
 {
+	StageBackDraw();
+	ModelObj::PreDraw(common->GetCmdList().Get());
+	firebar->Draw();
+	firebar2->Draw();
+	ModelObj::PostDraw();
 	StageDraw();
+	StageUIDraw();
 }
 
 void GameScene::Stage3Init()
@@ -459,16 +552,52 @@ void GameScene::Stage3Init()
 	//音声再生
 	audio->PlayLoadedSound(soundData1, 0.05f);
 	StageSet(map3);
+	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 6);
+	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 4);
+	firebar2->SetAngleSpeed(1.0f);
 }
 
 void GameScene::Stage3Update()
 {
+	if (countDown->GetStart() >= 0.2 && stopFlag == false)
+	{
+		firebar->Move();
+		firebar2->Move();
+	}
+
+	//ファイアーバーのあたり判定だけ独立
+	objPlayer->CollisionObj(firebar->GetCenter());
+	for (int i = 0; i < firebar->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar->GetFire(i));
+		}
+	}
+
+	objPlayer->CollisionObj(firebar2->GetCenter());
+	for (int i = 0; i < firebar2->GetNum(); i++)
+	{
+		if (i != 0)
+		{
+			objPlayer->CollisionGimmick(firebar2->GetFire(i));
+		}
+	}
+
 	StageUpdate();
+	firebar->Update();
+	firebar2->Update();
 }
 
 void GameScene::Stage3Draw()
 {
+	StageBackDraw();
+	ModelObj::PreDraw(common->GetCmdList().Get());
+	firebar->Draw();
+	firebar2->Draw();
+	ModelObj::PostDraw();
 	StageDraw();
+	StageUIDraw();
 }
 
 void GameScene::Stage4Init()
@@ -485,7 +614,9 @@ void GameScene::Stage4Update()
 
 void GameScene::Stage4Draw()
 {
+	StageBackDraw();
 	StageDraw();
+	StageUIDraw();
 }
 
 void GameScene::Stage5Init()
@@ -502,7 +633,9 @@ void GameScene::Stage5Update()
 
 void GameScene::Stage5Draw()
 {
+	StageBackDraw();
 	StageDraw();
+	StageUIDraw();
 }
 
 void GameScene::GameOverInit()
@@ -604,6 +737,7 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 	}
 	objPlayer->Initialize();
 	gimmickCenterNum = 0;
+	enemyNum = 0;
 
 	for (int y = 0; y < Y_MAX; y++)
 	{
@@ -617,22 +751,27 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 			objRedBlock[y][x]->SetPosition({ -100,0,0 });
 			objBlueBlock[y][x]->SetPosition({ -100,0,0 });
 
+			//ブロック
 			if (map[y][x] == 1)
 			{
 				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
+			//敵
 			if (map[y][x] == 2)
 			{
 				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 			}
+			//赤ブロック
 			if (map[y][x] == 4)
 			{
 				objRedBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
+			//青ブロック
 			if (map[y][x] == 5)
 			{
 				objBlueBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
+			//ゴール
 			if (map[y][x] == 10)
 			{
 				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
@@ -647,7 +786,7 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 		for (int y = 0; y < Y_MAX; y++)
 		{
 			gimmickCenter[x] = { -100,0,0 };
-
+			//ファイアーバー
 			if (map[y][x] == 3)
 			{
 				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
@@ -655,8 +794,6 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 			}
 		}
 	}
-	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 4);
-	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 6);
 
 	gameTimer = (int)fps->GetFrame() * 60 * 2;
 
@@ -677,6 +814,7 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 		reStartSpriteSize = stopSpriteMinSize;
 		ReturnSpriteSize = stopSpriteMaxSize;
 	}
+
 }
 
 void GameScene::StageUpdate()
@@ -833,8 +971,6 @@ void GameScene::StageUpdate()
 	//動くようになる
 	if (countDown->GetStart() >= 0.2 && stopFlag == false)
 	{
-		firebar->Move();
-		firebar2->Move(true);
 		if (playerParticle->GetFlag() == false)
 		{
 			objPlayer->notOnCollision();
@@ -850,7 +986,7 @@ void GameScene::StageUpdate()
 			{
 				if (enemy[y][x]->GetPosition().x >= 0)
 				{
-					enemy[y][x]->Move("JUMP");
+					enemy[y][x]->Move();
 					for (int w = 0; w < Y_MAX; w++)
 					{
 						for (int z = 0; z < X_MAX; z++)
@@ -882,25 +1018,6 @@ void GameScene::StageUpdate()
 	}
 
 	//あたり判定
-	objPlayer->CollisionObj(firebar->GetCenter());
-	for (int i = 0; i < firebar->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar->GetFire(i));
-		}
-	}
-
-	objPlayer->CollisionObj(firebar2->GetCenter());
-	for (int i = 0; i < firebar2->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar2->GetFire(i));
-		}
-	}
-
-
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
 		SceneTime = 0;
@@ -924,9 +1041,6 @@ void GameScene::StageUpdate()
 	{
 		cloud[i]->Update();
 	}
-
-	firebar->Update();
-	firebar2->Update();
 
 	objPlayer->Update();
 	for (int y = 0; y < Y_MAX; y++)
@@ -960,10 +1074,8 @@ void GameScene::StageUpdate()
 	Return->SetSize({ (float)ReturnSpriteSize * 3,(float)ReturnSpriteSize });
 }
 
-void GameScene::StageDraw()
+void GameScene::StageBackDraw()
 {
-#pragma region 描画処理
-
 	///*スプライト描画*/
 	///*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
@@ -974,12 +1086,15 @@ void GameScene::StageDraw()
 	Sprite::PostDraw();
 	////深度バッファクリア
 	common->ClearDepthBuffer();
+}
 
+void GameScene::StageDraw()
+{
+#pragma region 描画処理
 	/*モデル描画*/
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 
-	//FBX
 	for (int i = 0; i < 10; i++)
 	{
 		cloud[i]->Draw();
@@ -996,33 +1111,49 @@ void GameScene::StageDraw()
 			{
 				objStageBox[y][x]->Draw();
 			}
-			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
+			//あたり判定なしのワイヤーブロックを表示
+			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
+				objRedBlock[y][x]->SetModel(modelWireBlock);
 				objRedBlock[y][x]->Draw();
 			}
+			//あたり判定ありのレッドブロックを表示
+			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
+			{
+				objRedBlock[y][x]->SetModel(modelRedBlock);
+				objRedBlock[y][x]->Draw();
+			}
+			//あたり判定なしのワイヤーブロックを表示
+			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
+			{
+				objBlueBlock[y][x]->SetModel(modelWireBlock);
+				objBlueBlock[y][x]->Draw();
+			}
+			//あたり判定ありのブルーブロックを表示
 			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
+				objBlueBlock[y][x]->SetModel(modelBlueBlock);
 				objBlueBlock[y][x]->Draw();
 			}
 		}
 	}
 
-	firebar->Draw();
-	firebar2->Draw();
-
 	objGoal->Draw();
-	playerParticle->Draw();
 	objPlayer->Draw();
 	// パーティクルの描画
+	playerParticle->Draw();
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();
+}
 
+void GameScene::StageUIDraw()
+{
 	/*スプライト描画*/
-	/*スプライト描画前処理*/
+/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
 	// デバッグテキストの描画
 	debugText->DrawAll(common->GetCmdList().Get());
@@ -1118,6 +1249,8 @@ void GameScene::staticInit()
 	modelGoal = Model::CreateFromOBJ("goal", true);
 	modelRedBlock = Model::CreateFromOBJ("redBlock", true);
 	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
+	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
+
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(modelPlayer);
 

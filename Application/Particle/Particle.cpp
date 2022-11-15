@@ -103,12 +103,11 @@ void Particle::Set(const XMFLOAT3 &particlePos)
 		{
 			this->particlePos[i] = particlePos;
 			this->vel[i] = { 0,0,0 };
-			particle[i]->SetPosition(this->particlePos[i]);
+			particle[i]->SetPosition(particlePos);
 			particleScale[i] = { 1,1,1 };
 			particle[i]->SetScale(particleScale[i]);
 
 			const float rnd_vel = 0.1f;
-			vel[i].x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 			vel[i].y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 
 			if (time % 20 == 0)

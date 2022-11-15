@@ -24,9 +24,12 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
-	void Move(const std::string& enemyName = "NORMAL");
+	void Move();
 	void Draw() override;
 	void CollisionObject(ModelObj *obj2);
+
+	//敵の状態をセット
+	void SetAction(const std::string &enemyName) { this->enemyName = enemyName; }
 
 	const int &GetHP() { return HP; }
 	const float &GetSpeed() { return speed; }
@@ -43,5 +46,8 @@ private:
 	//ぴょんぴょんする敵
 	int jumpTimer;
 	float jump;
+
+	//動きをセットするための変数
+	std::string enemyName;
 };
 

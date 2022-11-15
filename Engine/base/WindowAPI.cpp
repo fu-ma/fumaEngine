@@ -16,7 +16,7 @@ void WinApp::Innitialize()
 {
 	w.cbSize = sizeof(WNDCLASSEX);
 	w.lpfnWndProc = (WNDPROC)WindowProc;//ウィンドウプロシージャを設定
-	w.lpszClassName = L"DirectXGame";//ウィンドウクラス名
+	w.lpszClassName = L"SUPERMONKEY";//ウィンドウクラス名
 	w.hInstance = GetModuleHandle(nullptr);//ウィンドウハンドル
 	w.hCursor = LoadCursor(NULL, IDC_ARROW);//カーソル指定
 
@@ -32,7 +32,7 @@ void WinApp::Innitialize()
 	hwnd = CreateWindow
 	(
 		w.lpszClassName,//クラス名
-		L"DirectX",//タイトルバーの文字
+		L"SUPERMONKEY",//タイトルバーの文字
 		WS_OVERLAPPEDWINDOW,//標準的なウィンドウスタイル
 		CW_USEDEFAULT,//表示X座標(OSに任せる)
 		CW_USEDEFAULT,//表示Y座標(OSに任せる)

@@ -43,7 +43,7 @@ void Enemy::Update()
 	ModelObj::Update();
 }
 
-void Enemy::Move(const std::string& enemyName)
+void Enemy::Move()
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
@@ -93,52 +93,104 @@ void Enemy::CollisionObject(ModelObj *obj2)
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
-	if (oldPos.x > position.x)
+	if (enemyName == "NORMAL" || enemyName == "")
 	{
-		if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
-			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y - 0.1f,0 },
-			scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+		if (oldPos.x > position.x)
 		{
-			position =
+			if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
+				{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y - 0.1f,0 },
+				scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
 			{
-				boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
-				position.y ,
-				0
-			};
+				position =
+				{
+					boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
+					position.y ,
+					0
+				};
 
-			angleSpeed = 0.03f;
-			rotation.y = 0;
+				angleSpeed = 0.03f;
+				rotation.y = 0;
+			}
+		}
+		if (oldPos.x < position.x)
+		{
+			if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
+				{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y + 0.1f,0 },
+				scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
+			{
+				position =
+				{
+					boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
+					position.y ,
+					0
+				};
+				angleSpeed = -0.03f;
+				rotation.y = 180;
+			}
+		}
+		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
+			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
+			scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
+		{
+			position =
+			{
+				position.x,
+				boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.51f ,
+				0
+			};
+			speed = 0;
 		}
 	}
-	if (oldPos.x < position.x)
+
+	if (enemyName == "JUMP")
 	{
-		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
-			{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y + 0.1f,0 },
+		if (oldPos.x > position.x)
+		{
+			if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
+				{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y - 0.1f,0 },
+				scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+			{
+				position =
+				{
+					boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
+					position.y ,
+					0
+				};
+
+				angleSpeed = 0.03f;
+				rotation.y = 0;
+			}
+		}
+		if (oldPos.x < position.x)
+		{
+			if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
+				{ obj2->GetPosition().x - 0.1f,obj2->GetPosition().y + 0.1f,0 },
+				scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
+			{
+				position =
+				{
+					boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
+					position.y ,
+					0
+				};
+				angleSpeed = -0.03f;
+				rotation.y = 180;
+			}
+		}
+		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
+			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
 			scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
 		{
 			position =
 			{
-				boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
-				position.y ,
+				position.x,
+				boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.51f ,
 				0
 			};
-			angleSpeed = -0.03f;
-			rotation.y = 180;
+			speed = 0;
+			jump = 0.1f;
+			jumpTimer = 0;
 		}
-	}
-	if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
-		{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
-		scale.x, scale.y + speed, obj2->GetScale().x, obj2->GetScale().y))
-	{
-		position =
-		{
-			position.x,
-			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.51f ,
-			0
-		};
-		speed = 0;
-		jump = 0.1f;
-		jumpTimer = 0;
 	}
 }
 
