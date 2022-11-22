@@ -41,5 +41,6 @@ private:
 	float length[GIMMICK_NUM];
 	ModelObj *firebar[GIMMICK_NUM] = { nullptr };
 	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
+	XMFLOAT3 fireRot[GIMMICK_NUM];
 };
 

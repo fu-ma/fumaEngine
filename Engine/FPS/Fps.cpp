@@ -17,8 +17,16 @@ double Fps::TimeWait()
 		//Sleep
 		Sleep(sleepTime);
 		timeEndPeriod(1);
+
+		return 0;
 	}
 	fps = 1 / frameTime;
+
+	if (frameTime > 0.0)
+	{
+		// 経過時間が0より大きい(こうしないと下の計算でゼロ除算になると思われ)
+		fps = (fps * 0.99f) + (0.01f / frameTime); // 平均fpsを計算
+	}
 
 	mTimeStart = mTimeEnd;
 	return fps;

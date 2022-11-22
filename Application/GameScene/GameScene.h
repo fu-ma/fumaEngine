@@ -125,10 +125,12 @@ private:
 	const int stageSpriteMinSize = 256;
 	const int stageSpriteMaxSize = 512;
 
-	//一時停止フラグ
+	//一時停止
 	bool stopFlag;
 	double stopMoveTime;
 	int stopNum;
+
+	bool clearStopFlag;
 
 	double goTitleSpriteSize;
 	double reStartSpriteSize;
@@ -138,6 +140,12 @@ private:
 
 	//敵の行動パターンを切り替えるための敵のカウント
 	int enemyNum;
+
+	//ステージブロックの移動量
+	float moveStageBlockSpeed;
+
+	//タイトルからステージセレクトに行ったときにジャンプを防ぐ
+	bool stageSelectJumpFlag;
 
 	//ステージ選択画面の配列
 	const int selectMap[6][24]= { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,

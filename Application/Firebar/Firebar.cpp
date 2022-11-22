@@ -93,7 +93,7 @@ void Firebar::Update()
 
 void Firebar::Move(bool direction)
 {
-	for (int i = 0; i < this->num; i++)
+	for (int i = 1; i < this->num; i++)
 	{
 		if (moveFlag[i] == true)
 		{
@@ -104,13 +104,16 @@ void Firebar::Move(bool direction)
 			if (direction == false)
 			{
 				angle[i] -= angleSpeed;
+				fireRot[i].z -= 1.2f;
 			}
 			if (direction == true)
 			{
 				angle[i] += angleSpeed;
+				fireRot[i].z += 1.2f;
 			}
 
 			firebar[i]->SetPosition({ centerX + addX[i], centerY + addY[i], 0 });
+			firebar[i]->SetRotation(fireRot[i]);
 		}
 	}
 }

@@ -32,6 +32,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	void Move();
+	void Jump();
 	void CollisionObj(ModelObj *obj2);
 	void CollisionEnemy(Enemy *enemy);
 	void CollisionGimmick(ModelObj *obj2);
@@ -41,6 +42,8 @@ public:
 	const bool &GetOnCollision() { return onCollisionFlag; }
 	void notOnCollision() { this->onCollisionFlag = false; }
 	const bool &GetJumpChangeBlockFlag() { return jumpChangeBlockFlag; }
+	const bool &GetPlayerStop() { return moveFlag; }
+	const int &GetJumpTimer() { return jumpTimer; }
 private:
 	const float gravity = (- 9.8f / 60/ 20);
 	//const float gravity = (-9.8f / 60 / 40);

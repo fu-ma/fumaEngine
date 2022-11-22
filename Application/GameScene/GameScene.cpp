@@ -171,7 +171,7 @@ void GameScene::StageSelectInit()
 		{
 			if (selectMap[y][x] == 1)
 			{
-				titleStageBox[y][x]->SetPosition({ 2.0f * x , -2.0f * y + 10.0f, 0 });
+				titleStageBox[y][x]->SetPosition({ 2.0f * x - 10.0f, -2.0f * y + 10.0f, 0 });
 				stageBoxPos[y][x] = titleStageBox[y][x]->GetPosition();
 			}
 		}
@@ -222,16 +222,91 @@ void GameScene::StageSelectInit()
 		stage5SpriteSize = stageSpriteMaxSize;
 	}
 	selectMoveTime = 0.2f;
+	moveStageBlockSpeed = -0.02f;
+	stageSelectJumpFlag = false;
 }
 
 void GameScene::StageSelectUpdate()
 {
 #pragma region 更新処理
-	
+	// カメラ注視点をセット
+	camera->SetTarget({ objPlayer->GetPosition().x, 10, 0 });
+	camera->SetDistance(20.0f);
+
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
 	debugText->SetSize(5);
 	debugText->Printf("%d", totalPlayerNum);
+
+	//タイトルから来たときにジャンプを防ぐ
+	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	{
+		stageSelectJumpFlag = true;
+	}
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloudPos[i].x -= 0.01f;
+		if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 40.0f)
+		{
+			if (i == 0)
+			{
+				cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+			}
+			else
+			{
+				cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+			}
+		}
+		cloud[i]->SetPosition(cloudPos[i]);
+	}
+
+	//ブロックのスクロール
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			stageBoxPos[y][x].x += moveStageBlockSpeed;
+			if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
+				input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
+			{
+				moveStageBlockSpeed = 0.02f;
+				objPlayer->SetRotation({ 0,180,0 });
+			}
+			if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
+				input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false)
+			{
+				moveStageBlockSpeed = -0.02f;
+				objPlayer->SetRotation({ 0,0,0 });
+			}
+			if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.02f)
+			{
+				if (x == 23)
+				{
+					stageBoxPos[y][x] = { titleStageBox[y][0]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+				else
+				{
+					stageBoxPos[y][x] = { titleStageBox[y][x + 1]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+
+			}
+
+			if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.02f)
+			{
+				if (x == 0)
+				{
+					stageBoxPos[y][x] = { titleStageBox[y][24 - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+				else
+				{
+					stageBoxPos[y][x] = { titleStageBox[y][x - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+				}
+
+			}
+			titleStageBox[y][x]->SetPosition(stageBoxPos[y][x]);
+		}
+	}
 
 	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
 	{
@@ -307,7 +382,7 @@ void GameScene::StageSelectUpdate()
 	Stage5Sprite->SetSize({ (float)stage5SpriteSize,(float)stage5SpriteSize });
 
 	//指定の位置でSpaceを押すとそのステージにとぶ
-	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	if (objPlayer->GetJumpTimer() > 30)
 	{
 		if (selectNum == 0 && selectMoveTime >= 0.2f)
 		{
@@ -340,6 +415,10 @@ void GameScene::StageSelectUpdate()
 			SceneNo = static_cast<int>(GameSceneNo::Stage5);
 		}
 	}
+	if (stageSelectJumpFlag)
+	{
+		objPlayer->Jump();
+	}
 
 	lightGroup->Update();
 	camera->Update();
@@ -349,6 +428,7 @@ void GameScene::StageSelectUpdate()
 		for (int x = 0; x < 24; x++)
 		{
 			titleStageBox[y][x]->Update();
+			objPlayer->CollisionObj(titleStageBox[y][x]);
 		}
 	}
 
@@ -640,6 +720,7 @@ void GameScene::Stage5Draw()
 
 void GameScene::GameOverInit()
 {
+	totalPlayerNum = 5;
 }
 
 void GameScene::GameOverUpdate()
@@ -649,7 +730,7 @@ void GameScene::GameOverUpdate()
 	{
 		audio->PlayLoadedSound(soundData3, 0.05f);
 		SceneTime = 0;
-		SceneNo = static_cast<int>(GameSceneNo::StageSelect);
+		SceneNo = static_cast<int>(GameSceneNo::Title);
 	}
 }
 
@@ -815,6 +896,7 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 		ReturnSpriteSize = stopSpriteMaxSize;
 	}
 
+	clearStopFlag = false;
 }
 
 void GameScene::StageUpdate()
@@ -894,6 +976,7 @@ void GameScene::StageUpdate()
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
 			SceneTime = 0;
+			audio->StopLoadedSound(soundData1);
 			SceneNo = static_cast<int>(GameSceneNo::StageSelect);
 		}
 	}
@@ -928,11 +1011,16 @@ void GameScene::StageUpdate()
 		countDown->Update();
 	}
 
+	//ゴールしたときに時間計測を止める
+	if (objPlayer->GetPlayerStop() == true)
+	{
+		clearStopFlag = true;
+	}
 	//スターと表示がされてからしばらくして
 	if (countDown->GetStart() >= 0.8)
 	{
 		//一時停止していなかったら
-		if (stopFlag == false)
+		if (stopFlag == false && clearStopFlag == false)
 		{
 			gameTimer--;
 		}
@@ -975,7 +1063,7 @@ void GameScene::StageUpdate()
 		{
 			objPlayer->notOnCollision();
 		}
-		if (objPlayer->GetHP() > 0)
+		if (objPlayer->GetHP() > 0 && gameOverFlag == false)
 		{
 			objPlayer->Move();
 		}
@@ -1017,7 +1105,7 @@ void GameScene::StageUpdate()
 		}
 	}
 
-	//あたり判定
+	//ゴールとのあたり判定
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
 		SceneTime = 0;
