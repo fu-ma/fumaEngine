@@ -27,6 +27,7 @@ public:
 	void SetAngleSpeed(float angleSpeed) { this->angleSpeed = angleSpeed; }
 private:
 	static const int GIMMICK_NUM = 100;
+	const float MOVE_SPEED = 1.2f;
 	Model *modelGimmick = nullptr;
 	Model *modelGimmickCenter = nullptr;
 	int num;

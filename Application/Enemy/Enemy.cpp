@@ -194,7 +194,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 	}
 }
 
-void Enemy::Deth()
+void Enemy::Death()
 {
 	HP = 0;
 }

@@ -33,7 +33,7 @@ public:
 
 	const int &GetHP() { return HP; }
 	const float &GetSpeed() { return speed; }
-	void Deth();
+	void Death();
 private:
 	int HP = 1;
 	const float gravity = (-9.8f / 60 / 20);

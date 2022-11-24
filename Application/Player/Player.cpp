@@ -533,7 +533,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 				treadTime = 0;
 				treadFlag = true;
 				rotation.z = 0.0f;
-				enemy->Deth();
+				enemy->Death();
 			}
 		}
 	}

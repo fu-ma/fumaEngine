@@ -104,12 +104,12 @@ void Firebar::Move(bool direction)
 			if (direction == false)
 			{
 				angle[i] -= angleSpeed;
-				fireRot[i].z -= 1.2f;
+				fireRot[i].z -= MOVE_SPEED;
 			}
 			if (direction == true)
 			{
 				angle[i] += angleSpeed;
-				fireRot[i].z += 1.2f;
+				fireRot[i].z += MOVE_SPEED;
 			}
 
 			firebar[i]->SetPosition({ centerX + addX[i], centerY + addY[i], 0 });
