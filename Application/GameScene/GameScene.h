@@ -36,6 +36,24 @@ private:
 	static const int Y_MAX = 10;
 	static const int GIMMICK_NUM = 100;
 
+	struct StageData
+	{
+		int firebarNum;//ファイアーの個数
+		bool direction;//ファイアーバーの回転方向
+		float firebarSpeed;//ファイアーバーの回転スピード
+	};
+
+	StageData stageDatas[5][20] =
+	{
+		{{4,false,0.2f},{2,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
+		{{3,false,0.2f},{6,true,0.3f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
+		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
+		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
+		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
+	};
+
+	StageData stageData;
+
 	SoundData soundData1;
 	SoundData soundData2;
 	SoundData soundData3;
@@ -58,6 +76,7 @@ private:
 	Sprite *goTitle = nullptr;
 	Sprite *reStart = nullptr;
 	Sprite *Return = nullptr;
+	Sprite *ClearStageSprite = nullptr;
 
 	//プレイヤー
 	Model *modelPlayer = nullptr;
@@ -79,7 +98,8 @@ private:
 
 	//ギミック
 	Firebar *firebar;
-	Firebar *firebar2;
+	std::vector<Firebar*> fire;
+
 	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
 	int gimmickCenterNum;
 
@@ -233,26 +253,6 @@ private:
 	void StageSelectUpdate();
 	void StageSelectDraw();
 
-	void Stage1Init();
-	void Stage1Update();
-	void Stage1Draw();
-
-	void Stage2Init();
-	void Stage2Update();
-	void Stage2Draw();
-
-	void Stage3Init();
-	void Stage3Update();
-	void Stage3Draw();
-
-	void Stage4Init();
-	void Stage4Update();
-	void Stage4Draw();
-
-	void Stage5Init();
-	void Stage5Update();
-	void Stage5Draw();
-
 #pragma region エンドシーン
 	void GameOverInit();
 	void GameOverUpdate();
@@ -267,15 +267,13 @@ private:
 	void EndDraw();
 
 #pragma region ステージセット
-	void StageSet(const int Map[Y_MAX][X_MAX]);
+	void StageSet(const int Map[Y_MAX][X_MAX],const int stageNum);
 
 #pragma region 共通更新関数
 	void StageUpdate();
 
 #pragma region 共通描画関数
-	void StageBackDraw();
 	void StageDraw();
-	void StageUIDraw();
 
 public:
 	GameScene() {};
@@ -315,6 +313,8 @@ public:
 		reStart = nullptr;
 		delete Return;
 		Return = nullptr;
+		delete ClearStageSprite;
+		ClearStageSprite = nullptr;
 
 		delete playerParticle;
 		playerParticle = nullptr;
@@ -324,11 +324,7 @@ public:
 		modelGoal = nullptr;
 		delete firebar;
 		firebar = nullptr;
-		delete firebar2;
-		firebar2 = nullptr;
 		//modelObj解放処理
-		//delete objSkydome;
-		//objSkydome = nullptr;
 		delete objPlayer;
 		objPlayer = nullptr;
 		for (int y = 0; y < Y_MAX; y++)

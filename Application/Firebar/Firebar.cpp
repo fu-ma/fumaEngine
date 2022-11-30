@@ -1,7 +1,12 @@
 #include "Firebar.h"
 
-Firebar::Firebar()
+Firebar::Firebar(float centerX, float centerY, int num,bool direction,float angleSpeed)
 {
+	this->num = num + 1;//中心のブロック分も含める
+	this->centerX = centerX;
+	this->centerY = centerY;
+	this->direction = direction;
+	this->angleSpeed = angleSpeed;
 }
 
 Firebar::~Firebar()
@@ -29,12 +34,8 @@ void Firebar::StaticInit()
 	}
 }
 
-bool Firebar::Initialize(float centerX, float centerY, int num)
+bool Firebar::Initialize()
 {
-	this->num = num + 1;//中心のブロック分も含める
-	this->centerX = centerX;
-	this->centerY = centerY;
-
 	for (int i = 0; i < this->num; i++)
 	{
 		angle[i] = 0;
@@ -91,7 +92,7 @@ void Firebar::Update()
 	}
 }
 
-void Firebar::Move(bool direction)
+void Firebar::Move()
 {
 	for (int i = 1; i < this->num; i++)
 	{

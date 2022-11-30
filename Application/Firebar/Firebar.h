@@ -5,26 +5,25 @@ class Firebar
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 public:
-	Firebar();
+	Firebar(float centerX, float centerY, int num,bool direction,float angleSpeed);
 	~Firebar();
 	void StaticInit();
 	/// <summary>
 	/// ‰Šú‰»
 	/// </summary>
 	/// <returns>¬”Û</returns>
-	bool Initialize(float centerX, float centerY, int num);
+	bool Initialize();
 
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€ˆ—
 	/// </summary>
 	void Update();
-	void Move(bool direction = false);
+	void Move();
 	void Draw();
 
 	ModelObj *GetCenter() { return firebar[0]; }
 	const int &GetNum() { return num; }
 	ModelObj *GetFire(int num) { return firebar[num]; }
-	void SetAngleSpeed(float angleSpeed) { this->angleSpeed = angleSpeed; }
 private:
 	static const int GIMMICK_NUM = 100;
 	const float MOVE_SPEED = 1.2f;
@@ -33,6 +32,7 @@ private:
 	int num;
 	float centerX;
 	float centerY;
+	bool direction;
 	float addX[GIMMICK_NUM];
 	float addY[GIMMICK_NUM];
 	float angle[GIMMICK_NUM];

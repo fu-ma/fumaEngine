@@ -500,224 +500,6 @@ void GameScene::StageSelectDraw()
 	Sprite::PostDraw();
 }
 
-void GameScene::Stage1Init()
-{
-	//音声再生
-	audio->PlayLoadedSound(soundData1, 0.05f);
-	StageSet(map1);
-}
-
-void GameScene::Stage1Update()
-{
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemyNum++;
-				switch (enemyNum)
-				{
-				case 1:
-					enemy[y][x]->SetAction("NORMAL");
-					break;
-				case 2:
-					enemy[y][x]->SetAction("JUMP");
-					break;
-				case 3:
-					enemy[y][x]->SetAction("NORMAL");
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
-	StageUpdate();
-}
-
-void GameScene::Stage1Draw()
-{
-	StageBackDraw();
-	StageDraw();
-	StageUIDraw();
-}
-
-void GameScene::Stage2Init()
-{
-	//音声再生
-	audio->PlayLoadedSound(soundData1, 0.05f);
-	StageSet(map2);
-	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 6);
-	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 4);
-	firebar2->SetAngleSpeed(1.0f);
-}
-
-void GameScene::Stage2Update()
-{
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemyNum++;
-				switch (enemyNum)
-				{
-				case 1:
-					enemy[y][x]->SetAction("JUMP");
-					break;
-				case 2:
-					enemy[y][x]->SetAction("JUMP");
-					break;
-				case 3:
-					enemy[y][x]->SetAction("NORMAL");
-					break;
-				case 4:
-					enemy[y][x]->SetAction("");
-					break;
-				case 5:
-					enemy[y][x]->SetAction("");
-					break;
-				default:
-					break;
-				}
-			}
-		}
-	}
-
-	if (countDown->GetStart() >= 0.2 && stopFlag == false)
-	{
-		firebar->Move();
-		firebar2->Move(true);
-	}
-
-	//ファイアーバーのあたり判定だけ独立
-	objPlayer->CollisionObj(firebar->GetCenter());
-	for (int i = 0; i < firebar->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar->GetFire(i));
-		}
-	}
-
-	objPlayer->CollisionObj(firebar2->GetCenter());
-	for (int i = 0; i < firebar2->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar2->GetFire(i));
-		}
-	}
-
-	StageUpdate();
-	firebar->Update();
-	firebar2->Update();
-}
-
-void GameScene::Stage2Draw()
-{
-	StageBackDraw();
-	ModelObj::PreDraw(common->GetCmdList().Get());
-	firebar->Draw();
-	firebar2->Draw();
-	ModelObj::PostDraw();
-	StageDraw();
-	StageUIDraw();
-}
-
-void GameScene::Stage3Init()
-{
-	//音声再生
-	audio->PlayLoadedSound(soundData1, 0.05f);
-	StageSet(map3);
-	firebar->Initialize(gimmickCenter[0].x, gimmickCenter[0].y, 6);
-	firebar2->Initialize(gimmickCenter[1].x, gimmickCenter[1].y, 4);
-	firebar2->SetAngleSpeed(1.0f);
-}
-
-void GameScene::Stage3Update()
-{
-	if (countDown->GetStart() >= 0.2 && stopFlag == false)
-	{
-		firebar->Move();
-		firebar2->Move();
-	}
-
-	//ファイアーバーのあたり判定だけ独立
-	objPlayer->CollisionObj(firebar->GetCenter());
-	for (int i = 0; i < firebar->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar->GetFire(i));
-		}
-	}
-
-	objPlayer->CollisionObj(firebar2->GetCenter());
-	for (int i = 0; i < firebar2->GetNum(); i++)
-	{
-		if (i != 0)
-		{
-			objPlayer->CollisionGimmick(firebar2->GetFire(i));
-		}
-	}
-
-	StageUpdate();
-	firebar->Update();
-	firebar2->Update();
-}
-
-void GameScene::Stage3Draw()
-{
-	StageBackDraw();
-	ModelObj::PreDraw(common->GetCmdList().Get());
-	firebar->Draw();
-	firebar2->Draw();
-	ModelObj::PostDraw();
-	StageDraw();
-	StageUIDraw();
-}
-
-void GameScene::Stage4Init()
-{
-	//音声再生
-	audio->PlayLoadedSound(soundData1, 0.05f);
-	StageSet(map4);
-}
-
-void GameScene::Stage4Update()
-{
-	StageUpdate();
-}
-
-void GameScene::Stage4Draw()
-{
-	StageBackDraw();
-	StageDraw();
-	StageUIDraw();
-}
-
-void GameScene::Stage5Init()
-{
-	//音声再生
-	audio->PlayLoadedSound(soundData1, 0.05f);
-	StageSet(map5);
-}
-
-void GameScene::Stage5Update()
-{
-	StageUpdate();
-}
-
-void GameScene::Stage5Draw()
-{
-	StageBackDraw();
-	StageDraw();
-	StageUIDraw();
-}
-
 void GameScene::GameOverInit()
 {
 	totalPlayerNum = 5;
@@ -807,7 +589,7 @@ void GameScene::EndDraw()
 	common->ClearDepthBuffer();
 }
 
-void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
+void GameScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum)
 {
 	for (int y = 0; y < Y_MAX; y++)
 	{
@@ -876,6 +658,21 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 		}
 	}
 
+	fire.clear();
+	for (int i = 0; i < gimmickCenterNum; i++)
+	{
+		stageData = stageDatas[stageNum - 1][i];
+		firebar = new Firebar(gimmickCenter[i].x, gimmickCenter[i].y, stageData.firebarNum,stageData.direction,stageData.firebarSpeed);
+		firebar->StaticInit();
+		fire.push_back(firebar);
+	}
+
+
+	for (auto &fireBar : fire)
+	{
+		fireBar->Initialize();
+	}
+
 	gameTimer = (int)fps->GetFrame() * 60 * 2;
 
 	//カウントダウン用の画像の初期値の設定
@@ -897,6 +694,7 @@ void GameScene::StageSet(const int Map[Y_MAX][X_MAX])
 	}
 
 	clearStopFlag = false;
+	audio->PlayLoadedSound(soundData1, 0.05f);
 }
 
 void GameScene::StageUpdate()
@@ -1085,6 +883,11 @@ void GameScene::StageUpdate()
 				}
 			}
 		}
+
+		for (auto &fireBar : fire)
+		{
+			fireBar->Move();
+		}
 	}
 
 	//あたり判定
@@ -1103,6 +906,20 @@ void GameScene::StageUpdate()
 				objPlayer->CollisionObj(objBlueBlock[y][x]);
 			}
 		}
+	}
+
+	for (auto &fireBar : fire)
+	{
+		fireBar->Move();
+		objPlayer->CollisionObj(fireBar->GetCenter());
+		for (int i = 0; i < fireBar->GetNum(); i++)
+		{
+			if (i != 0)
+			{
+				objPlayer->CollisionGimmick(fireBar->GetFire(i));
+			}
+		}
+		fireBar->Update();
 	}
 
 	//ゴールとのあたり判定
@@ -1162,7 +979,7 @@ void GameScene::StageUpdate()
 	Return->SetSize({ (float)ReturnSpriteSize * 3,(float)ReturnSpriteSize });
 }
 
-void GameScene::StageBackDraw()
+void GameScene::StageDraw()
 {
 	///*スプライト描画*/
 	///*スプライト描画前処理*/
@@ -1174,10 +991,6 @@ void GameScene::StageBackDraw()
 	Sprite::PostDraw();
 	////深度バッファクリア
 	common->ClearDepthBuffer();
-}
-
-void GameScene::StageDraw()
-{
 #pragma region 描画処理
 	/*モデル描画*/
 	/*モデル描画前処理*/
@@ -1226,6 +1039,11 @@ void GameScene::StageDraw()
 		}
 	}
 
+	for (auto &fireBar : fire)
+	{
+		fireBar->Draw();
+	}
+
 	objGoal->Draw();
 	objPlayer->Draw();
 	// パーティクルの描画
@@ -1236,10 +1054,7 @@ void GameScene::StageDraw()
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();
-}
 
-void GameScene::StageUIDraw()
-{
 	/*スプライト描画*/
 /*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
@@ -1309,6 +1124,7 @@ void GameScene::staticInit()
 	Sprite::LoadTexture(14, L"Resources/img/title.png");
 	Sprite::LoadTexture(15, L"Resources/img/restart.png");
 	Sprite::LoadTexture(16, L"Resources/img/Return.png");
+	Sprite::LoadTexture(17, L"Resources/img/ClearStage.png");
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width/2.0f,WinApp::window_height/2.0f });
@@ -1325,6 +1141,7 @@ void GameScene::staticInit()
 	goTitle = Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f });
 	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
+	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	//カウントダウンクラス初期化
 	countDown = new CountDown();
@@ -1367,11 +1184,6 @@ void GameScene::staticInit()
 
 	objGoal = ModelObj::Create(modelGoal);
 
-	firebar = new Firebar();
-	firebar->StaticInit();
-	firebar2 = new Firebar();
-	firebar2->StaticInit();
-
 	playerParticle = new Particle();
 	playerParticle->Initialize(modelEnemy);
 
@@ -1399,19 +1211,20 @@ void GameScene::Init()
 		StageSelectInit();
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage1):
-		Stage1Init();
+		//音声再生
+		StageSet(map1,1);
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage2):
-		Stage2Init();
+		StageSet(map2,2);
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage3):
-		Stage3Init();
+		StageSet(map3,3);
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage4):
-		Stage4Init();
+		StageSet(map4,4);
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::Stage5):
-		Stage5Init();
+		StageSet(map5,5);
 		break;
 	case static_cast<int>(GameScene::GameSceneNo::GameOver):
 		GameOverInit();
@@ -1435,50 +1248,35 @@ bool GameScene::Update()
 		return false;
 	}
 
-	switch (SceneNo)
+	if (SceneNo == static_cast<int>(GameScene::GameSceneNo::Title))
 	{
-	case static_cast<int>(GameScene::GameSceneNo::Title):
 		SceneTime = 1;
 		TitleUpdate();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::StageSelect):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::StageSelect))
+	{
 		SceneTime = 1;
 		StageSelectUpdate();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage1):
-		SceneTime = 1;
-		Stage1Update();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage2):
-		SceneTime = 1;
-		Stage2Update();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage3):
-		SceneTime = 1;
-		Stage3Update();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage4):
-		SceneTime = 1;
-		Stage4Update();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage5):
-		SceneTime = 1;
-		Stage5Update();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::GameOver):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::GameOver))
+	{
 		SceneTime = 1;
 		GameOverUpdate();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Clear):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::Clear))
+	{
 		SceneTime = 1;
 		ClearUpdate();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::End):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::End))
+	{
 		SceneTime = 1;
 		EndUpdate();
-		break;
-	default:
-		break;
+	}
+	else
+	{
+		SceneTime = 1;
+		StageUpdate();
 	}
 
 	return true;
@@ -1486,40 +1284,28 @@ bool GameScene::Update()
 
 void GameScene::Draw()
 {
-
-	switch (SceneNo)
+	if (SceneNo == static_cast<int>(GameScene::GameSceneNo::Title))
 	{
-	case static_cast<int>(GameScene::GameSceneNo::Title):
 		TitleDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::StageSelect):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::StageSelect))
+	{
 		StageSelectDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage1):
-		Stage1Draw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage2):
-		Stage2Draw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage3):
-		Stage3Draw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage4):
-		Stage4Draw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Stage5):
-		Stage5Draw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::GameOver):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::GameOver))
+	{
 		GameOverDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::Clear):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::Clear))
+	{
 		ClearDraw();
-		break;
-	case static_cast<int>(GameScene::GameSceneNo::End):
+	}
+	else if (SceneNo == static_cast<int>(GameScene::GameSceneNo::End))
+	{
 		EndDraw();
-		break;
-	default:
-		break;
+	}
+	else
+	{
+		StageDraw();
 	}
 }

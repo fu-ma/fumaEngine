@@ -69,10 +69,12 @@ bool Player::Initialize()
 	rightWallJumpTimer = 0;
 	leftWallColFlag = false;
 	rightWallColFlag = false;
+	jumpTimer = 0;
 
 	invincibleTimer = 0;
 	HP = 2;
 	rotation.y = 0;
+	rotation.z = 0;
 	position.x = 10;
 	position.y = 2;
 	moveFlag = false;
@@ -195,7 +197,7 @@ void Player::Move()
 			}
 
 			//プレイヤーの向きを左側にする
-			rotation.y = 180;
+			rotation.z += 2;
 			moveParticle->Set({ position.x,position.y , 0 });
 		}
 		else if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
@@ -207,7 +209,7 @@ void Player::Move()
 			}
 
 			//プレイヤーの向きを右側にする
-			rotation.y = 0;
+			rotation.z -= 2;
 			moveParticle->Set({ position.x,position.y , 0 });
 		}
 
@@ -238,11 +240,11 @@ void Player::Move()
 
 				if (jumpMax == 40)
 				{
-					rotation.z -= 2.5f;
+					rotation.y -= 2.5f;
 				}
 				if (jumpMax == 60)
 				{
-					rotation.z -= 5;
+					rotation.y -= 5;
 				}
 			}
 		}
@@ -327,11 +329,11 @@ void Player::Jump()
 
 			if (jumpMax == 40)
 			{
-				rotation.z -= 2.5f;
+				rotation.y -= 2.5f;
 			}
 			if (jumpMax == 60)
 			{
-				rotation.z -= 5;
+				rotation.y -= 5;
 			}
 		}
 	}
@@ -400,8 +402,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			if (jumpFlag == true)
 			{
 				speed = gravity * 1.8f;
-				rotation.y = 180;
-				rotation.z = 0;
+				rotation.y = 0;
 				rightWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
@@ -427,7 +428,6 @@ void Player::CollisionObj(ModelObj *obj2)
 			{
 				speed = gravity * 1.8f;
 				rotation.y = 0;
-				rotation.z = 0;
 				leftWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
@@ -447,7 +447,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		speed = 0;
-		rotation.z = 0.0f;
+		rotation.y = 0.0f;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
 		{
@@ -532,7 +532,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 				t = 0;
 				treadTime = 0;
 				treadFlag = true;
-				rotation.z = 0.0f;
+				rotation.y = 0.0f;
 				enemy->Death();
 			}
 		}
