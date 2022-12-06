@@ -186,6 +186,19 @@
     <ClCompile Include="Application\CountDown\CountDown.cpp">
       <Filter>Game\CountDown</Filter>
     </ClCompile>
+    <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="GamePlayScene.cpp" />
+    <ClCompile Include="EndScene.cpp" />
+    <ClCompile Include="GameSceneManager.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="GameSceneManagerState.cpp">
+      <Filter>Game</Filter>
+    </ClCompile>
+    <ClCompile Include="SelectScene.cpp" />
+    <ClCompile Include="GameOverScene.cpp" />
+    <ClCompile Include="ClearScene.cpp" />
+    <ClCompile Include="StaticInitScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -356,6 +369,19 @@
     <ClInclude Include="Application\CountDown\CountDown.h">
       <Filter>Game\CountDown</Filter>
     </ClInclude>
+    <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="GamePlayScene.h" />
+    <ClInclude Include="EndScene.h" />
+    <ClInclude Include="GameSceneManager.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="GameSceneManagerState.h">
+      <Filter>Game</Filter>
+    </ClInclude>
+    <ClInclude Include="SelectScene.h" />
+    <ClInclude Include="GameOverScene.h" />
+    <ClInclude Include="ClearScene.h" />
+    <ClInclude Include="StaticInitScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

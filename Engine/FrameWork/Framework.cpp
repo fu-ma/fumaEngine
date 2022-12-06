@@ -3,40 +3,31 @@
 void Framework::GameRun()
 {
 	staticInit();
+	Init();
 	while (true)//ゲームループ
 	{
 		fps->TimeWait();
-		if (SceneTime == 0)
-		{
-			Init();
-		}
-		if (Update() == false)
-		{
-			break;
-		}
-		if (SceneTime)
-		{
-			//Imguiの描画前処理
-			//ImguiCommon::PreDraw();
+		Update();
+		//Imguiの描画前処理
+		//ImguiCommon::PreDraw();
 
-			//レンダーテクスチャへの描画
-			//postEffect->PreDrawScene(common->GetCmdList().Get());
-			//Draw();
-			//Imguiの描画処理
-			//ImguiCommon::Draw(common->GetCmdList().Get());
-			//postEffect->PostDrawScene(common->GetCmdList().Get());
+		//レンダーテクスチャへの描画
+		//postEffect->PreDrawScene(common->GetCmdList().Get());
+		//Draw();
+		//Imguiの描画処理
+		//ImguiCommon::Draw(common->GetCmdList().Get());
+		//postEffect->PostDrawScene(common->GetCmdList().Get());
 
-			//描画開始
-			common->PreDraw();
-			Draw();
-			//Imguiの描画処理
-			//ImguiCommon::Draw(common->GetCmdList().Get());
-			//ポストエフェクトの描画
-			//postEffect->Draw(common->GetCmdList().Get());
-			//描画終了
-			common->PostDraw();
+		//描画開始
+		common->PreDraw();
+		Draw();
+		//Imguiの描画処理
+		//ImguiCommon::Draw(common->GetCmdList().Get());
+		//ポストエフェクトの描画
+		//postEffect->Draw(common->GetCmdList().Get());
+		//描画終了
+		common->PostDraw();
 
-		}
 	}
 	SceneDelete();
 }

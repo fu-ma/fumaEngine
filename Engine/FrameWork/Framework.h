@@ -89,8 +89,6 @@ public:
 		//WindowsAPIの終了処理
 		winApp->Finalize();
 	};
-
-	const int &SceneTimeGetter() { return SceneTime; }
 protected:
 	WinPtr winApp;
 	Input* input;
@@ -103,9 +101,5 @@ protected:
 	LightGroupPtr lightGroup;
 	MultipleTexPtr postEffect;
 	FpsPtr fps;
-	//現在のシーンの番号
-	int SceneNo = static_cast<int>(GameSceneNo::Title);
-	//初期化のための計測
-	int SceneTime = 0;
 };
 
