@@ -3,6 +3,8 @@
 
 class GameOverScene : public GameSceneManagerState
 {
+private:
+	Sprite *EndSprite = nullptr;
 public:
 	GameOverScene(const int stageNum = 0) { }
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);

@@ -5,12 +5,10 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 void EndScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
-	objPlayer->Initialize();
 }
 
 void EndScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -21,7 +19,7 @@ void EndScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugT
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(soundData3, 0.05f);
+		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
 	}
 

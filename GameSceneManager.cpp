@@ -6,12 +6,11 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 GameSceneManager::GameSceneManager()
 {
-	state = new StaticInitScene();
+	state = new TitleScene();
 }
 
 GameSceneManager::~GameSceneManager()
@@ -37,6 +36,7 @@ void GameSceneManager::Draw(DirectXApp *common, DebugText *debugText)
 void GameSceneManager::changeState(GameSceneManagerState *newState, DebugCamera *camera, Audio *audio, Fps *fps)
 {
 	delete state;
+	state = nullptr;
 	state = newState;
 	state->Initialize(this, camera, audio, fps);
 }

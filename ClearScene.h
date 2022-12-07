@@ -3,6 +3,8 @@
 
 class ClearScene : public GameSceneManagerState
 {
+private:
+	Sprite *StageClear = nullptr;
 public:
 	ClearScene(const int stageNum = 0) { }
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);

@@ -63,8 +63,9 @@
     <ClCompile Include="Application\Particle\Particle.cpp" />
     <ClCompile Include="Application\Particle\ParticleManager.cpp" />
     <ClCompile Include="Application\Player\Player.cpp" />
+    <ClCompile Include="Resources.cpp" />
     <ClCompile Include="SelectScene.cpp" />
-    <ClCompile Include="StaticInitScene.cpp" />
+    <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="TitleScene.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -230,8 +231,9 @@
     <ClInclude Include="GamePlayScene.h" />
     <ClInclude Include="GameSceneManager.h" />
     <ClInclude Include="GameSceneManagerState.h" />
+    <ClInclude Include="Resources.h" />
     <ClInclude Include="SelectScene.h" />
-    <ClInclude Include="StaticInitScene.h" />
+    <ClInclude Include="Singleton.h" />
     <ClInclude Include="TitleScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

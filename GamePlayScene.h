@@ -3,6 +3,56 @@
 
 class GamePlayScene : public GameSceneManagerState
 {
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
+	using XMFLOAT4 = DirectX::XMFLOAT4;
+	using XMVECTOR = DirectX::XMVECTOR;
+	using XMMATRIX = DirectX::XMMATRIX;
+private:
+	Sprite *backGround = nullptr;
+	Sprite *goTitle = nullptr;
+	Sprite *reStart = nullptr;
+	Sprite *Return = nullptr;
+	Sprite *playerIconSprite = nullptr;
+	Sprite *ClearStageSprite = nullptr;
+	Sprite *GameOver = nullptr;
+
+	//雲
+	ModelObj *cloud[10] = { nullptr };
+	XMFLOAT3 cloudPos[10] = {};
+
+	//敵
+	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
+
+	//プレイヤー
+	Player *objPlayer = nullptr;
+
+
+	//ステージブロック
+	ModelObj *objStageBox[Y_MAX][X_MAX] = { nullptr };
+	ModelObj *titleStageBox[6][24] = { nullptr };
+	XMFLOAT3 stageBoxPos[6][24];
+
+	//ギミック
+	Firebar *firebar;
+	std::vector<Firebar *> fire;
+
+	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
+	int gimmickCenterNum;
+
+	//一定時間で切り替わる床
+	ModelObj *objRedBlock[Y_MAX][X_MAX];
+	ModelObj *objBlueBlock[Y_MAX][X_MAX];
+
+	//ゴール
+	ModelObj *objGoal = nullptr;
+
+	//パーティクル
+	Particle *playerParticle = nullptr;
+
+	//カウントダウンクラス
+	CountDown *countDown = nullptr;
+
 public:
 	GamePlayScene(const int stageNum = 0) { this->stageNum = stageNum; }
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);

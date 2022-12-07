@@ -5,12 +5,44 @@
 #include"ClearScene.h"
 #include"EndScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
-	audio->PlayLoadedSound(soundData2, 0.05f);
+	// 背景スプライト生成
+	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage1Sprite = Sprite::Create(6, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage2Sprite = Sprite::Create(7, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage3Sprite = Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	playerIconSprite = Sprite::Create(12, { 64,64 });
+
+	// 3Dオブジェクト生成
+	objPlayer = Player::Create(Resources::modelPlayer);
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i] = ModelObj::Create(Resources::modelCloud);
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+			enemy[y][x] = Enemy::Create(Resources::modelEnemy);
+		}
+	}
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+		}
+	}
+
+	audio->PlayLoadedSound(Resources::soundData2, 0.05f);
 	objPlayer->Initialize();
 	objPlayer->SetRotation({ 0,0,0 });
 	for (int i = 0; i < 10; i++)
@@ -166,7 +198,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
 	{
-		audio->StopLoadedSound(soundData2);
+		audio->StopLoadedSound(Resources::soundData2);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
 	}
 	//ステージセレクト
@@ -236,35 +268,6 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage4Sprite->SetSize({ (float)stage4SpriteSize,(float)stage4SpriteSize });
 	Stage5Sprite->SetSize({ (float)stage5SpriteSize,(float)stage5SpriteSize });
 
-	//指定の位置でSpaceを押すとそのステージにとぶ
-	if (objPlayer->GetJumpTimer() > 30)
-	{
-		if (selectNum == 0 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(soundData2);
-			pEngine->changeState(new GamePlayScene(1), camera, audio, fps);
-		}
-		if (selectNum == 1 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(soundData2);
-			pEngine->changeState(new GamePlayScene(2), camera, audio, fps);
-		}
-		if (selectNum == 2 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(soundData2);
-			pEngine->changeState(new GamePlayScene(3), camera, audio, fps);
-		}
-		if (selectNum == 3 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(soundData2);
-			pEngine->changeState(new GamePlayScene(4), camera, audio, fps);
-		}
-		if (selectNum == 4 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(soundData2);
-			pEngine->changeState(new GamePlayScene(5), camera, audio, fps);
-		}
-	}
 	if (stageSelectJumpFlag)
 	{
 		objPlayer->Jump();
@@ -293,6 +296,36 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
+
+	//指定の位置でSpaceを押すとそのステージにとぶ
+	if (objPlayer->GetJumpTimer() > 30)
+	{
+		if (selectNum == 0 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(Resources::soundData2);
+			pEngine->changeState(new GamePlayScene(1), camera, audio, fps);
+		}
+		if (selectNum == 1 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(Resources::soundData2);
+			pEngine->changeState(new GamePlayScene(2), camera, audio, fps);
+		}
+		if (selectNum == 2 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(Resources::soundData2);
+			pEngine->changeState(new GamePlayScene(3), camera, audio, fps);
+		}
+		if (selectNum == 3 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(Resources::soundData2);
+			pEngine->changeState(new GamePlayScene(4), camera, audio, fps);
+		}
+		if (selectNum == 4 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(Resources::soundData2);
+			pEngine->changeState(new GamePlayScene(5), camera, audio, fps);
+		}
+	}
 }
 
 void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText)

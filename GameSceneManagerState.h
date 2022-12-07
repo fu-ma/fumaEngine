@@ -16,96 +16,13 @@
 #include<stdlib.h>
 #include<time.h>
 #include"CountDown.h"
+#include"Resources.h"
 
 class GameSceneManager;
 
 class GameSceneManagerState
 {
 public:
-	~GameSceneManagerState()
-	{
-		backGround = nullptr;
-		delete titleSprite;
-		titleSprite = nullptr;
-		delete StageClear;
-		StageClear = nullptr;
-		delete GameOver;
-		GameOver = nullptr;
-		delete Stage1Sprite;
-		Stage1Sprite = nullptr;
-		delete Stage2Sprite;
-		Stage2Sprite = nullptr;
-		delete Stage3Sprite;
-		Stage3Sprite = nullptr;
-		delete Stage4Sprite;
-		Stage4Sprite = nullptr;
-		delete Stage5Sprite;
-		Stage5Sprite = nullptr;
-		delete playerIconSprite;
-		playerIconSprite = nullptr;
-		delete EndSprite;
-		EndSprite = nullptr;
-		delete goTitle;
-		goTitle = nullptr;
-		delete reStart;
-		reStart = nullptr;
-		delete Return;
-		Return = nullptr;
-		delete ClearStageSprite;
-		ClearStageSprite = nullptr;
-
-		delete playerParticle;
-		playerParticle = nullptr;
-		delete objGoal;
-		objGoal = nullptr;
-		delete modelGoal;
-		modelGoal = nullptr;
-		delete firebar;
-		firebar = nullptr;
-		//modelObj解放処理
-		delete objPlayer;
-		objPlayer = nullptr;
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				delete objStageBox[y][x];
-				objStageBox[y][x] = nullptr;
-				delete enemy[y][x];
-				enemy[y][x] = nullptr;
-				delete objRedBlock[y][x];
-				objRedBlock[y][x] = nullptr;
-				delete objBlueBlock[y][x];
-				objBlueBlock[y][x] = nullptr;
-			}
-		}
-		for (int y = 0; y < 6; y++)
-		{
-			for (int x = 0; x < 24; x++)
-			{
-				delete titleStageBox[y][x];
-				titleStageBox[y][x] = nullptr;
-			}
-		}
-
-		//model解放処理
-		delete modelStageBox;
-		modelStageBox = nullptr;
-		delete modelPlayer;
-		modelPlayer = nullptr;
-		delete modelCloud;
-		modelCloud = nullptr;
-		delete modelEnemy;
-		modelEnemy = nullptr;
-		delete modelRedBlock;
-		modelRedBlock = nullptr;
-		delete modelBlueBlock;
-		modelBlueBlock = nullptr;
-		delete modelWireBlock;
-		modelWireBlock = nullptr;
-		//FBX用のオブジェクト解放
-		//基底クラス解放処理
-	}
 	virtual void Initialize(GameSceneManager *pEngine, DebugCamera * camera, Audio *audio, Fps *fps) = 0;
 	virtual void Update(GameSceneManager *pEngine, Audio *audio, DebugText* debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps) = 0;
 	virtual void Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText) = 0;
@@ -148,71 +65,9 @@ protected:
 
 	StageData stageData;
 
-	SoundData soundData1;
-	SoundData soundData2;
-	SoundData soundData3;
-
 	/// <summary>
 	/// ゲームシーン用
 	/// </summary>
-
-	Sprite *backGround = nullptr;
-	Sprite *titleSprite = nullptr;
-	Sprite *StageClear = nullptr;
-	Sprite *GameOver = nullptr;
-	Sprite *Stage1Sprite = nullptr;
-	Sprite *Stage2Sprite = nullptr;
-	Sprite *Stage3Sprite = nullptr;
-	Sprite *Stage4Sprite = nullptr;
-	Sprite *Stage5Sprite = nullptr;
-	Sprite *playerIconSprite = nullptr;
-	Sprite *EndSprite = nullptr;
-	Sprite *goTitle = nullptr;
-	Sprite *reStart = nullptr;
-	Sprite *Return = nullptr;
-	Sprite *ClearStageSprite = nullptr;
-
-	//プレイヤー
-	Model *modelPlayer = nullptr;
-	Player *objPlayer = nullptr;
-
-	//雲
-	Model *modelCloud = nullptr;
-	ModelObj *cloud[10] = { nullptr };
-	XMFLOAT3 cloudPos[10] = {};
-
-	//ステージブロック
-	Model *modelStageBox = nullptr;
-	ModelObj *objStageBox[Y_MAX][X_MAX] = { nullptr };
-	ModelObj *titleStageBox[6][24] = { nullptr };
-	XMFLOAT3 stageBoxPos[6][24];
-	//敵
-	Model *modelEnemy = nullptr;
-	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
-
-	//ギミック
-	Firebar *firebar;
-	std::vector<Firebar *> fire;
-
-	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
-	int gimmickCenterNum;
-
-	//一定時間で切り替わる床
-	Model *modelRedBlock = nullptr;
-	Model *modelBlueBlock = nullptr;
-	Model *modelWireBlock = nullptr;
-	ModelObj *objRedBlock[Y_MAX][X_MAX];
-	ModelObj *objBlueBlock[Y_MAX][X_MAX];
-
-	//ゴール
-	Model *modelGoal = nullptr;
-	ModelObj *objGoal = nullptr;
-
-	//パーティクル
-	Particle *playerParticle = nullptr;
-
-	//カウントダウンクラス
-	CountDown *countDown = nullptr;
 
 	//ゲームオーバーフラグ
 	bool gameOverFlag;

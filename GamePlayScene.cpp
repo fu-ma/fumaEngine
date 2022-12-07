@@ -6,11 +6,48 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
-
 
 void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	// 背景スプライト生成
+	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	playerIconSprite = Sprite::Create(12, { 64,64 });
+	goTitle = Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f });
+	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
+	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	// 3Dオブジェクト生成
+	objPlayer = Player::Create(Resources::modelPlayer);
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i] = ModelObj::Create(Resources::modelCloud);
+	}
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			objStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+			enemy[y][x] = Enemy::Create(Resources::modelEnemy);
+			objRedBlock[y][x] = ModelObj::Create(Resources::modelRedBlock);
+			objBlueBlock[y][x] = ModelObj::Create(Resources::modelBlueBlock);
+		}
+	}
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+		}
+	}
+
+	objGoal = ModelObj::Create(Resources::modelGoal);
+
+	playerParticle = new Particle();
+	playerParticle->Initialize(Resources::modelEnemy);
+	//カウントダウンクラス初期化
+	countDown = new CountDown();
 	StageSet(map1, stageNum, audio, fps);
 }
 
@@ -129,7 +166,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	}
 
 	clearStopFlag = false;
-	audio->PlayLoadedSound(soundData1, 0.05f);
+	audio->PlayLoadedSound(Resources::soundData1, 0.05f);
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -211,7 +248,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(soundData1);
+			audio->StopLoadedSound(Resources::soundData1);
 			pEngine->changeState(new TitleScene(), camera, audio, fps);
 			//SceneNo = static_cast<int>(GameSceneNo::StageSelect);
 		}
@@ -225,7 +262,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		gameOverTime += 0.001f;
 		if (gameOverTime > 0.2)
 		{
-			audio->StopLoadedSound(soundData1);
+			audio->StopLoadedSound(Resources::soundData1);
 			if (totalPlayerNum == 0)
 			{
 				pEngine->changeState(new GameOverScene(), camera, audio, fps);
@@ -362,7 +399,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//ゴールとのあたり判定
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
-		audio->StopLoadedSound(soundData1);
+		audio->StopLoadedSound(Resources::soundData1);
 		pEngine->changeState(new ClearScene(), camera, audio, fps);
 		//ステージ番号を次のステージの番号にする
 		if (selectNum < 4)
@@ -451,25 +488,25 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 			//あたり判定なしのワイヤーブロックを表示
 			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
-				objRedBlock[y][x]->SetModel(modelWireBlock);
+				objRedBlock[y][x]->SetModel(Resources::modelWireBlock);
 				objRedBlock[y][x]->Draw();
 			}
 			//あたり判定ありのレッドブロックを表示
 			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
 			{
-				objRedBlock[y][x]->SetModel(modelRedBlock);
+				objRedBlock[y][x]->SetModel(Resources::modelRedBlock);
 				objRedBlock[y][x]->Draw();
 			}
 			//あたり判定なしのワイヤーブロックを表示
 			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
 			{
-				objBlueBlock[y][x]->SetModel(modelWireBlock);
+				objBlueBlock[y][x]->SetModel(Resources::modelWireBlock);
 				objBlueBlock[y][x]->Draw();
 			}
 			//あたり判定ありのブルーブロックを表示
 			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
-				objBlueBlock[y][x]->SetModel(modelBlueBlock);
+				objBlueBlock[y][x]->SetModel(Resources::modelBlueBlock);
 				objBlueBlock[y][x]->Draw();
 			}
 		}

@@ -198,7 +198,8 @@
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="GameOverScene.cpp" />
     <ClCompile Include="ClearScene.cpp" />
-    <ClCompile Include="StaticInitScene.cpp" />
+    <ClCompile Include="Resources.cpp" />
+    <ClCompile Include="Singleton.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -381,7 +382,8 @@
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="GameOverScene.h" />
     <ClInclude Include="ClearScene.h" />
-    <ClInclude Include="StaticInitScene.h" />
+    <ClInclude Include="Resources.h" />
+    <ClInclude Include="Singleton.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

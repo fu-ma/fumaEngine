@@ -5,11 +5,11 @@
 #include"ClearScene.h"
 #include"EndScene.h"
 #include"SelectScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 void GameOverScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	EndSprite = Sprite::Create(13, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	totalPlayerNum = 5;
 }
 
@@ -21,7 +21,7 @@ void GameOverScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *d
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(soundData3, 0.05f);
+		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
 	}
 }

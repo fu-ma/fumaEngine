@@ -5,12 +5,31 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera* camera, Audio *audio, Fps *fps)
 {
-	audio->PlayLoadedSound(soundData2, 0.05f);
+	// 背景スプライト生成
+	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	titleSprite = Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+
+	// 3Dオブジェクト生成
+	objPlayer = Player::Create(Resources::modelPlayer);
+
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i] = ModelObj::Create(Resources::modelCloud);
+	}
+
+	for (int y = 0; y < 6; y++)
+	{
+		for (int x = 0; x < 24; x++)
+		{
+			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+		}
+	}
+
+	audio->PlayLoadedSound(Resources::soundData2, 0.05f);
 	objPlayer->Initialize();
 	for (int i = 0; i < 10; i++)
 	{
@@ -83,24 +102,26 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->StopLoadedSound(soundData2);
+		audio->StopLoadedSound(Resources::soundData2);
 		pEngine->changeState(new SelectScene(), camera, audio, fps);
 	}
-
-	lightGroup->Update();
-	camera->Update();
-	objPlayer->Update();
-	for (int y = 0; y < 6; y++)
+	else
 	{
-		for (int x = 0; x < 24; x++)
+		lightGroup->Update();
+		camera->Update();
+		objPlayer->Update();
+		for (int y = 0; y < 6; y++)
 		{
-			titleStageBox[y][x]->Update();
+			for (int x = 0; x < 24; x++)
+			{
+				titleStageBox[y][x]->Update();
+			}
 		}
-	}
 
-	for (int i = 0; i < 10; i++)
-	{
-		cloud[i]->Update();
+		for (int i = 0; i < 10; i++)
+		{
+			cloud[i]->Update();
+		}
 	}
 }
 

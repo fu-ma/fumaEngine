@@ -5,11 +5,11 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
-#include"StaticInitScene.h"
 #include"GamePlayScene.h"
 
 void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	StageClear = Sprite::Create(3, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 }
 
 void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -19,7 +19,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(soundData3, 0.05f);
+		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new SelectScene(), camera, audio, fps);
 	}
 }
