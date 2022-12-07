@@ -23,6 +23,7 @@ void GameOverScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *d
 	{
 		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		return;
 	}
 }
 

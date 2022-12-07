@@ -21,6 +21,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	{
 		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new SelectScene(), camera, audio, fps);
+		return;
 	}
 }
 

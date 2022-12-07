@@ -12,6 +12,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
+	GameOver = Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	goTitle = Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f });
 	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
@@ -34,6 +35,12 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		}
 	}
 
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
+		cloudPos[i] = cloud[i]->GetPosition();
+	}
+
 	for (int y = 0; y < 6; y++)
 	{
 		for (int x = 0; x < 24; x++)
@@ -48,7 +55,26 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	playerParticle->Initialize(Resources::modelEnemy);
 	//カウントダウンクラス初期化
 	countDown = new CountDown();
-	StageSet(map1, stageNum, audio, fps);
+	if (selectNum == 0)
+	{
+		StageSet(map1, stageNum, audio, fps);
+	}
+	if (selectNum == 1)
+	{
+		StageSet(map2, stageNum, audio, fps);
+	}
+	if (selectNum == 2)
+	{
+		StageSet(map3, stageNum, audio, fps);
+	}
+	if (selectNum == 3)
+	{
+		StageSet(map4, stageNum, audio, fps);
+	}
+	if (selectNum == 4)
+	{
+		StageSet(map5, stageNum, audio, fps);
+	}
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -243,14 +269,15 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
 			pEngine->changeState(new GamePlayScene(stageNum), camera, audio, fps);
+			return;
 		}
 
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData1);
-			pEngine->changeState(new TitleScene(), camera, audio, fps);
-			//SceneNo = static_cast<int>(GameSceneNo::StageSelect);
+			pEngine->changeState(new SelectScene(), camera, audio, fps);
+			return;
 		}
 	}
 
@@ -266,10 +293,12 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			if (totalPlayerNum == 0)
 			{
 				pEngine->changeState(new GameOverScene(), camera, audio, fps);
+				return;
 			}
 			else
 			{
 				pEngine->changeState(new SelectScene(), camera, audio, fps);
+				return;
 			}
 			//残機を減らす
 			totalPlayerNum--;
@@ -406,6 +435,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			selectNum += 1;
 		}
+		return;
 	}
 
 	if (objPlayer->GetOnCollision())

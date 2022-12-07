@@ -200,6 +200,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	{
 		audio->StopLoadedSound(Resources::soundData2);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		return;
 	}
 	//ステージセレクト
 	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
@@ -228,6 +229,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		stageNum = 1;
 	}
 	if (selectNum == 1)
 	{
@@ -236,6 +238,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		stageNum = 2;
 	}
 	if (selectNum == 2)
 	{
@@ -244,6 +247,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		easing::Updete(stage3SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		stageNum = 3;
 	}
 	if (selectNum == 3)
 	{
@@ -252,6 +256,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
+		stageNum = 4;
 	}
 	if (selectNum == 4)
 	{
@@ -260,6 +265,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
+		stageNum = 5;
 	}
 
 	Stage1Sprite->SetSize({ (float)stage1SpriteSize,(float)stage1SpriteSize });
@@ -305,22 +311,22 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 			audio->StopLoadedSound(Resources::soundData2);
 			pEngine->changeState(new GamePlayScene(1), camera, audio, fps);
 		}
-		if (selectNum == 1 && selectMoveTime >= 0.2f)
+		else if (selectNum == 1 && selectMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData2);
 			pEngine->changeState(new GamePlayScene(2), camera, audio, fps);
 		}
-		if (selectNum == 2 && selectMoveTime >= 0.2f)
+		else if (selectNum == 2 && selectMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData2);
 			pEngine->changeState(new GamePlayScene(3), camera, audio, fps);
 		}
-		if (selectNum == 3 && selectMoveTime >= 0.2f)
+		else if (selectNum == 3 && selectMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData2);
 			pEngine->changeState(new GamePlayScene(4), camera, audio, fps);
 		}
-		if (selectNum == 4 && selectMoveTime >= 0.2f)
+		else if (selectNum == 4 && selectMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData2);
 			pEngine->changeState(new GamePlayScene(5), camera, audio, fps);

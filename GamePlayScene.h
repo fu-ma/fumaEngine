@@ -68,8 +68,5 @@ private:
 
 #pragma region ‹¤’Ê•`‰æŠÖ”
 	void StageDraw(DirectXApp* common,DebugText *debugText);
-
-private:
-	int stageNum;
 };
 

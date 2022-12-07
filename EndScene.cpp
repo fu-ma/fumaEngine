@@ -21,6 +21,7 @@ void EndScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugT
 	{
 		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
 		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		return;
 	}
 
 	lightGroup->Update();
