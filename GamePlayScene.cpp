@@ -41,14 +41,6 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
 
-	for (int y = 0; y < 6; y++)
-	{
-		for (int x = 0; x < 24; x++)
-		{
-			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
-		}
-	}
-
 	objGoal = ModelObj::Create(Resources::modelGoal);
 
 	playerParticle = new Particle();
@@ -268,6 +260,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//リスタートボタンを押したとき
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
+			audio->StopLoadedSound(Resources::soundData1);
+			fire.clear();
 			pEngine->changeState(new GamePlayScene(stageNum), camera, audio, fps);
 			return;
 		}
@@ -276,6 +270,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
 			audio->StopLoadedSound(Resources::soundData1);
+			fire.clear();
 			pEngine->changeState(new SelectScene(), camera, audio, fps);
 			return;
 		}
@@ -292,11 +287,13 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			audio->StopLoadedSound(Resources::soundData1);
 			if (totalPlayerNum == 0)
 			{
+				fire.clear();
 				pEngine->changeState(new GameOverScene(), camera, audio, fps);
 				return;
 			}
 			else
 			{
+				fire.clear();
 				pEngine->changeState(new SelectScene(), camera, audio, fps);
 				return;
 			}
@@ -429,6 +426,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
 		audio->StopLoadedSound(Resources::soundData1);
+		fire.clear();
 		pEngine->changeState(new ClearScene(), camera, audio, fps);
 		//ステージ番号を次のステージの番号にする
 		if (selectNum < 4)

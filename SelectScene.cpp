@@ -25,14 +25,6 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	{
 		cloud[i] = ModelObj::Create(Resources::modelCloud);
 	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
-			enemy[y][x] = Enemy::Create(Resources::modelEnemy);
-		}
-	}
 
 	for (int y = 0; y < 6; y++)
 	{
