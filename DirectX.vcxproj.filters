@@ -200,6 +200,7 @@
     <ClCompile Include="ClearScene.cpp" />
     <ClCompile Include="Resources.cpp" />
     <ClCompile Include="Singleton.cpp" />
+    <ClCompile Include="WholeScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -384,6 +385,7 @@
     <ClInclude Include="ClearScene.h" />
     <ClInclude Include="Resources.h" />
     <ClInclude Include="Singleton.h" />
+    <ClInclude Include="WholeScene.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

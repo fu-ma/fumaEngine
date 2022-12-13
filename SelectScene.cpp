@@ -6,9 +6,14 @@
 #include"EndScene.h"
 #include"GameOverScene.h"
 #include"GamePlayScene.h"
+#include"Resources.h"
+#include"WholeScene.h"
 
 void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage1Sprite = Sprite::Create(6, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
@@ -19,27 +24,27 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	playerIconSprite = Sprite::Create(12, { 64,64 });
 
 	// 3Dオブジェクト生成
-	objPlayer = Player::Create(Resources::modelPlayer);
+	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
 
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i] = ModelObj::Create(Resources::modelCloud);
+		cloud[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelCloud));
 	}
 
 	for (int y = 0; y < 6; y++)
 	{
 		for (int x = 0; x < 24; x++)
 		{
-			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+			titleStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
 		}
 	}
 
-	audio->PlayLoadedSound(Resources::soundData2, 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
 	objPlayer->Initialize();
 	objPlayer->SetRotation({ 0,0,0 });
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
+		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
 
@@ -59,7 +64,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	camera->SetDistance(20.0f);
 	gameTimer = 180 * 61;
 
-	if (selectNum == 0)
+	if (wholeScene->GetSelectNum() == 0)
 	{
 		stage1SpriteSize = stageSpriteMaxSize;
 		stage2SpriteSize = stageSpriteMinSize;
@@ -67,7 +72,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		stage4SpriteSize = stageSpriteMinSize;
 		stage5SpriteSize = stageSpriteMinSize;
 	}
-	if (selectNum == 1)
+	if (wholeScene->GetSelectNum() == 1)
 	{
 		stage1SpriteSize = stageSpriteMinSize;
 		stage2SpriteSize = stageSpriteMaxSize;
@@ -75,7 +80,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		stage4SpriteSize = stageSpriteMinSize;
 		stage5SpriteSize = stageSpriteMinSize;
 	}
-	if (selectNum == 2)
+	if (wholeScene->GetSelectNum() == 2)
 	{
 		stage1SpriteSize = stageSpriteMinSize;
 		stage2SpriteSize = stageSpriteMinSize;
@@ -83,7 +88,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		stage4SpriteSize = stageSpriteMinSize;
 		stage5SpriteSize = stageSpriteMinSize;
 	}
-	if (selectNum == 3)
+	if (wholeScene->GetSelectNum() == 3)
 	{
 		stage1SpriteSize = stageSpriteMinSize;
 		stage2SpriteSize = stageSpriteMinSize;
@@ -91,7 +96,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		stage4SpriteSize = stageSpriteMaxSize;
 		stage5SpriteSize = stageSpriteMinSize;
 	}
-	if (selectNum == 4)
+	if (wholeScene->GetSelectNum() == 4)
 	{
 		stage1SpriteSize = stageSpriteMinSize;
 		stage2SpriteSize = stageSpriteMinSize;
@@ -102,12 +107,17 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	selectMoveTime = 0.2f;
 	moveStageBlockSpeed = -0.02f;
 	stageSelectJumpFlag = false;
+
+	selectNumber = wholeScene->GetSelectNum();
 }
 
 void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 #pragma region 更新処理
 	// カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x, 10, 0 });
@@ -116,7 +126,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
 	debugText->SetSize(5);
-	debugText->Printf("%d", totalPlayerNum);
+	debugText->Printf("%d", wholeScene->GetTotalPlayerNum());
 
 	//タイトルから来たときにジャンプを防ぐ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
@@ -131,11 +141,11 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		{
 			if (i == 0)
 			{
-				cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 			}
 			else
 			{
-				cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+				cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 			}
 		}
 		cloud[i]->SetPosition(cloudPos[i]);
@@ -190,74 +200,77 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
 	{
-		audio->StopLoadedSound(Resources::soundData2);
-		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+		pEngine->changeState(new TitleScene());
 		return;
 	}
 	//ステージセレクト
 	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
-		&& selectNum > 0 && selectMoveTime >= 0.2f)
+		&& wholeScene->GetSelectNum() > 0 && selectMoveTime >= 0.2f)
 	{
 		selectMoveTime = 0;
-		selectNum -= 1;
+		selectNumber -= 1;
 	}
 	else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
-		&& selectNum < 4 && selectMoveTime >= 0.2f)
+		&& wholeScene->GetSelectNum() < 4 && selectMoveTime >= 0.2f)
 	{
 		selectMoveTime = 0;
-		selectNum += 1;
+		selectNumber += 1;
 	}
 	else
 	{
 		selectMoveTime += 0.008f;
 	}
-	easing::Updete(selectPos, selectInterval * selectNum, InSine, selectMoveTime);
+	easing::Updete(selectPos, selectInterval * wholeScene->GetSelectNum(), InSine, selectMoveTime);
+
+	//ステージを判断する数字をセット
+	wholeScene->SetSelectNum(selectNumber);
 
 	//指定の位置にいるステージ番号の画像を大きくする
-	if (selectNum == 0)
+	if (wholeScene->GetSelectNum() == 0)
 	{
 		easing::Updete(stage1SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
-		stageNum = 1;
+		wholeScene->SetStageFireNum(1);
 	}
-	if (selectNum == 1)
+	if (wholeScene->GetSelectNum() == 1)
 	{
 		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage2SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
-		stageNum = 2;
+		wholeScene->SetStageFireNum(2);
 	}
-	if (selectNum == 2)
+	if (wholeScene->GetSelectNum() == 2)
 	{
 		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage3SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
-		stageNum = 3;
+		wholeScene->SetStageFireNum(3);
 	}
-	if (selectNum == 3)
+	if (wholeScene->GetSelectNum() == 3)
 	{
 		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
-		stageNum = 4;
+		wholeScene->SetStageFireNum(4);
 	}
-	if (selectNum == 4)
+	if (wholeScene->GetSelectNum() == 4)
 	{
 		easing::Updete(stage1SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage2SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage3SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage4SpriteSize, stageSpriteMinSize, InSine, selectMoveTime);
 		easing::Updete(stage5SpriteSize, stageSpriteMaxSize, InSine, selectMoveTime);
-		stageNum = 5;
+		wholeScene->SetStageFireNum(5);
 	}
 
 	Stage1Sprite->SetSize({ (float)stage1SpriteSize,(float)stage1SpriteSize });
@@ -298,30 +311,30 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	//指定の位置でSpaceを押すとそのステージにとぶ
 	if (objPlayer->GetJumpTimer() > 30)
 	{
-		if (selectNum == 0 && selectMoveTime >= 0.2f)
+		if (wholeScene->GetSelectNum() == 0 && selectMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData2);
-			pEngine->changeState(new GamePlayScene(1), camera, audio, fps);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(1));
 		}
-		else if (selectNum == 1 && selectMoveTime >= 0.2f)
+		else if (wholeScene->GetSelectNum() == 1 && selectMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData2);
-			pEngine->changeState(new GamePlayScene(2), camera, audio, fps);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(2));
 		}
-		else if (selectNum == 2 && selectMoveTime >= 0.2f)
+		else if (wholeScene->GetSelectNum() == 2 && selectMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData2);
-			pEngine->changeState(new GamePlayScene(3), camera, audio, fps);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(3));
 		}
-		else if (selectNum == 3 && selectMoveTime >= 0.2f)
+		else if (wholeScene->GetSelectNum() == 3 && selectMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData2);
-			pEngine->changeState(new GamePlayScene(4), camera, audio, fps);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(4));
 		}
-		else if (selectNum == 4 && selectMoveTime >= 0.2f)
+		else if (wholeScene->GetSelectNum() == 4 && selectMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData2);
-			pEngine->changeState(new GamePlayScene(5), camera, audio, fps);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(5));
 		}
 	}
 }

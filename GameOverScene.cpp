@@ -6,23 +6,28 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GamePlayScene.h"
+#include"Resources.h"
+#include"WholeScene.h"
 
 void GameOverScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 	EndSprite = Sprite::Create(13, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	totalPlayerNum = 5;
+	wholeScene->SetTotalPlayerNum(5);
 }
 
 void GameOverScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
+	Resources *resources = Resources::GetInstance();
 
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
-		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+		pEngine->changeState(new TitleScene());
 		return;
 	}
 }

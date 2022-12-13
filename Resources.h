@@ -1,48 +1,66 @@
 #pragma once
-#include "Singleton.h"
 #include"Sprite.h"
 #include"Audio.h"
 #include"Model.h"
 
-class Resources : public Singleton<Resources>
+enum class ResourcesName
+{
+	soundData1,
+	soundData2,
+	soundData3,
+	modelPlayer,
+	modelCloud,
+	modelStageBox,
+	modelEnemy,
+	modelRedBlock,
+	modelBlueBlock,
+	modelWireBlock,
+	modelGoal,
+};
+
+class Resources
 {
 	using XMFLOAT2 = DirectX::XMFLOAT2;
 	using XMFLOAT3 = DirectX::XMFLOAT3;
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
-public:
-	friend class Singleton<Resources>;
+public: // 静的メンバ変数
+	static Resources *GetInstance();
 
 public:
-	static void StaticInit(Audio *audio);
-
-public:
-	static SoundData soundData1;
-	static SoundData soundData2;
-	static SoundData soundData3;
+	void StaticInit(Audio *audio);
+	SoundData &GetSoundData(ResourcesName resourcesName);
+	Model *GetModel(ResourcesName resourcesName);
+private:
+	SoundData soundData1;
+	SoundData soundData2;
+	SoundData soundData3;
 
 	//プレイヤー
-	static Model *modelPlayer;
+	Model *modelPlayer;
 
 	//雲
-	static Model *modelCloud;
+	Model *modelCloud;
 
 	//ステージブロック
-	static Model *modelStageBox;
+	Model *modelStageBox;
 	//敵
-	static Model *modelEnemy;
+	Model *modelEnemy;
 
 	//一定時間で切り替わる床
-	static Model *modelRedBlock;
-	static Model *modelBlueBlock;
-	static Model *modelWireBlock;
+	Model *modelRedBlock;
+	Model *modelBlueBlock;
+	Model *modelWireBlock;
 
 	//ゴール
-	static Model *modelGoal;
+	Model *modelGoal;
 
-protected:
-	Resources();
-	virtual ~Resources();
+	//設定したリソースを読み込まなかった場合エラーを出るようにする
+	SoundData sound;
+	Model *model;
+private:
+	Resources() = default;
+	~Resources() = default;
 };
 

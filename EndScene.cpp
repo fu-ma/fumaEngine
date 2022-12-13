@@ -6,6 +6,7 @@
 #include"SelectScene.h"
 #include"GameOverScene.h"
 #include"GamePlayScene.h"
+#include"Resources.h"
 
 void EndScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
@@ -15,12 +16,13 @@ void EndScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugT
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
+	Resources *resources = Resources::GetInstance();
 
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(Resources::soundData3, 0.05f);
-		pEngine->changeState(new TitleScene(), camera, audio, fps);
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+		pEngine->changeState(new TitleScene());
 		return;
 	}
 

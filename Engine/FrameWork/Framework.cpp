@@ -3,31 +3,18 @@
 void Framework::GameRun()
 {
 	staticInit();
-	Init();
 	while (true)//ゲームループ
 	{
 		fps->TimeWait();
-		Update();
-		//Imguiの描画前処理
-		//ImguiCommon::PreDraw();
-
-		//レンダーテクスチャへの描画
-		//postEffect->PreDrawScene(common->GetCmdList().Get());
-		//Draw();
-		//Imguiの描画処理
-		//ImguiCommon::Draw(common->GetCmdList().Get());
-		//postEffect->PostDrawScene(common->GetCmdList().Get());
-
-		//描画開始
-		common->PreDraw();
+		//初期化(内部で一回のみ読み込むようにしている)
+		Init();
+		//更新処理
+		if (Update() == false)
+		{
+			break;
+		}
+		//描画処理
 		Draw();
-		//Imguiの描画処理
-		//ImguiCommon::Draw(common->GetCmdList().Get());
-		//ポストエフェクトの描画
-		//postEffect->Draw(common->GetCmdList().Get());
-		//描画終了
-		common->PostDraw();
-
 	}
 	SceneDelete();
 }
@@ -78,6 +65,9 @@ void Framework::staticInit()
 	ImguiCommon::Initialize(common->GetDev().Get(),winApp->GetHwnd());
 
 	fps = std::make_unique<Fps>();
+
+	resources = Resources::GetInstance();
+	resources->StaticInit(audio.get());
 }
 
 void Framework::Init()

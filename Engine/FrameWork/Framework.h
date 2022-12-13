@@ -17,6 +17,7 @@
 #include"Engine/Input/Controller.h"
 #include"ImguiCommon.h"
 #include"Fps.h"
+#include"Resources.h"
 
 /// <summary>
 /// フレームワーク
@@ -91,8 +92,8 @@ public:
 	};
 protected:
 	WinPtr winApp;
-	Input* input;
-	Controller* controller;
+	Input *input;
+	Controller *controller;
 	CommonPtr common;
 
 	AudioPtr audio;
@@ -101,5 +102,6 @@ protected:
 	LightGroupPtr lightGroup;
 	MultipleTexPtr postEffect;
 	FpsPtr fps;
+	Resources *resources;
 };
 

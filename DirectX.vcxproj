@@ -67,6 +67,7 @@
     <ClCompile Include="SelectScene.cpp" />
     <ClCompile Include="Singleton.cpp" />
     <ClCompile Include="TitleScene.cpp" />
+    <ClCompile Include="WholeScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -235,6 +236,7 @@
     <ClInclude Include="SelectScene.h" />
     <ClInclude Include="Singleton.h" />
     <ClInclude Include="TitleScene.h" />
+    <ClInclude Include="WholeScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>

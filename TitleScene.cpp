@@ -6,34 +6,39 @@
 #include"SelectScene.h"
 #include"GameOverScene.h"
 #include"GamePlayScene.h"
+#include"Resources.h"
+#include"WholeScene.h"
 
-void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera* camera, Audio *audio, Fps *fps)
+void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	titleSprite = Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// 3Dオブジェクト生成
-	objPlayer = Player::Create(Resources::modelPlayer);
+	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
 
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i] = ModelObj::Create(Resources::modelCloud);
+		cloud[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelCloud));
 	}
 
 	for (int y = 0; y < 6; y++)
 	{
 		for (int x = 0; x < 24; x++)
 		{
-			titleStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
+			titleStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
 		}
 	}
 
-	audio->PlayLoadedSound(Resources::soundData2, 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
 	objPlayer->Initialize();
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
+		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
 
@@ -57,6 +62,9 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 #pragma region 更新処理
 	//雲の移動
 	{
@@ -67,11 +75,11 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 			{
 				if (i == 0)
 				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 				}
 				else
 				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 				}
 			}
 			cloud[i]->SetPosition(cloudPos[i]);
@@ -102,8 +110,8 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//シーン遷移
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->StopLoadedSound(Resources::soundData2);
-		pEngine->changeState(new SelectScene(), camera, audio, fps);
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+		pEngine->changeState(new SelectScene());
 	}
 	else
 	{

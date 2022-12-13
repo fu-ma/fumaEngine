@@ -6,9 +6,14 @@
 #include"EndScene.h"
 #include"SelectScene.h"
 #include"GameOverScene.h"
+#include"Resources.h"
+#include"WholeScene.h"
 
 void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
@@ -18,54 +23,54 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
 	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	// 3Dオブジェクト生成
-	objPlayer = Player::Create(Resources::modelPlayer);
+	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
 
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i] = ModelObj::Create(Resources::modelCloud);
+		cloud[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelCloud));
 	}
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
 		{
-			objStageBox[y][x] = ModelObj::Create(Resources::modelStageBox);
-			enemy[y][x] = Enemy::Create(Resources::modelEnemy);
-			objRedBlock[y][x] = ModelObj::Create(Resources::modelRedBlock);
-			objBlueBlock[y][x] = ModelObj::Create(Resources::modelBlueBlock);
+			objStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
+			enemy[y][x] = Enemy::Create(resources->GetModel(ResourcesName::modelEnemy));
+			objRedBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock));
+			objBlueBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock));
 		}
 	}
 
 	for (int i = 0; i < 10; i++)
 	{
-		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) });
+		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
 
-	objGoal = ModelObj::Create(Resources::modelGoal);
+	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
 
 	playerParticle = new Particle();
-	playerParticle->Initialize(Resources::modelEnemy);
+	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
 	//カウントダウンクラス初期化
 	countDown = new CountDown();
-	if (selectNum == 0)
+	if (wholeScene->GetSelectNum() == 0)
 	{
-		StageSet(map1, stageNum, audio, fps);
+		StageSet(map1, wholeScene->GetStageFireNum(), audio, fps);
 	}
-	if (selectNum == 1)
+	if (wholeScene->GetSelectNum() == 1)
 	{
-		StageSet(map2, stageNum, audio, fps);
+		StageSet(map2, wholeScene->GetStageFireNum(), audio, fps);
 	}
-	if (selectNum == 2)
+	if (wholeScene->GetSelectNum() == 2)
 	{
-		StageSet(map3, stageNum, audio, fps);
+		StageSet(map3, wholeScene->GetStageFireNum(), audio, fps);
 	}
-	if (selectNum == 3)
+	if (wholeScene->GetSelectNum() == 3)
 	{
-		StageSet(map4, stageNum, audio, fps);
+		StageSet(map4, wholeScene->GetStageFireNum(), audio, fps);
 	}
-	if (selectNum == 4)
+	if (wholeScene->GetSelectNum() == 4)
 	{
-		StageSet(map5, stageNum, audio, fps);
+		StageSet(map5, wholeScene->GetStageFireNum(), audio, fps);
 	}
 }
 
@@ -81,6 +86,9 @@ void GamePlayScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugTex
 
 void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Audio *audio, Fps *fps)
 {
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
+
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
@@ -151,8 +159,8 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	fire.clear();
 	for (int i = 0; i < gimmickCenterNum; i++)
 	{
-		stageData = stageDatas[stageNum - 1][i];
-		firebar = new Firebar(gimmickCenter[i].x, gimmickCenter[i].y, stageData.firebarNum, stageData.direction, stageData.firebarSpeed);
+		wholeScene->SetStageData(wholeScene->GetStageDatas(stageNum - 1,i));
+		firebar = new Firebar(gimmickCenter[i].x, gimmickCenter[i].y, wholeScene->GetStageData().firebarNum, wholeScene->GetStageData().direction, wholeScene->GetStageData().firebarSpeed);
 		firebar->StaticInit();
 		fire.push_back(firebar);
 	}
@@ -184,13 +192,18 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	}
 
 	clearStopFlag = false;
-	audio->PlayLoadedSound(Resources::soundData1, 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData1), 0.05f);
+
+	totalPlayer = wholeScene->GetTotalPlayerNum();
+	selectNum = wholeScene->GetSelectNum();
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
+	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
 
 	// カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
@@ -260,18 +273,18 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//リスタートボタンを押したとき
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData1);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 			fire.clear();
-			pEngine->changeState(new GamePlayScene(stageNum), camera, audio, fps);
+			pEngine->changeState(new GamePlayScene());
 			return;
 		}
 
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(Resources::soundData1);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 			fire.clear();
-			pEngine->changeState(new SelectScene(), camera, audio, fps);
+			pEngine->changeState(new SelectScene());
 			return;
 		}
 	}
@@ -284,21 +297,23 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		gameOverTime += 0.001f;
 		if (gameOverTime > 0.2)
 		{
-			audio->StopLoadedSound(Resources::soundData1);
-			if (totalPlayerNum == 0)
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			//残機を減らす
+			totalPlayer--;
+			wholeScene->SetTotalPlayerNum(totalPlayer);
+
+			if (wholeScene->GetTotalPlayerNum() == 0)
 			{
 				fire.clear();
-				pEngine->changeState(new GameOverScene(), camera, audio, fps);
+				pEngine->changeState(new GameOverScene());
 				return;
 			}
 			else
 			{
 				fire.clear();
-				pEngine->changeState(new SelectScene(), camera, audio, fps);
+				pEngine->changeState(new SelectScene());
 				return;
 			}
-			//残機を減らす
-			totalPlayerNum--;
 		}
 		GameOver->SetSize({ (float)skullSizeX, (float)skullSizeY });
 	}
@@ -332,7 +347,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
 	debugText->SetSize(5);
-	debugText->Printf("%d", totalPlayerNum);
+	debugText->Printf("%d", wholeScene->GetTotalPlayerNum());
 
 	//雲の移動
 	{
@@ -343,11 +358,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			{
 				if (i == 0)
 				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 				}
 				else
 				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)GetRand(-5,2),20 + (float)GetRand(-2,4),(float)GetRand(10,5) };
+					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 				}
 			}
 			cloud[i]->SetPosition(cloudPos[i]);
@@ -425,13 +440,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//ゴールとのあたり判定
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
-		audio->StopLoadedSound(Resources::soundData1);
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 		fire.clear();
-		pEngine->changeState(new ClearScene(), camera, audio, fps);
+		pEngine->changeState(new ClearScene());
 		//ステージ番号を次のステージの番号にする
-		if (selectNum < 4)
+		if (wholeScene->GetSelectNum() < 4)
 		{
 			selectNum += 1;
+			wholeScene->SetSelectNum(selectNum);
 		}
 		return;
 	}
@@ -482,6 +498,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 {
+	Resources *resources = Resources::GetInstance();
 	///*スプライト描画*/
 ///*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
@@ -516,25 +533,25 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 			//あたり判定なしのワイヤーブロックを表示
 			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
-				objRedBlock[y][x]->SetModel(Resources::modelWireBlock);
+				objRedBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
 				objRedBlock[y][x]->Draw();
 			}
 			//あたり判定ありのレッドブロックを表示
 			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
 			{
-				objRedBlock[y][x]->SetModel(Resources::modelRedBlock);
+				objRedBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelRedBlock));
 				objRedBlock[y][x]->Draw();
 			}
 			//あたり判定なしのワイヤーブロックを表示
 			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
 			{
-				objBlueBlock[y][x]->SetModel(Resources::modelWireBlock);
+				objBlueBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
 				objBlueBlock[y][x]->Draw();
 			}
 			//あたり判定ありのブルーブロックを表示
 			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
 			{
-				objBlueBlock[y][x]->SetModel(Resources::modelBlueBlock);
+				objBlueBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelBlueBlock));
 				objBlueBlock[y][x]->Draw();
 			}
 		}

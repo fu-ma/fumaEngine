@@ -47,50 +47,7 @@ protected:
 	static const int Y_MAX = 10;
 	static const int GIMMICK_NUM = 100;
 
-	struct StageData
-	{
-		int firebarNum;//ファイアーの個数
-		bool direction;//ファイアーバーの回転方向
-		float firebarSpeed;//ファイアーバーの回転スピード
-	};
-
-	StageData stageDatas[5][20] =
-	{
-		{{4,false,0.2f},{2,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
-		{{3,false,0.2f},{6,true,0.3f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
-		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
-		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
-		{{10,false,0.2f},{12,false,0.2f},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{},{}},
-	};
-
-	StageData stageData;
-
-	/// <summary>
-	/// ゲームシーン用
-	/// </summary>
-
-	//プレイヤーの残機
-	int totalPlayerNum;
-
 	//制限時間
 	int gameTimer = 10980;
-
-	//何のステージを選択したか
-	int selectNum;
-
-	//ファイアーバー用のステージ番号
-	int stageNum = 1;
-
-	int GetRand(int min, int max)
-	{
-		static int check;
-		if (check == 0)
-		{
-			srand((unsigned int)time(NULL));
-			check = 1;
-		}
-
-		return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
-	}
 };
 

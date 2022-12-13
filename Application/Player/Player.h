@@ -19,7 +19,6 @@ public:
 	/// <returns></returns>
 	static Player* Create(Model * model = nullptr);
 public:
-	bool StaticInit();
 	/// <summary>
 	/// 初期化
 	/// </summary>

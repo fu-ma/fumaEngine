@@ -16,9 +16,17 @@ public:
 	void Update(DebugText *debugText, Audio *audio, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);
 	void Draw(DirectXApp *common, DebugText *debugText);
 
-	void changeState(GameSceneManagerState* newState, DebugCamera *camera, Audio *audio, Fps *fps);
-
+	void changeState(GameSceneManagerState* newState);
+	void newState();
+	void StateDelete();
 private:
 	GameSceneManagerState *state;
+	//保存用
+	GameSceneManagerState *keepState;
+
+	//削除するかどうかのフラグ
+	bool deleteFlag;
+	//初期化処理が通ったかのフラグ
+	bool inputFlag;
 };
 

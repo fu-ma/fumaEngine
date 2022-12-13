@@ -1,15 +1,11 @@
 #include "Resources.h"
-SoundData Resources::soundData1;
-SoundData Resources::soundData2;
-SoundData Resources::soundData3;
-Model * Resources::modelPlayer = nullptr;
-Model *Resources::modelCloud = nullptr;
-Model *Resources::modelStageBox = nullptr;
-Model *Resources::modelEnemy = nullptr;
-Model *Resources::modelRedBlock = nullptr;
-Model *Resources::modelBlueBlock = nullptr;
-Model *Resources::modelWireBlock = nullptr;
-Model *Resources::modelGoal = nullptr;
+
+Resources *Resources::GetInstance()
+{
+	static Resources instance;
+
+	return &instance;
+}
 
 void Resources::StaticInit(Audio *audio)
 {
@@ -46,4 +42,64 @@ void Resources::StaticInit(Audio *audio)
 	modelRedBlock = Model::CreateFromOBJ("redBlock", true);
 	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
 	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
+}
+
+SoundData &Resources::GetSoundData(ResourcesName resourcesName)
+{
+	if (resourcesName == ResourcesName::soundData1)
+	{
+		return soundData1;
+	}
+	else if (resourcesName == ResourcesName::soundData2)
+	{
+		return soundData2;
+	}
+	else if (resourcesName == ResourcesName::soundData3)
+	{
+		return soundData3;
+	}
+	else
+	{
+		return sound;
+	}
+}
+
+Model *Resources::GetModel(ResourcesName resourcesName)
+{
+	if (resourcesName == ResourcesName::modelPlayer)
+	{
+		return modelPlayer;
+	}
+	else if (resourcesName == ResourcesName::modelCloud)
+	{
+		return modelCloud;
+	}
+	else if (resourcesName == ResourcesName::modelStageBox)
+	{
+		return modelStageBox;
+	}
+	else if (resourcesName == ResourcesName::modelEnemy)
+	{
+		return modelEnemy;
+	}
+	else if (resourcesName == ResourcesName::modelRedBlock)
+	{
+		return modelRedBlock;
+	}
+	else if (resourcesName == ResourcesName::modelBlueBlock)
+	{
+		return modelBlueBlock;
+	}
+	else if (resourcesName == ResourcesName::modelWireBlock)
+	{
+		return modelWireBlock;
+	}
+	else if (resourcesName == ResourcesName::modelGoal)
+	{
+		return modelGoal;
+	}
+	else
+	{
+		return model;
+	}
 }

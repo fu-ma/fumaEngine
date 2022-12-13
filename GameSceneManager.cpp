@@ -10,7 +10,9 @@
 
 GameSceneManager::GameSceneManager()
 {
-	state = new TitleScene();
+	keepState = new TitleScene();
+	inputFlag = false;
+	deleteFlag = false;
 }
 
 GameSceneManager::~GameSceneManager()
@@ -20,7 +22,12 @@ GameSceneManager::~GameSceneManager()
 
 void GameSceneManager::Initialize(DebugCamera* camera, Audio *audio, Fps *fps)
 {
-	state->Initialize(this,camera,audio,fps);
+	if (inputFlag == false)
+	{
+		newState();
+		state->Initialize(this, camera, audio, fps);
+		inputFlag = true;
+	}
 }
 
 void GameSceneManager::Update(DebugText *debugText, Audio *audio, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -33,9 +40,24 @@ void GameSceneManager::Draw(DirectXApp *common, DebugText *debugText)
 	state->Draw(this,common,debugText);
 }
 
-void GameSceneManager::changeState(GameSceneManagerState *newState, DebugCamera *camera, Audio *audio, Fps *fps)
+void GameSceneManager::changeState(GameSceneManagerState *newState)
 {
-	delete state;
-	state = newState;
-	state->Initialize(this, camera, audio, fps);
+	keepState = newState;
+	deleteFlag = true;
+}
+
+void GameSceneManager::newState()
+{
+	state = keepState;
+}
+
+void GameSceneManager::StateDelete()
+{
+	if (deleteFlag == true)
+	{
+		delete state;
+		state = nullptr;
+		inputFlag = false;
+		deleteFlag = false;
+	}
 }

@@ -17,11 +17,6 @@ Player * Player::Create(Model * model)
 		return nullptr;
 	}
 
-	if (!instance->StaticInit())
-	{
-		delete instance;
-		assert(0);
-	}
 	// 初期化
 	if (!instance->Initialize())
 	{
@@ -37,17 +32,12 @@ Player * Player::Create(Model * model)
 	return instance;
 }
 
-bool Player::StaticInit()
+bool Player::Initialize()
 {
 	modelParticle = Model::CreateFromOBJ("player", true);
 	moveParticle = new Particle();
 	moveParticle->Initialize(modelParticle);
 
-	return true;
-}
-
-bool Player::Initialize()
-{
 	if (!ModelObj::Initialize())
 	{
 		return false;

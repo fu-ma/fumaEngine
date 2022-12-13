@@ -142,8 +142,13 @@ private:
 
 	//代入用の配列
 	int map[Y_MAX][X_MAX];
+
+	//プレイヤー総数（代入用）
+	int totalPlayer;
+	//ステージ選択用の数字（代入用）
+	int selectNum;
 public:
-	GamePlayScene(const int stageNum = 0) { this->stageNum = stageNum; }
+	GamePlayScene(const int stageNum = 0) { }
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);
 	void Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera * camera, Fps *fps);
 	void Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText);
