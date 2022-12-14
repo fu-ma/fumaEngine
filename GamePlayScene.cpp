@@ -72,6 +72,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	{
 		StageSet(map5, wholeScene->GetStageFireNum(), audio, fps);
 	}
+
+	objPlayer->SetPosition({ 10, 4, 0 });
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -368,7 +370,6 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			cloud[i]->SetPosition(cloudPos[i]);
 		}
 	}
-
 	//“®‚­‚æ‚¤‚É‚È‚é
 	if (countDown->GetStart() >= 0.2 && stopFlag == false)
 	{
@@ -406,19 +407,22 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//‚ ‚½‚è”»’è
-	for (int y = 0; y < Y_MAX; y++)
+	if (countDown->GetStart() >= 0.2 && stopFlag == false)
 	{
-		for (int x = 0; x < X_MAX; x++)
+		for (int y = 0; y < Y_MAX; y++)
 		{
-			objPlayer->CollisionObj(objStageBox[y][x]);
-			objPlayer->CollisionEnemy(enemy[y][x]);
-			if (objPlayer->GetJumpChangeBlockFlag() == false)
+			for (int x = 0; x < X_MAX; x++)
 			{
-				objPlayer->CollisionObj(objRedBlock[y][x]);
-			}
-			if (objPlayer->GetJumpChangeBlockFlag() == true)
-			{
-				objPlayer->CollisionObj(objBlueBlock[y][x]);
+				objPlayer->CollisionObj(objStageBox[y][x]);
+				objPlayer->CollisionEnemy(enemy[y][x]);
+				if (objPlayer->GetJumpChangeBlockFlag() == false)
+				{
+					objPlayer->CollisionObj(objRedBlock[y][x]);
+				}
+				if (objPlayer->GetJumpChangeBlockFlag() == true)
+				{
+					objPlayer->CollisionObj(objBlueBlock[y][x]);
+				}
 			}
 		}
 	}

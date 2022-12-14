@@ -113,23 +113,20 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
 		pEngine->changeState(new SelectScene());
 	}
-	else
+	lightGroup->Update();
+	camera->Update();
+	objPlayer->Update();
+	for (int y = 0; y < 6; y++)
 	{
-		lightGroup->Update();
-		camera->Update();
-		objPlayer->Update();
-		for (int y = 0; y < 6; y++)
+		for (int x = 0; x < 24; x++)
 		{
-			for (int x = 0; x < 24; x++)
-			{
-				titleStageBox[y][x]->Update();
-			}
+			titleStageBox[y][x]->Update();
 		}
+	}
 
-		for (int i = 0; i < 10; i++)
-		{
-			cloud[i]->Update();
-		}
+	for (int i = 0; i < 10; i++)
+	{
+		cloud[i]->Update();
 	}
 }
 

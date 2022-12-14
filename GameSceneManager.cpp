@@ -42,8 +42,8 @@ void GameSceneManager::Draw(DirectXApp *common, DebugText *debugText)
 
 void GameSceneManager::changeState(GameSceneManagerState *newState)
 {
-	keepState = newState;
 	deleteFlag = true;
+	keepState = newState;
 }
 
 void GameSceneManager::newState()

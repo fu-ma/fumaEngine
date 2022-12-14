@@ -107,5 +107,10 @@ private:
 
 	//ネスト対策
 	void invincibleTime();
+
+	//重力処理
+	void Gravity();
+	//プレイヤーのジャンプ処理
+	void PlayerJump();
 };
 

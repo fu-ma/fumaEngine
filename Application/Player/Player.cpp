@@ -112,26 +112,8 @@ void Player::Move()
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 
-	//重力処理
-	if (speed > gravity * 20)
-	{
-		speed += gravity / 3;
-	}
-	position.y += speed;
-
-	//1.2.3段ジャンプ処理
-	if (jumpChange == 0)
-	{
-		jumpMax = 20;
-	}
-	if (jumpChange == 1)
-	{
-		jumpMax = 40;
-	}
-	if (jumpChange == 2)
-	{
-		jumpMax = 60;
-	}
+	//プレイヤーの重力処理
+	Gravity();
 
 	//左壁キック
 	if (leftWallJumpFlag == false)
@@ -202,48 +184,10 @@ void Player::Move()
 			rotation.z -= 2;
 			moveParticle->Set({ position.x,position.y , 0 });
 		}
-
-		if (jumpFlag == false)
-		{
-			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
-			{
-				jumpChangeBlockFlag = !jumpChangeBlockFlag;
-			}
-			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
-			{
-				if (jumpTimer < jumpMax)
-				{
-					position.y += jump;
-				}
-				jumpTimer++;
-
-				if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
-				{
-					jumpChange++;
-					jumpChangeTimer = 0;
-				}
-				else if (jumpChangeTimer > 20)
-				{
-					jumpChange = 0;
-					jumpChangeTimer = 0;
-				}
-
-				if (jumpMax == 40)
-				{
-					rotation.y -= 2.5f;
-				}
-				if (jumpMax == 60)
-				{
-					rotation.y -= 5;
-				}
-			}
-		}
 	}
 
-	if (jumpTimer > 0 && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
-	{
-		jumpFlag = true;
-	}
+	//プレイヤーのジャンプ処理
+	PlayerJump();
 
 	//無敵時間
 	invincibleTime();
@@ -587,4 +531,78 @@ void Player::invincibleTime()
 	invincibleFlag = false;
 	invincibleTimer = 0;
 	notHitFlag = false;
+}
+
+void Player::Gravity()
+{
+	//重力処理
+	if (speed > gravity * 20)
+	{
+		speed += gravity / 3;
+	}
+	position.y += speed;
+}
+
+void Player::PlayerJump()
+{
+	Input *input = Input::GetInstance();
+	Controller *controller = Controller::GetInstance();
+
+	//1.2.3段ジャンプ処理
+	if (jumpChange == 0)
+	{
+		jumpMax = 20;
+	}
+	if (jumpChange == 1)
+	{
+		jumpMax = 40;
+	}
+	if (jumpChange == 2)
+	{
+		jumpMax = 60;
+	}
+
+	if (moveFlag == false)
+	{
+		if (jumpFlag == false)
+		{
+			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+			{
+				jumpChangeBlockFlag = !jumpChangeBlockFlag;
+			}
+			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+			{
+				if (jumpTimer < jumpMax)
+				{
+					position.y += jump;
+				}
+				jumpTimer++;
+
+				if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
+				{
+					jumpChange++;
+					jumpChangeTimer = 0;
+				}
+				else if (jumpChangeTimer > 20)
+				{
+					jumpChange = 0;
+					jumpChangeTimer = 0;
+				}
+
+				if (jumpMax == 40)
+				{
+					rotation.y -= 2.5f;
+				}
+				if (jumpMax == 60)
+				{
+					rotation.y -= 5;
+				}
+			}
+		}
+	}
+
+	if (jumpTimer > 0 && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
+	{
+		jumpFlag = true;
+	}
 }
