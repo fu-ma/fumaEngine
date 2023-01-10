@@ -186,21 +186,36 @@
     <ClCompile Include="Application\CountDown\CountDown.cpp">
       <Filter>Game\CountDown</Filter>
     </ClCompile>
-    <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="GamePlayScene.cpp" />
-    <ClCompile Include="EndScene.cpp" />
-    <ClCompile Include="GameSceneManager.cpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="Application\WholeScene\WholeScene.cpp">
+      <Filter>Game\GameScene\WholeScene</Filter>
     </ClCompile>
-    <ClCompile Include="GameSceneManagerState.cpp">
-      <Filter>Game</Filter>
+    <ClCompile Include="Application\TitleScene\TitleScene.cpp">
+      <Filter>Game\GameScene\TitleScene</Filter>
     </ClCompile>
-    <ClCompile Include="SelectScene.cpp" />
-    <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="ClearScene.cpp" />
-    <ClCompile Include="Resources.cpp" />
-    <ClCompile Include="Singleton.cpp" />
-    <ClCompile Include="WholeScene.cpp" />
+    <ClCompile Include="Application\SelectScene\SelectScene.cpp">
+      <Filter>Game\GameScene\SelectScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\Resources\Resources.cpp">
+      <Filter>Game\GameScene\Resources</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GamePlayScene\GamePlayScene.cpp">
+      <Filter>Game\GameScene\GamePlayScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameOverScene\GameOverScene.cpp">
+      <Filter>Game\GameScene\GameOverScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\EndScene\EndScene.cpp">
+      <Filter>Game\GameScene\EndScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\ClearScene\ClearScene.cpp">
+      <Filter>Game\GameScene\ClearScene</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameSceneManager\GameSceneManager.cpp">
+      <Filter>Game\GameScene\GameSceneManager</Filter>
+    </ClCompile>
+    <ClCompile Include="Application\GameSceneManagerState\GameSceneManagerState.cpp">
+      <Filter>Game\GameScene\GameSceneManagerState</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -371,21 +386,36 @@
     <ClInclude Include="Application\CountDown\CountDown.h">
       <Filter>Game\CountDown</Filter>
     </ClInclude>
-    <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="GamePlayScene.h" />
-    <ClInclude Include="EndScene.h" />
-    <ClInclude Include="GameSceneManager.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="Application\WholeScene\WholeScene.h">
+      <Filter>Game\GameScene\WholeScene</Filter>
     </ClInclude>
-    <ClInclude Include="GameSceneManagerState.h">
-      <Filter>Game</Filter>
+    <ClInclude Include="Application\TitleScene\TitleScene.h">
+      <Filter>Game\GameScene\TitleScene</Filter>
     </ClInclude>
-    <ClInclude Include="SelectScene.h" />
-    <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="ClearScene.h" />
-    <ClInclude Include="Resources.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="WholeScene.h" />
+    <ClInclude Include="Application\SelectScene\SelectScene.h">
+      <Filter>Game\GameScene\SelectScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\Resources\Resources.h">
+      <Filter>Game\GameScene\Resources</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GamePlayScene\GamePlayScene.h">
+      <Filter>Game\GameScene\GamePlayScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameOverScene\GameOverScene.h">
+      <Filter>Game\GameScene\GameOverScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\EndScene\EndScene.h">
+      <Filter>Game\GameScene\EndScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\ClearScene\ClearScene.h">
+      <Filter>Game\GameScene\ClearScene</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameSceneManager\GameSceneManager.h">
+      <Filter>Game\GameScene\GameSceneManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameSceneManagerState\GameSceneManagerState.h">
+      <Filter>Game\GameScene\GameSceneManagerState</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -551,6 +581,36 @@
     </Filter>
     <Filter Include="Game\CountDown">
       <UniqueIdentifier>{c3c1ac77-d386-4c22-ba35-df1c46fe77da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\WholeScene">
+      <UniqueIdentifier>{cfeb6ac5-3f97-4cb7-a007-3ec1a110ab47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\TitleScene">
+      <UniqueIdentifier>{f996cc0d-cb21-4ce4-bb4b-11fb06d5beed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\SelectScene">
+      <UniqueIdentifier>{266e7cab-8e23-40c9-a328-8ea752d5ca85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\Resources">
+      <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\GamePlayScene">
+      <UniqueIdentifier>{ec29613d-04a5-4a4c-b7ff-76a0fa900d31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\GameOverScene">
+      <UniqueIdentifier>{aff80ade-4754-4094-a59c-77c6088981a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\EndScene">
+      <UniqueIdentifier>{0fa6b01d-e131-41ef-901a-9147daff933a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\ClearScene">
+      <UniqueIdentifier>{0b6ce7d9-9e64-4158-b722-f07c68a72b07}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\GameSceneManager">
+      <UniqueIdentifier>{faa51c68-61bd-4df1-8555-3925d0ca583c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\GameSceneManagerState">
+      <UniqueIdentifier>{bb24f8c3-a051-4a60-9bf1-c70fc388718c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

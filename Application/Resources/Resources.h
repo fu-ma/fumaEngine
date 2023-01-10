@@ -16,6 +16,8 @@ enum class ResourcesName
 	modelBlueBlock,
 	modelWireBlock,
 	modelGoal,
+	modelJumpSignA,
+	modelWallSignA,
 };
 
 class Resources
@@ -39,6 +41,10 @@ private:
 
 	//プレイヤー
 	Model *modelPlayer;
+
+	//チュートリアル用の看板
+	Model *modelJumpSignA;
+	Model *modelWallSignA;
 
 	//雲
 	Model *modelCloud;

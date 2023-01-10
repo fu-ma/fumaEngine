@@ -11,11 +11,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Application\ClearScene\ClearScene.cpp" />
     <ClCompile Include="Application\CountDown\CountDown.cpp" />
+    <ClCompile Include="Application\EndScene\EndScene.cpp" />
     <ClCompile Include="Application\Enemy\Enemy.cpp" />
     <ClCompile Include="Application\Firebar\Firebar.cpp" />
-    <ClCompile Include="ClearScene.cpp" />
-    <ClCompile Include="EndScene.cpp" />
+    <ClCompile Include="Application\GameOverScene\GameOverScene.cpp" />
+    <ClCompile Include="Application\GamePlayScene\GamePlayScene.cpp" />
+    <ClCompile Include="Application\GameSceneManagerState\GameSceneManagerState.cpp" />
+    <ClCompile Include="Application\GameSceneManager\GameSceneManager.cpp" />
+    <ClCompile Include="Application\Resources\Resources.cpp" />
+    <ClCompile Include="Application\SelectScene\SelectScene.cpp" />
+    <ClCompile Include="Application\TitleScene\TitleScene.cpp" />
+    <ClCompile Include="Application\WholeScene\WholeScene.cpp" />
     <ClCompile Include="Engine\2d\DebugText\DebugText.cpp" />
     <ClCompile Include="Engine\2d\MultipleRender\MultipleRender.cpp" />
     <ClCompile Include="Engine\2d\MultipleTexture\MultipleTexture.cpp" />
@@ -55,19 +63,10 @@
     <ClCompile Include="Engine\imgui\imgui_impl_win32.cpp" />
     <ClCompile Include="Engine\imgui\imgui_tables.cpp" />
     <ClCompile Include="Engine\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="GameOverScene.cpp" />
-    <ClCompile Include="GamePlayScene.cpp" />
-    <ClCompile Include="GameSceneManager.cpp" />
-    <ClCompile Include="GameSceneManagerState.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Application\Particle\Particle.cpp" />
     <ClCompile Include="Application\Particle\ParticleManager.cpp" />
     <ClCompile Include="Application\Player\Player.cpp" />
-    <ClCompile Include="Resources.cpp" />
-    <ClCompile Include="SelectScene.cpp" />
-    <ClCompile Include="Singleton.cpp" />
-    <ClCompile Include="TitleScene.cpp" />
-    <ClCompile Include="WholeScene.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli" />
@@ -170,11 +169,19 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Application\ClearScene\ClearScene.h" />
     <ClInclude Include="Application\CountDown\CountDown.h" />
+    <ClInclude Include="Application\EndScene\EndScene.h" />
     <ClInclude Include="Application\Enemy\Enemy.h" />
     <ClInclude Include="Application\Firebar\Firebar.h" />
-    <ClInclude Include="ClearScene.h" />
-    <ClInclude Include="EndScene.h" />
+    <ClInclude Include="Application\GameOverScene\GameOverScene.h" />
+    <ClInclude Include="Application\GamePlayScene\GamePlayScene.h" />
+    <ClInclude Include="Application\GameSceneManagerState\GameSceneManagerState.h" />
+    <ClInclude Include="Application\GameSceneManager\GameSceneManager.h" />
+    <ClInclude Include="Application\Resources\Resources.h" />
+    <ClInclude Include="Application\SelectScene\SelectScene.h" />
+    <ClInclude Include="Application\TitleScene\TitleScene.h" />
+    <ClInclude Include="Application\WholeScene\WholeScene.h" />
     <ClInclude Include="Engine\2d\DebugText\DebugText.h" />
     <ClInclude Include="Engine\2d\MultipleRender\MultipleRender.h" />
     <ClInclude Include="Engine\2d\MultipleTexture\MultipleTexture.h" />
@@ -228,15 +235,6 @@
     <ClInclude Include="Application\Particle\Particle.h" />
     <ClInclude Include="Application\Particle\ParticleManager.h" />
     <ClInclude Include="Application\Player\Player.h" />
-    <ClInclude Include="GameOverScene.h" />
-    <ClInclude Include="GamePlayScene.h" />
-    <ClInclude Include="GameSceneManager.h" />
-    <ClInclude Include="GameSceneManagerState.h" />
-    <ClInclude Include="Resources.h" />
-    <ClInclude Include="SelectScene.h" />
-    <ClInclude Include="Singleton.h" />
-    <ClInclude Include="TitleScene.h" />
-    <ClInclude Include="WholeScene.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>16.0</VCProjectVersion>
@@ -273,12 +271,12 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\nlohmannjson;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Application\GameSceneManagerState\;$(ProjectDir)Application\GameSceneManager\;$(ProjectDir)Application\Resources\;$(ProjectDir)Application\EndScene\;$(ProjectDir)Application\SelectScene\;$(ProjectDIr)Application\GameOverScene\;$(ProjectDIr)Application\GamePlayScene\;$(ProjectDIr)Application\ClearScene\;$(ProjectDIr)Application\TitleScene\;$(ProjectDIr)Application\WholeScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\nlohmannjson;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\DirectXTex\lib\$(Configuration);$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\nlohmannjson;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir);$(ProjectDir)Engine\2d\MultipleRender\;$(ProjectDir)Engine\2d\MultipleTexture\;$(ProjectDir)Engine\2d\PostEffect\;$(ProjectDir)Engine\2d\Sprite\;$(ProjectDir)Engine\3dModel\;$(ProjectDir)Engine\audio\;$(ProjectDir)Engine\2d\DebugText\;$(ProjectDir)Engine\base\;$(ProjectDir)Engine\Camera\;$(ProjectDir)Engine\Collision\;$(ProjectDir)Engine\FrameWork\;$(ProjectDir)Engine\Easing\;$(ProjectDir)FumaEngine\Input\;$(ProjectDir)Engine\Light\;$(ProjectDir)Engine\FPS\;$(ProjectDir)Engine\FBX\Object\;$(ProjectDir)Engine\FBX\Model\;$(ProjectDir)Engine\ImguiCommon\;$(ProjectDir)Engine\FBX\Loader\;$(ProjectDir)Application\Particle\;$(ProjectDir)Application\Player\;$(ProjectDir)Application\Firebar\;$(ProjectDir)Application\CountDown\;$(ProjectDir)Application\Enemy\;$(ProjectDir)Application\GameScene\;$(ProjectDir)Application\GameSceneManagerState\;$(ProjectDir)Application\GameSceneManager\;$(ProjectDir)Application\Resources\;$(ProjectDir)Application\EndScene\;$(ProjectDir)Application\SelectScene\;$(ProjectDIr)Application\GameOverScene\;$(ProjectDIr)Application\GamePlayScene\;$(ProjectDIr)Application\ClearScene\;$(ProjectDIr)Application\TitleScene\;$(ProjectDIr)Application\WholeScene\;$(ProjectDir)Engine\lib\fbx_sdk\include;$(ProjectDir)Engine\lib\nlohmannjson;$(ProjectDir)Engine\lib\DirectXTex\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(ProjectDir)Engine\lib\DirectXTex\lib\$(Configuration);$(ProjectDir)Engine\lib\fbx_sdk\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">

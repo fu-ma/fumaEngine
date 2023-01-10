@@ -22,6 +22,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
 	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
 
@@ -47,6 +49,10 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	}
 
 	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
+
+	//チュートリアル用の看板
+	objJumpSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelJumpSignA));
+	objWallSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelWallSignA));
 
 	playerParticle = new Particle();
 	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
@@ -74,6 +80,10 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	}
 
 	objPlayer->SetPosition({ 10, 4, 0 });
+	fadeOutSizeX = 1280*5;
+	fadeOutSizeY = 720*5;
+	fadeOutT = 0;
+	fadeOutFlag = true;
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -123,6 +133,25 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			if (map[y][x] == 2)
 			{
 				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+				if (stageNum == 4)
+				{
+					if (x == 12)
+					{
+						enemy[y][x]->SetAction("NORMAL");
+					}
+					if (x == 23 || x == 26)
+					{
+
+					}
+					if (x == 67 || x == 70)
+					{
+						enemy[y][x]->SetAction("JUMP");
+					}
+				}
+				if (stageNum == 5)
+				{
+
+				}
 			}
 			//赤ブロック
 			if (map[y][x] == 4)
@@ -133,6 +162,20 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			if (map[y][x] == 5)
 			{
 				objBlueBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+			}
+			//チュートリアル用の看板1
+			if (map[y][x] == 6)
+			{
+				objJumpSignA->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 10 });
+				objJumpSignA->SetRotation({ 0,90,0 });
+				objJumpSignA->SetScale({ 1,5,5 });
+			}
+			//チュートリアル用の看板2
+			if (map[y][x] == 7)
+			{
+				objWallSignA->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 10 });
+				objWallSignA->SetRotation({ 0,90,0 });
+				objWallSignA->SetScale({ 1,5,5 });
 			}
 			//ゴール
 			if (map[y][x] == 10)
@@ -179,8 +222,8 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	countDown->Initialize();
 
 	gameOverFlag = false;
-	skullSizeX = 1280 * 5;
-	skullSizeY = 720 * 5;
+	skullSizeX = 1280 * 2;
+	skullSizeY = 720 * 2;
 	gameOverTime = 0;
 
 	stopFlag = false;
@@ -210,6 +253,20 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	// カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
+	//fadeout
+	if (fadeOutFlag == true)
+	{
+		fadeOutT += 0.001f;
+		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
+		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
+		if (fadeOutT > 0.3f)
+		{
+			fadeOutFlag = false;
+		}
+
+		fadeOut->SetSize({ (float)fadeOutSizeX,(float)fadeOutSizeY });
+	}
+
 	//シーン遷移
 	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
 	{
@@ -222,6 +279,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		stopFlag = !stopFlag;
 	}
 
+	//一時停止したとき
 	if (stopFlag == true)
 	{
 		if (input->isKeyTrigger(DIK_W) || controller->TriggerButton(static_cast<int>(Button::UP)) == true)
@@ -321,7 +379,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//3,2,1,スタート
-	if (stopFlag == false)
+	if (stopFlag == false && fadeOutFlag == false)
 	{
 		countDown->Update();
 	}
@@ -386,7 +444,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			for (int x = 0; x < X_MAX; x++)
 			{
-				if (enemy[y][x]->GetPosition().x >= 0)
+				if (enemy[y][x]->GetPosition().x >= 0 && (objPlayer->GetPosition().x + 2.0 * 13 > enemy[y][x]->GetPosition().x))
 				{
 					enemy[y][x]->Move();
 					for (int w = 0; w < Y_MAX; w++)
@@ -451,6 +509,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (wholeScene->GetSelectNum() < 4)
 		{
 			selectNum += 1;
+			if (selectNum > 4)
+			{
+				selectNum = 4;
+			}
 			wholeScene->SetSelectNum(selectNum);
 		}
 		return;
@@ -493,6 +555,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	objGoal->Update();
+	//チュートリアル用の看板
+	objJumpSignA->Update();
+	objWallSignA->Update();
+
 	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
@@ -567,6 +633,14 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	}
 
 	objGoal->Draw();
+	if (objJumpSignA->GetPosition().x >= 0)
+	{
+		objJumpSignA->Draw();
+	}
+	if (objWallSignA->GetPosition().x >= 0)
+	{
+		objWallSignA->Draw();
+	}
 	objPlayer->Draw();
 	// パーティクルの描画
 	playerParticle->Draw();
@@ -603,6 +677,11 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	if (gameOverFlag == true)
 	{
 		GameOver->Draw();
+	}
+
+	if (fadeOutFlag == true)
+	{
+		fadeOut->Draw();
 	}
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();

@@ -32,6 +32,8 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(15, L"Resources/img/restart.png");
 	Sprite::LoadTexture(16, L"Resources/img/Return.png");
 	Sprite::LoadTexture(17, L"Resources/img/ClearStage.png");
+	Sprite::LoadTexture(18, L"Resources/img/fadeIN.png");
+	Sprite::LoadTexture(19, L"Resources/img/fadeOUT.png");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);
@@ -42,6 +44,9 @@ void Resources::StaticInit(Audio *audio)
 	modelRedBlock = Model::CreateFromOBJ("redBlock", true);
 	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
 	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
+	modelJumpSignA = Model::CreateFromOBJ("jumpSignA", true);
+	modelWallSignA = Model::CreateFromOBJ("wallSignA", true);
+
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -97,6 +102,14 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelGoal)
 	{
 		return modelGoal;
+	}
+	else if (resourcesName == ResourcesName::modelJumpSignA)
+	{
+		return modelJumpSignA;
+	}
+	else if (resourcesName == ResourcesName::modelWallSignA)
+	{
+		return modelWallSignA;
 	}
 	else
 	{

@@ -16,6 +16,7 @@ private:
 	Sprite *Stage4Sprite = nullptr;
 	Sprite *Stage5Sprite = nullptr;
 	Sprite *playerIconSprite = nullptr;
+	Sprite *fadeIN = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -50,6 +51,12 @@ private:
 	//ステージ選択を判断
 	int selectNumber;
 
+	//イージング用の座標
+	double sizeX;
+	double sizeY;
+	double t;
+	bool easingFlag;
+
 	//ステージ選択画面の配列
 	const int selectMap[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -76,6 +83,8 @@ public:
 		Stage5Sprite = nullptr;
 		delete playerIconSprite;
 		playerIconSprite = nullptr;
+		delete fadeIN;
+		fadeIN = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];

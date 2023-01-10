@@ -22,6 +22,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
+	fadeIN = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -109,6 +110,11 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	stageSelectJumpFlag = false;
 
 	selectNumber = wholeScene->GetSelectNum();
+
+	sizeX = 1280/2;
+	sizeY = 720/2;
+	t = 0;
+	easingFlag = false;
 }
 
 void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -279,7 +285,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage4Sprite->SetSize({ (float)stage4SpriteSize,(float)stage4SpriteSize });
 	Stage5Sprite->SetSize({ (float)stage5SpriteSize,(float)stage5SpriteSize });
 
-	if (stageSelectJumpFlag)
+	if (stageSelectJumpFlag && easingFlag == false)
 	{
 		objPlayer->Jump();
 	}
@@ -309,33 +315,46 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
 
 	//指定の位置でSpaceを押すとそのステージにとぶ
-	if (objPlayer->GetJumpTimer() > 30)
+	if (objPlayer->GetJumpTimer() > 5)
 	{
-		if (wholeScene->GetSelectNum() == 0 && selectMoveTime >= 0.2f)
+		easingFlag = true;
+	}
+
+	if (easingFlag == true)
+	{
+		t += 0.001f;
+		easing::Updete(sizeX, 1280 * 17, 3, t);
+		easing::Updete(sizeY, 720 * 17, 3, t);
+		if (sizeX > 1280 * 15)
 		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-			pEngine->changeState(new GamePlayScene(1));
+			if (wholeScene->GetSelectNum() == 0 && selectMoveTime >= 0.2f)
+			{
+				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+				pEngine->changeState(new GamePlayScene(1));
+			}
+			else if (wholeScene->GetSelectNum() == 1 && selectMoveTime >= 0.2f)
+			{
+				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+				pEngine->changeState(new GamePlayScene(2));
+			}
+			else if (wholeScene->GetSelectNum() == 2 && selectMoveTime >= 0.2f)
+			{
+				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+				pEngine->changeState(new GamePlayScene(3));
+			}
+			else if (wholeScene->GetSelectNum() == 3 && selectMoveTime >= 0.2f)
+			{
+				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+				pEngine->changeState(new GamePlayScene(4));
+			}
+			else if (wholeScene->GetSelectNum() == 4 && selectMoveTime >= 0.2f)
+			{
+				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+				pEngine->changeState(new GamePlayScene(5));
+			}
 		}
-		else if (wholeScene->GetSelectNum() == 1 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-			pEngine->changeState(new GamePlayScene(2));
-		}
-		else if (wholeScene->GetSelectNum() == 2 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-			pEngine->changeState(new GamePlayScene(3));
-		}
-		else if (wholeScene->GetSelectNum() == 3 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-			pEngine->changeState(new GamePlayScene(4));
-		}
-		else if (wholeScene->GetSelectNum() == 4 && selectMoveTime >= 0.2f)
-		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-			pEngine->changeState(new GamePlayScene(5));
-		}
+
+		fadeIN->SetSize({ (float)sizeX,(float)sizeY });
 	}
 }
 
@@ -390,6 +409,11 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	Stage3Sprite->Draw();
 	Stage4Sprite->Draw();
 	Stage5Sprite->Draw();
+
+	if (easingFlag == true)
+	{
+		fadeIN->Draw();
+	}
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }
