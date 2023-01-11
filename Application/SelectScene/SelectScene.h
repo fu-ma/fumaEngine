@@ -17,6 +17,7 @@ private:
 	Sprite *Stage5Sprite = nullptr;
 	Sprite *playerIconSprite = nullptr;
 	Sprite *fadeIN = nullptr;
+	Sprite *fadeOut = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -28,6 +29,18 @@ private:
 	//ステージブロック
 	ModelObj *titleStageBox[6][24] = { nullptr };
 	XMFLOAT3 stageBoxPos[6][24];
+
+	//背景用の見栄え用オブジェクト
+	static const int backObjNum = 10;
+	ModelObj *backObj1[backObjNum] = { nullptr };
+	ModelObj *backObj2[backObjNum] = { nullptr };
+	ModelObj *backObj3[backObjNum] = { nullptr };
+	XMFLOAT3 backObj1Pos[backObjNum];
+	XMFLOAT3 backObj2Pos[backObjNum];
+	XMFLOAT3 backObj3Pos[backObjNum];
+	float backObj1Size[backObjNum];
+	float backObj2Size[backObjNum];
+	float backObj3Size[backObjNum];
 
 	double selectPos;
 	double selectMoveTime;
@@ -51,11 +64,22 @@ private:
 	//ステージ選択を判断
 	int selectNumber;
 
+	//ステージ選択後の判断用フラグ
+	bool selectedStageFlag;
+
+	//タイトルに戻ったかを判断するフラグ
+	bool goTitleFlag;
 	//イージング用の座標
 	double sizeX;
 	double sizeY;
 	double t;
 	bool easingFlag;
+
+	//開始時のフェイドアウト用変数
+	double fadeOutSizeX;
+	double fadeOutSizeY;
+	double fadeOutT;
+	bool fadeOutFlag;
 
 	//ステージ選択画面の配列
 	const int selectMap[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -85,6 +109,8 @@ public:
 		playerIconSprite = nullptr;
 		delete fadeIN;
 		fadeIN = nullptr;
+		delete fadeOut;
+		fadeOut = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
@@ -98,6 +124,16 @@ public:
 				titleStageBox[y][x] = nullptr;
 			}
 		}
+		for (int i = 0; i < backObjNum; i++)
+		{
+			delete backObj1[i];
+			backObj1[i] = nullptr;
+			delete backObj2[i];
+			backObj2[i] = nullptr;
+			delete backObj3[i];
+			backObj3[i] = nullptr;
+		}
+
 		delete objPlayer;
 		objPlayer = nullptr;
 	}

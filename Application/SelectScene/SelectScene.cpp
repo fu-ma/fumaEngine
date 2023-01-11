@@ -23,6 +23,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
 	fadeIN = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -38,6 +39,43 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		{
 			titleStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
 		}
+	}
+
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1));
+		backObj2[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2));
+		backObj3[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3));
+	}
+
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		if (i == 0)
+		{
+			backObj1Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(10,13),(float)wholeScene->GetRand(30,40) };
+			backObj2Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+			backObj3Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(5,10),(float)wholeScene->GetRand(30,40) };
+		}
+		else
+		{
+			backObj1Pos[i] = { backObj1Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,13),(float)wholeScene->GetRand(30,40) };
+			backObj2Pos[i] = { backObj2Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+			backObj3Pos[i] = { backObj3Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(5,10),(float)wholeScene->GetRand(30,40) };
+		}
+
+		backObj1[i]->SetPosition(backObj1Pos[i]);
+		backObj2[i]->SetPosition(backObj2Pos[i]);
+		backObj3[i]->SetPosition(backObj3Pos[i]);
+
+		backObj1Size[i] = (float)wholeScene->GetRand(3, 10);
+		backObj2Size[i] = (float)wholeScene->GetRand(5, 14);
+		backObj3Size[i] = (float)wholeScene->GetRand(5, 8);
+
+		backObj1[i]->SetScale({ backObj1Size[i],15,backObj1Size[i] });
+		backObj2[i]->SetScale({ backObj2Size[i],20,backObj2Size[i] });
+		backObj3[i]->SetScale({ backObj3Size[i],10,backObj3Size[i] });
 	}
 
 	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
@@ -115,6 +153,14 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	sizeY = 720/2;
 	t = 0;
 	easingFlag = false;
+
+	fadeOutSizeX = 1280 * 5;
+	fadeOutSizeY = 720 * 5;
+	fadeOutT = 0;
+	fadeOutFlag = true;
+
+	selectedStageFlag = false;
+	goTitleFlag = false;
 }
 
 void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -134,10 +180,24 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	debugText->SetSize(5);
 	debugText->Printf("%d", wholeScene->GetTotalPlayerNum());
 
-	//タイトルから来たときにジャンプを防ぐ
+	//タイトルから来たときにplayerのジャンプを防ぐ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
 		stageSelectJumpFlag = true;
+	}
+
+	//fadeout
+	if (fadeOutFlag == true)
+	{
+		fadeOutT += 0.001f;
+		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
+		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
+		if (fadeOutT > 0.3f)
+		{
+			fadeOutFlag = false;
+		}
+
+		fadeOut->SetSize({ (float)fadeOutSizeX,(float)fadeOutSizeY });
 	}
 
 	for (int i = 0; i < 10; i++)
@@ -156,79 +216,151 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		}
 		cloud[i]->SetPosition(cloudPos[i]);
 	}
-
-	//ブロックのスクロール
-	for (int y = 0; y < 6; y++)
+	//fadeoutが終わったら選択できるようになる
+	if (fadeOutFlag == false)
 	{
-		for (int x = 0; x < 24; x++)
+		//背景用の見栄え用オブジェクト
+		for (int i = 0; i < backObjNum; i++)
 		{
-			stageBoxPos[y][x].x += moveStageBlockSpeed;
-			if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
-				input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
+			backObj1Pos[i].x -= 0.02f;
+			backObj2Pos[i].x -= 0.01f;
+			backObj3Pos[i].x -= 0.04f;
+
+			if (backObj1[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
 			{
-				moveStageBlockSpeed = 0.02f;
-				objPlayer->SetRotation({ 0,180,0 });
-			}
-			if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
-				input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false)
-			{
-				moveStageBlockSpeed = -0.02f;
-				objPlayer->SetRotation({ 0,0,0 });
-			}
-			if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.02f)
-			{
-				if (x == 23)
+				if (i == 0)
 				{
-					stageBoxPos[y][x] = { titleStageBox[y][0]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+					backObj1Pos[i] = { backObj1Pos[backObjNum - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 				else
 				{
-					stageBoxPos[y][x] = { titleStageBox[y][x + 1]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+					backObj1Pos[i] = { backObj1Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 
+				backObj1Size[i] = (float)wholeScene->GetRand(5, 14);
 			}
 
-			if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.02f)
+			if (backObj2[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
 			{
-				if (x == 0)
+				if (i == 0)
 				{
-					stageBoxPos[y][x] = { titleStageBox[y][24 - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+					backObj2Pos[i] = { backObj2Pos[backObjNum - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 				else
 				{
-					stageBoxPos[y][x] = { titleStageBox[y][x - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+					backObj2Pos[i] = { backObj2Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 
+				backObj2Size[i] = (float)wholeScene->GetRand(5, 14);
 			}
-			titleStageBox[y][x]->SetPosition(stageBoxPos[y][x]);
+
+			if (backObj3[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
+			{
+				if (i == 0)
+				{
+					backObj3Pos[i] = { backObj3Pos[backObjNum - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+				}
+				else
+				{
+					backObj3Pos[i] = { backObj3Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+				}
+
+				backObj3Size[i] = (float)wholeScene->GetRand(5, 14);
+			}
+
+			backObj1[i]->SetPosition(backObj1Pos[i]);
+			backObj2[i]->SetPosition(backObj2Pos[i]);
+			backObj3[i]->SetPosition(backObj3Pos[i]);
+
+			backObj1[i]->SetScale({ backObj1Size[i],15,backObj1Size[i] });
+			backObj2[i]->SetScale({ backObj2Size[i],20,backObj2Size[i] });
+			backObj3[i]->SetScale({ backObj3Size[i],10,backObj3Size[i] });
 		}
-	}
 
-	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
-	{
-		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-		pEngine->changeState(new TitleScene());
-		return;
-	}
-	//ステージセレクト
-	if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
-		&& wholeScene->GetSelectNum() > 0 && selectMoveTime >= 0.2f)
-	{
-		selectMoveTime = 0;
-		selectNumber -= 1;
-	}
-	else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
-		&& wholeScene->GetSelectNum() < 4 && selectMoveTime >= 0.2f)
-	{
-		selectMoveTime = 0;
-		selectNumber += 1;
-	}
-	else
-	{
-		selectMoveTime += 0.008f;
+		//ブロックのスクロール
+		for (int y = 0; y < 6; y++)
+		{
+			for (int x = 0; x < 24; x++)
+			{
+				stageBoxPos[y][x].x += moveStageBlockSpeed;
+				if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
+					input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
+				{
+					moveStageBlockSpeed = 0.02f;
+					objPlayer->SetRotation({ 0,180,0 });
+				}
+				if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
+					input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false)
+				{
+					moveStageBlockSpeed = -0.02f;
+					objPlayer->SetRotation({ 0,0,0 });
+				}
+				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.02f)
+				{
+					if (x == 23)
+					{
+						stageBoxPos[y][x] = { titleStageBox[y][0]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+					}
+					else
+					{
+						stageBoxPos[y][x] = { titleStageBox[y][x + 1]->GetPosition().x - 2.0f, -2.0f * y + 10.0f, 0 };
+					}
+
+				}
+
+				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.02f)
+				{
+					if (x == 0)
+					{
+						stageBoxPos[y][x] = { titleStageBox[y][24 - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+					}
+					else
+					{
+						stageBoxPos[y][x] = { titleStageBox[y][x - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+					}
+
+				}
+				titleStageBox[y][x]->SetPosition(stageBoxPos[y][x]);
+			}
+		}
+
+		if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
+		{
+			easingFlag = true;
+			goTitleFlag = true;
+		}
+		//ステージセレクト
+		if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
+			&& wholeScene->GetSelectNum() > 0 && selectMoveTime >= 0.2f)
+		{
+			selectMoveTime = 0;
+			selectNumber -= 1;
+		}
+		else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
+			&& wholeScene->GetSelectNum() < 4 && selectMoveTime >= 0.2f)
+		{
+			selectMoveTime = 0;
+			selectNumber += 1;
+		}
+		else
+		{
+			selectMoveTime += 0.008f;
+		}
 	}
 	easing::Updete(selectPos, selectInterval * wholeScene->GetSelectNum(), InSine, selectMoveTime);
 
+	//タイトルに戻るときに
+	if (goTitleFlag == true)
+	{
+		if (sizeX > 1280 * 15)
+		{
+			//タイトルに戻った時にイージングが発生するようにする
+			wholeScene->SetGoTitleFlag(true);
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new TitleScene());
+			return;
+		}
+	}
 	//ステージを判断する数字をセット
 	wholeScene->SetSelectNum(selectNumber);
 
@@ -285,7 +417,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage4Sprite->SetSize({ (float)stage4SpriteSize,(float)stage4SpriteSize });
 	Stage5Sprite->SetSize({ (float)stage5SpriteSize,(float)stage5SpriteSize });
 
-	if (stageSelectJumpFlag && easingFlag == false)
+	if (stageSelectJumpFlag && easingFlag == false && fadeOutFlag == false)
 	{
 		objPlayer->Jump();
 	}
@@ -315,9 +447,10 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
 
 	//指定の位置でSpaceを押すとそのステージにとぶ
-	if (objPlayer->GetJumpTimer() > 5)
+	if (objPlayer->GetJumpTimer() > 5 && fadeOutFlag == false)
 	{
 		easingFlag = true;
+		selectedStageFlag = true;
 	}
 
 	if (easingFlag == true)
@@ -325,36 +458,45 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		t += 0.001f;
 		easing::Updete(sizeX, 1280 * 17, 3, t);
 		easing::Updete(sizeY, 720 * 17, 3, t);
-		if (sizeX > 1280 * 15)
-		{
-			if (wholeScene->GetSelectNum() == 0 && selectMoveTime >= 0.2f)
-			{
-				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-				pEngine->changeState(new GamePlayScene(1));
-			}
-			else if (wholeScene->GetSelectNum() == 1 && selectMoveTime >= 0.2f)
-			{
-				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-				pEngine->changeState(new GamePlayScene(2));
-			}
-			else if (wholeScene->GetSelectNum() == 2 && selectMoveTime >= 0.2f)
-			{
-				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-				pEngine->changeState(new GamePlayScene(3));
-			}
-			else if (wholeScene->GetSelectNum() == 3 && selectMoveTime >= 0.2f)
-			{
-				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-				pEngine->changeState(new GamePlayScene(4));
-			}
-			else if (wholeScene->GetSelectNum() == 4 && selectMoveTime >= 0.2f)
-			{
-				audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
-				pEngine->changeState(new GamePlayScene(5));
-			}
-		}
 
 		fadeIN->SetSize({ (float)sizeX,(float)sizeY });
+	}
+
+	if (sizeX > 1280 * 15 && selectedStageFlag == true)
+	{
+		if (wholeScene->GetSelectNum() == 0 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(1));
+		}
+		else if (wholeScene->GetSelectNum() == 1 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(2));
+		}
+		else if (wholeScene->GetSelectNum() == 2 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(3));
+		}
+		else if (wholeScene->GetSelectNum() == 3 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(4));
+		}
+		else if (wholeScene->GetSelectNum() == 4 && selectMoveTime >= 0.2f)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
+			pEngine->changeState(new GamePlayScene(5));
+		}
+	}
+
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i]->Update();
+		backObj2[i]->Update();
+		backObj3[i]->Update();
 	}
 }
 
@@ -376,6 +518,14 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	/*モデル描画*/
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
+
+	//背景用の見栄え用オブジェクトの描画
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i]->Draw();
+		backObj2[i]->Draw();
+		backObj3[i]->Draw();
+	}
 
 	for (int i = 0; i < 10; i++)
 	{
@@ -410,10 +560,17 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	Stage4Sprite->Draw();
 	Stage5Sprite->Draw();
 
+	//fadein
 	if (easingFlag == true)
 	{
 		fadeIN->Draw();
 	}
+	//fadeout
+	if (fadeOutFlag == true)
+	{
+		fadeOut->Draw();
+	}
+
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 }

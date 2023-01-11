@@ -11,6 +11,8 @@ class TitleScene : public GameSceneManagerState
 private:
 	Sprite *backGround = nullptr;
 	Sprite *titleSprite = nullptr;
+	Sprite *fadeOut = nullptr;
+	Sprite *fadeIn = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -23,6 +25,33 @@ private:
 	//ステージブロック
 	ModelObj *titleStageBox[6][24] = { nullptr };
 	XMFLOAT3 stageBoxPos[6][24];
+
+	//背景用の見栄え用オブジェクト
+	static const int backObjNum = 10;
+	ModelObj *backObj1[backObjNum] = { nullptr };
+	ModelObj *backObj2[backObjNum] = { nullptr };
+	ModelObj *backObj3[backObjNum] = { nullptr };
+	XMFLOAT3 backObj1Pos[backObjNum];
+	XMFLOAT3 backObj2Pos[backObjNum];
+	XMFLOAT3 backObj3Pos[backObjNum];
+	float backObj1Size[backObjNum];
+	float backObj2Size[backObjNum];
+	float backObj3Size[backObjNum];
+
+	//開始時のフェイドイン用変数
+	double fadeInSizeX;
+	double fadeInSizeY;
+	double fadeInT;
+	bool fadeInFlag;
+
+	//開始時のフェイドアウト用変数
+	double fadeOutSizeX;
+	double fadeOutSizeY;
+	double fadeOutT;
+	bool fadeOutFlag;
+
+	//セレクト画面に行くかを確認するためのフラグ
+	bool goSelectFlag;
 
 	//ステージ選択画面の配列
 	const int selectMap[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -39,6 +68,10 @@ public:
 		backGround = nullptr;
 		delete titleSprite;
 		titleSprite = nullptr;
+		delete fadeOut;
+		fadeOut = nullptr;
+		delete fadeIn;
+		fadeIn = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
@@ -52,6 +85,16 @@ public:
 				titleStageBox[y][x] = nullptr;
 			}
 		}
+		for (int i = 0; i < backObjNum; i++)
+		{
+			delete backObj1[i];
+			backObj1[i] = nullptr;
+			delete backObj2[i];
+			backObj2[i] = nullptr;
+			delete backObj3[i];
+			backObj3[i] = nullptr;
+		}
+
 		delete objPlayer;
 		objPlayer = nullptr;
 	}

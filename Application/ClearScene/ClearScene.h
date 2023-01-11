@@ -5,12 +5,34 @@ class ClearScene : public GameSceneManagerState
 {
 private:
 	Sprite *StageClear = nullptr;
+	Sprite *fadeOut = nullptr;
+	Sprite *fadeIn = nullptr;
+
+	//開始時のフェイドアウト用変数
+	double fadeOutSizeX;
+	double fadeOutSizeY;
+	double fadeOutT;
+	bool fadeOutFlag;
+
+	//開始時のフェイドイン用変数
+	double fadeInSizeX;
+	double fadeInSizeY;
+	double fadeInT;
+	bool fadeInFlag;
+
+	//ステージセレクトに行ったか判断するためのフラグ
+	bool goSelectFlag;
+
 public:
 	ClearScene(const int stageNum = 0) { }
 	~ClearScene()
 	{
 		delete StageClear;
 		StageClear = nullptr;
+		delete fadeOut;
+		fadeOut = nullptr;
+		delete fadeIn;
+		fadeIn = nullptr;
 	}
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);
 	void Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);

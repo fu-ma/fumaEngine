@@ -23,6 +23,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
 	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -54,6 +55,14 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	objJumpSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelJumpSignA));
 	objWallSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelWallSignA));
 
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1));
+		backObj2[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2));
+		backObj3[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3));
+	}
+
 	playerParticle = new Particle();
 	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
 	//カウントダウンクラス初期化
@@ -80,10 +89,15 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	}
 
 	objPlayer->SetPosition({ 10, 4, 0 });
-	fadeOutSizeX = 1280*5;
-	fadeOutSizeY = 720*5;
+	fadeOutSizeX = 1280 * 5;
+	fadeOutSizeY = 720 * 5;
 	fadeOutT = 0;
 	fadeOutFlag = true;
+
+	fadeInSizeX = 1280 / 2;
+	fadeInSizeY = 720 / 2;
+	fadeInT = 0;
+	fadeInFlag = false;
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -201,6 +215,34 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 		}
 	}
 
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		if (i == 0)
+		{
+			backObj1Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(10,13),(float)wholeScene->GetRand(30,40) };
+			backObj2Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+			backObj3Pos[i] = { (float)wholeScene->GetRand(0,30),-40 + (float)wholeScene->GetRand(5,10),(float)wholeScene->GetRand(30,40) };
+		}
+		else
+		{
+			backObj1Pos[i] = { backObj1Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,13),(float)wholeScene->GetRand(30,40) };
+			backObj2Pos[i] = { backObj2Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
+			backObj3Pos[i] = { backObj3Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(5,10),(float)wholeScene->GetRand(30,40) };
+		}
+
+		backObj1[i]->SetPosition(backObj1Pos[i]);
+		backObj2[i]->SetPosition(backObj2Pos[i]);
+		backObj3[i]->SetPosition(backObj3Pos[i]);
+
+		backObj1Size[i] = (float)wholeScene->GetRand(3, 10);
+		backObj2Size[i] = (float)wholeScene->GetRand(5, 14);
+		backObj3Size[i] = (float)wholeScene->GetRand(5, 8);
+
+		backObj1[i]->SetScale({ backObj1Size[i],15,backObj1Size[i] });
+		backObj2[i]->SetScale({ backObj2Size[i],20,backObj2Size[i] });
+		backObj3[i]->SetScale({ backObj3Size[i],10,backObj3Size[i] });
+	}
 	fire.clear();
 	for (int i = 0; i < gimmickCenterNum; i++)
 	{
@@ -222,8 +264,8 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	countDown->Initialize();
 
 	gameOverFlag = false;
-	skullSizeX = 1280 * 2;
-	skullSizeY = 720 * 2;
+	skullSizeX = 1280 * 10;
+	skullSizeY = 720 * 10;
 	gameOverTime = 0;
 
 	stopFlag = false;
@@ -241,6 +283,10 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 
 	totalPlayer = wholeScene->GetTotalPlayerNum();
 	selectNum = wholeScene->GetSelectNum();
+
+	goTitleFlag = false;
+	reStartFlag = false;
+	clearFlag = false;
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -253,6 +299,15 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	// カメラ注視点をセット
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
 	camera->SetDistance(20.0f);
+	//fadein
+	if (fadeInFlag == true)
+	{
+		fadeInT += 0.001f;
+		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
+		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
+
+		fadeIn->SetSize({ (float)fadeInSizeX,(float)fadeInSizeY });
+	}
 	//fadeout
 	if (fadeOutFlag == true)
 	{
@@ -333,20 +388,44 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//リスタートボタンを押したとき
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
-			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
-			fire.clear();
-			pEngine->changeState(new GamePlayScene());
-			return;
+			//fadein
+			fadeInFlag = true;
+			//fadeinが終わったらリスタート
+			reStartFlag = true;
 		}
 
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
+			//fadein
+			fadeInFlag = true;
+			//fadeinが終わったらセレクト画面に
+			goTitleFlag = true;
+		}
+	}
+
+	//リスタートするとき
+	if (reStartFlag == true)
+	{
+		if (fadeInSizeX > 1280 * 15)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			fire.clear();
+			pEngine->changeState(new GamePlayScene());
+		}
+		return;
+	}
+
+	//セレクト画面に戻るとき
+	if (goTitleFlag == true)
+	{
+		if (fadeInSizeX > 1280 * 15)
+		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 			fire.clear();
 			pEngine->changeState(new SelectScene());
-			return;
 		}
+		return;
 	}
 
 	//デス時の画面遷移
@@ -502,6 +581,13 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//ゴールとのあたり判定
 	if (objPlayer->CollisionGoal(objGoal) == true)
 	{
+		fadeInFlag = true;
+		clearFlag = true;
+	}
+
+	//クリアー画面に行くための処理
+	if (clearFlag == true && fadeInSizeX > 1280 * 15)
+	{
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 		fire.clear();
 		pEngine->changeState(new ClearScene());
@@ -515,7 +601,6 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			}
 			wholeScene->SetSelectNum(selectNum);
 		}
-		return;
 	}
 
 	if (objPlayer->GetOnCollision())
@@ -558,6 +643,13 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//チュートリアル用の看板
 	objJumpSignA->Update();
 	objWallSignA->Update();
+	//背景用の見栄え用オブジェクト
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i]->Update();
+		backObj2[i]->Update();
+		backObj3[i]->Update();
+	}
 
 	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 
@@ -583,11 +675,21 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	/*モデル描画*/
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
+	
+	//背景用の見栄え用オブジェクトの描画
+	for (int i = 0; i < backObjNum; i++)
+	{
+		backObj1[i]->Draw();
+		backObj2[i]->Draw();
+		backObj3[i]->Draw();
+	}
 
+	//雲の描画
 	for (int i = 0; i < 10; i++)
 	{
 		cloud[i]->Draw();
 	}
+	//マップの描画
 	for (int y = 0; y < Y_MAX; y++)
 	{
 		for (int x = 0; x < X_MAX; x++)
@@ -626,13 +728,15 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 			}
 		}
 	}
-
+	//ファイアーバーの描画
 	for (auto &fireBar : fire)
 	{
 		fireBar->Draw();
 	}
 
+	//ゴールの描画
 	objGoal->Draw();
+	//看板の描画
 	if (objJumpSignA->GetPosition().x >= 0)
 	{
 		objJumpSignA->Draw();
@@ -641,6 +745,7 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	{
 		objWallSignA->Draw();
 	}
+	//プレイヤーの描画
 	objPlayer->Draw();
 	// パーティクルの描画
 	playerParticle->Draw();
@@ -679,6 +784,12 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 		GameOver->Draw();
 	}
 
+	//fadein
+	if (fadeInFlag == true)
+	{
+		fadeIn->Draw();
+	}
+	//fadeout
 	if (fadeOutFlag == true)
 	{
 		fadeOut->Draw();

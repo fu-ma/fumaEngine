@@ -50,11 +50,13 @@ public: // 静的メンバ変数
 	const int &GetTotalPlayerNum() { return totalPlayerNum; }
 	const StageData &GetStageDatas(const int &y,const int &x) { return stageDatas[y][x]; }
 	const StageData &GetStageData() { return stageData; }
+	const bool &GetGoTitleFlag() { return goTileEaseFlag; }
 
 	void SetTotalPlayerNum(const int &totalPlayerNum) { this->totalPlayerNum = totalPlayerNum; }
 	void SetSelectNum(const int &selectNum) { this->selectNum = selectNum; }
 	void SetStageFireNum(const int &stageNum) { this->stageNum = stageNum; }
 	void SetStageData(const StageData &stageData) { this->stageData = stageData; }
+	void SetGoTitleFlag(const bool &goTileEaseFlag) { this->goTileEaseFlag = goTileEaseFlag; }
 private:
 	static const int X_MAX = 100;
 	static const int Y_MAX = 10;
@@ -72,6 +74,9 @@ private:
 
 	//ファイアーバー用のステージ番号
 	int stageNum;
+
+	//セレクト画面からtitleに戻った時用のイージングフラグ
+	bool goTileEaseFlag;
 
 private:
 	WholeScene() = default;

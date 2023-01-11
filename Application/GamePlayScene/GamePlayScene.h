@@ -17,6 +17,7 @@ private:
 	Sprite *ClearStageSprite = nullptr;
 	Sprite *GameOver = nullptr;
 	Sprite *fadeOut = nullptr;
+	Sprite *fadeIn = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -49,6 +50,18 @@ private:
 	//ゴール
 	ModelObj *objGoal = nullptr;
 
+	//背景用の見栄え用オブジェクト
+	static const int backObjNum = 10;
+	ModelObj *backObj1[backObjNum] = { nullptr };
+	ModelObj *backObj2[backObjNum] = { nullptr };
+	ModelObj *backObj3[backObjNum] = { nullptr };
+	XMFLOAT3 backObj1Pos[backObjNum];
+	XMFLOAT3 backObj2Pos[backObjNum];
+	XMFLOAT3 backObj3Pos[backObjNum];
+	float backObj1Size[backObjNum];
+	float backObj2Size[backObjNum];
+	float backObj3Size[backObjNum];
+
 	//パーティクル
 	Particle *playerParticle = nullptr;
 
@@ -76,6 +89,10 @@ private:
 	const int stopSpriteMaxSize = 128;
 	const int stopSpriteMinSize = 64;
 
+	bool goTitleFlag;
+	bool reStartFlag;
+	bool clearFlag;
+
 	//敵の行動パターンを切り替えるための敵のカウント
 	int enemyNum;
 
@@ -84,6 +101,13 @@ private:
 	double fadeOutSizeY;
 	double fadeOutT;
 	bool fadeOutFlag;
+
+	//開始時のフェイドイン用変数
+	double fadeInSizeX;
+	double fadeInSizeY;
+	double fadeInT;
+	bool fadeInFlag;
+
 
 	//ステージ1の配列
 	const int map1[Y_MAX][X_MAX] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -180,6 +204,8 @@ public:
 		GameOver = nullptr;
 		delete fadeOut;
 		fadeOut = nullptr;
+		delete fadeIn;
+		fadeIn = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
@@ -209,6 +235,16 @@ public:
 		firebar = nullptr;
 		delete objGoal;
 		objGoal = nullptr;
+		for (int i = 0; i < backObjNum; i++)
+		{
+			delete backObj1[i];
+			backObj1[i] = nullptr;
+			delete backObj2[i];
+			backObj2[i] = nullptr;
+			delete backObj3[i];
+			backObj3[i] = nullptr;
+		}
+
 		delete playerParticle;
 		playerParticle = nullptr;
 		delete countDown;

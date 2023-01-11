@@ -18,6 +18,9 @@ enum class ResourcesName
 	modelGoal,
 	modelJumpSignA,
 	modelWallSignA,
+	modelBackObj1,
+	modelBackObj2,
+	modelBackObj3,
 };
 
 class Resources
@@ -61,6 +64,11 @@ private:
 
 	//ゴール
 	Model *modelGoal;
+
+	//背景用の見栄えをよくするためのもの
+	Model *modelBackObj1;
+	Model *modelBackObj2;
+	Model *modelBackObj3;
 
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;

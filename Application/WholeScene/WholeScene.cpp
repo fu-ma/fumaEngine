@@ -12,4 +12,5 @@ void WholeScene::StaticInit()
 	totalPlayerNum = 5;
 	selectNum = 0;
 	stageNum = 1;
+	goTileEaseFlag = false;
 }

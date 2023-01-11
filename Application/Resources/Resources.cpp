@@ -46,7 +46,9 @@ void Resources::StaticInit(Audio *audio)
 	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
 	modelJumpSignA = Model::CreateFromOBJ("jumpSignA", true);
 	modelWallSignA = Model::CreateFromOBJ("wallSignA", true);
-
+	modelBackObj1 = Model::CreateFromOBJ("backObj1", true);
+	modelBackObj2 = Model::CreateFromOBJ("backObj2", true);
+	modelBackObj3 = Model::CreateFromOBJ("backObj3", true);
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -111,6 +113,19 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	{
 		return modelWallSignA;
 	}
+	else if (resourcesName == ResourcesName::modelBackObj1)
+	{
+		return modelBackObj1;
+	}
+	else if (resourcesName == ResourcesName::modelBackObj2)
+	{
+		return modelBackObj2;
+	}
+	else if (resourcesName == ResourcesName::modelBackObj3)
+	{
+		return modelBackObj3;
+	}
+
 	else
 	{
 		return model;
