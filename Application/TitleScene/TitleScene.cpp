@@ -19,6 +19,7 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	titleSprite = Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	titleUI = Sprite::Create(20, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -115,6 +116,8 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		fadeOutT = 0;
 		fadeOutFlag = false;
 	}
+
+	titleUICount = 0;
 }
 
 void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -128,7 +131,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadein
 	if (fadeInFlag == true)
 	{
-		fadeInT += 0.001f;
+		fadeInT += 0.005f;
 		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
 		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
 
@@ -137,7 +140,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadeout
 	if (fadeOutFlag == true)
 	{
-		fadeOutT += 0.001f;
+		fadeOutT += 0.005f;
 		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
 		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
 		if (fadeOutT > 0.3f)
@@ -151,12 +154,20 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadeoutがあったらそれが終わってから動くようにする
 	if (fadeOutFlag == false)
 	{
+		//UI用カウントの増加
+		titleUICount++;
+		//オーバーフローしないように
+		if (titleUICount >= 60)
+		{
+			titleUICount = 0;
+		}
+
 		//背景用の見栄え用オブジェクト
 		for (int i = 0; i < backObjNum; i++)
 		{
-			backObj1Pos[i].x -= 0.02f;
-			backObj2Pos[i].x -= 0.01f;
-			backObj3Pos[i].x -= 0.04f;
+			backObj1Pos[i].x -= 0.06f;
+			backObj2Pos[i].x -= 0.03f;
+			backObj3Pos[i].x -= 0.12f;
 
 			if (backObj1[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
 			{
@@ -213,7 +224,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			for (int i = 0; i < 10; i++)
 			{
-				cloudPos[i].x -= 0.01f;
+				cloudPos[i].x -= 0.03f;
 				if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
 				{
 					if (i == 0)
@@ -233,7 +244,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			for (int x = 0; x < 24; x++)
 			{
-				stageBoxPos[y][x].x -= 0.01f;
+				stageBoxPos[y][x].x -= 0.06f;
 				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 15)
 				{
 					if (x == 0)
@@ -338,9 +349,14 @@ void TitleScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	/*スプライト描画*/
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
-	// デバッグテキストの描画
-	//debugText->DrawAll(common->GetCmdList().Get());
+
+	//title
 	titleSprite->Draw();
+	//UI
+	if (titleUICount % 60 >= 0 && titleUICount % 60 <= 30)
+	{
+		titleUI->Draw();
+	}
 
 	//fadein
 	if (fadeInFlag == true)

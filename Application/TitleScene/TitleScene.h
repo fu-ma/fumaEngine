@@ -13,6 +13,7 @@ private:
 	Sprite *titleSprite = nullptr;
 	Sprite *fadeOut = nullptr;
 	Sprite *fadeIn = nullptr;
+	Sprite *titleUI = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -53,6 +54,9 @@ private:
 	//セレクト画面に行くかを確認するためのフラグ
 	bool goSelectFlag;
 
+	//UI用カウント
+	int titleUICount;
+
 	//ステージ選択画面の配列
 	const int selectMap[6][24] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -72,6 +76,8 @@ public:
 		fadeOut = nullptr;
 		delete fadeIn;
 		fadeIn = nullptr;
+		delete titleUI;
+		titleUI = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
@@ -98,7 +104,7 @@ public:
 		delete objPlayer;
 		objPlayer = nullptr;
 	}
-	TitleScene(const int stageNum = 0) {  }
+	TitleScene(const int stageNum = 0) { }
 	void Initialize(GameSceneManager* pEngine, DebugCamera *camera, Audio *audio, Fps *fps);
 	void Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);
 	void Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText);

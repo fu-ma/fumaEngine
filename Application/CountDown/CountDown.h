@@ -28,5 +28,8 @@ private:
 	double CountDown2Pos;
 	double CountDown1Pos;
 	double CountDownStartPos;
+
+	//スクロールするスピード
+	const float moveSpeed = 0.015f;
 };
 

@@ -40,34 +40,34 @@ void CountDown::Update()
 	//3.2.1.スタート
 	if (CountDownTime3 < 0.8)
 	{
-		CountDownTime3 += 0.008f;
+		CountDownTime3 += moveSpeed;
 		easing::Updete(CountDown3Pos, WinApp::window_width / 2.0f, InSine, CountDownTime3);
 	}
 
 	if (CountDownTime3 >= 0.8 && CountDownTime2 < 0.8)
 	{
-		CountDownTime2 += 0.008f;
+		CountDownTime2 += moveSpeed;
 		easing::Updete(CountDown3Pos, -WinApp::window_width / 2.0f, InSine, CountDownTime2);
 		easing::Updete(CountDown2Pos, WinApp::window_width / 2.0f, InSine, CountDownTime2);
 	}
 
 	if (CountDownTime2 >= 0.8 && CountDownTime1 < 0.8)
 	{
-		CountDownTime1 += 0.008f;
+		CountDownTime1 += moveSpeed;
 		easing::Updete(CountDown2Pos, -WinApp::window_width / 2.0f, InSine, CountDownTime1);
 		easing::Updete(CountDown1Pos, WinApp::window_width / 2.0f, InSine, CountDownTime1);
 	}
 
 	if (CountDownTime1 >= 0.8 && CountDownStartTime < 0.8)
 	{
-		CountDownStartTime += 0.008f;
+		CountDownStartTime += moveSpeed;
 		easing::Updete(CountDown1Pos, -WinApp::window_width / 2.0f, InSine, CountDownStartTime);
 		easing::Updete(CountDownStartPos, WinApp::window_width / 2.0f, InSine, CountDownStartTime);
 	}
 
 	if (CountDownStartTime >= 0.8 && CountDownEndTime < 0.8)
 	{
-		CountDownEndTime += 0.008f;
+		CountDownEndTime += moveSpeed;
 		easing::Updete(CountDownStartPos, -WinApp::window_width / 2.0f, InSine, CountDownEndTime);
 	}
 

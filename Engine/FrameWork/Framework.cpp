@@ -5,7 +5,6 @@ void Framework::GameRun()
 	staticInit();
 	while (true)//ゲームループ
 	{
-		fps->TimeWait();
 		//初期化(内部で一回のみ読み込むようにしている)
 		Init();
 		//更新処理

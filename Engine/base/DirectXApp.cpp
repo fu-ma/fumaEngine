@@ -277,6 +277,9 @@ void DirectXApp::Initialize()
 	//NULL検出
 	assert(winApp);
 
+	//FPS固定初期化
+	fps = Fps::GetInstance();
+	fps->InitializeFixFPS();
 	//デバイスの生成
 	InitializeDevice();
 	//コマンド関連の初期化
@@ -343,6 +346,8 @@ void DirectXApp::PostDraw()
 		WaitForSingleObject(event, INFINITE);
 		CloseHandle(event);
 	}
+	//FPS固定
+	fps->UpdateFixFPS();
 
 	cmdAllocator->Reset(); // キューをクリア
 	cmdList->Reset(cmdAllocator.Get(), nullptr);	// 再びコマンドリストを貯める準備

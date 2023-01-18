@@ -34,6 +34,7 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(17, L"Resources/img/ClearStage.png");
 	Sprite::LoadTexture(18, L"Resources/img/fadeIN.png");
 	Sprite::LoadTexture(19, L"Resources/img/fadeOUT.png");
+	Sprite::LoadTexture(20, L"Resources/img/TitleUI.png");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);

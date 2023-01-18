@@ -88,7 +88,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		StageSet(map5, wholeScene->GetStageFireNum(), audio, fps);
 	}
 
-	objPlayer->SetPosition({ 10, 4, 0 });
+	objPlayer->SetPosition({ 10, 5, 0 });
 	fadeOutSizeX = 1280 * 5;
 	fadeOutSizeY = 720 * 5;
 	fadeOutT = 0;
@@ -258,7 +258,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 		fireBar->Initialize();
 	}
 
-	gameTimer = (int)fps->GetFrame() * 60 * 2;
+	gameTimer = (int)60 * 60;
 
 	//カウントダウン用の画像の初期値の設定
 	countDown->Initialize();
@@ -302,7 +302,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//fadein
 	if (fadeInFlag == true)
 	{
-		fadeInT += 0.001f;
+		fadeInT += 0.005f;
 		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
 		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
 
@@ -311,7 +311,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//fadeout
 	if (fadeOutFlag == true)
 	{
-		fadeOutT += 0.001f;
+		fadeOutT += 0.005f;
 		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
 		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
 		if (fadeOutT > 0.3f)
@@ -433,7 +433,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
 		easing::Updete(skullSizeY, 720, 3, gameOverTime);
-		gameOverTime += 0.001f;
+		gameOverTime += 0.01f;
 		if (gameOverTime > 0.2)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
@@ -481,7 +481,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//タイマーを表示
 	debugText->SetPos(1200, 50);
 	debugText->SetSize(3);
-	debugText->Printf("%d", gameTimer / (int)fps->GetFrame() / 2);
+	debugText->Printf("%d", gameTimer / 60);
 
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
@@ -492,7 +492,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			cloudPos[i].x -= 0.01f;
+			cloudPos[i].x -= 0.03f;
 			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
 			{
 				if (i == 0)

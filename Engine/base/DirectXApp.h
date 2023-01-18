@@ -6,6 +6,7 @@
 #include<vector>
 #include<string>
 #include"WindowAPI.h"
+#include"Fps.h"
 
 //DirectX基盤
 class DirectXApp
@@ -32,7 +33,7 @@ private://メンバ変数
 	ComPtr<ID3D12DescriptorHeap> dsvHeap;
 	ComPtr<ID3D12Fence> fence;
 	UINT64 fenceVal = 0;
-
+	Fps *fps;
 private://メンバ関数
 
 	/// <summary>
@@ -95,7 +96,7 @@ public://メンバ関数
 
 	//コンストラクタ
 	DirectXApp();
-
+	
 	//引数付きコンストラクタ
 	DirectXApp(WinApp *winApp);
 

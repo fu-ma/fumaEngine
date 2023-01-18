@@ -36,7 +36,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadein
 	if (fadeInFlag == true)
 	{
-		fadeInT += 0.001f;
+		fadeInT += 0.005f;
 		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
 		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
 
@@ -45,7 +45,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadeout
 	if (fadeOutFlag == true)
 	{
-		fadeOutT += 0.001f;
+		fadeOutT += 0.005f;
 		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
 		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
 		if (fadeOutT > 0.3f)

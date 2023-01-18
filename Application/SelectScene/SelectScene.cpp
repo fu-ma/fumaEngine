@@ -189,7 +189,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	//fadeout
 	if (fadeOutFlag == true)
 	{
-		fadeOutT += 0.001f;
+		fadeOutT += 0.005f;
 		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
 		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
 		if (fadeOutT > 0.3f)
@@ -202,7 +202,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 	for (int i = 0; i < 10; i++)
 	{
-		cloudPos[i].x -= 0.01f;
+		cloudPos[i].x -= 0.03f;
 		if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 40.0f)
 		{
 			if (i == 0)
@@ -222,9 +222,9 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		//背景用の見栄え用オブジェクト
 		for (int i = 0; i < backObjNum; i++)
 		{
-			backObj1Pos[i].x -= 0.02f;
-			backObj2Pos[i].x -= 0.01f;
-			backObj3Pos[i].x -= 0.04f;
+			backObj1Pos[i].x -= 0.06f;
+			backObj2Pos[i].x -= 0.03f;
+			backObj3Pos[i].x -= 0.12f;
 
 			if (backObj1[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
 			{
@@ -283,19 +283,12 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 			for (int x = 0; x < 24; x++)
 			{
 				stageBoxPos[y][x].x += moveStageBlockSpeed;
-				if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
-					input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
-				{
-					moveStageBlockSpeed = 0.02f;
-					objPlayer->SetRotation({ 0,180,0 });
-				}
 				if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
 					input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false)
 				{
-					moveStageBlockSpeed = -0.02f;
-					objPlayer->SetRotation({ 0,0,0 });
+					moveStageBlockSpeed = -0.06f;
 				}
-				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.02f)
+				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.06f)
 				{
 					if (x == 23)
 					{
@@ -308,7 +301,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 				}
 
-				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.02f)
+				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.06f)
 				{
 					if (x == 0)
 					{
@@ -344,7 +337,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		}
 		else
 		{
-			selectMoveTime += 0.008f;
+			selectMoveTime += 0.08f;
 		}
 	}
 	easing::Updete(selectPos, selectInterval * wholeScene->GetSelectNum(), InSine, selectMoveTime);
@@ -455,7 +448,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 	if (easingFlag == true)
 	{
-		t += 0.001f;
+		t += 0.01f;
 		easing::Updete(sizeX, 1280 * 17, 3, t);
 		easing::Updete(sizeY, 720 * 17, 3, t);
 

@@ -44,7 +44,7 @@ public:
 	const bool &GetPlayerStop() { return moveFlag; }
 	const int &GetJumpTimer() { return jumpTimer; }
 private:
-	const float gravity = (- 9.8f / 60/ 15);
+	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
 	//重力を加算するためのスピード
 	float speed;
@@ -101,6 +101,8 @@ private:
 	//移動時パーティクル
 	Model *modelParticle = nullptr;
 	Particle *moveParticle;
+
+	XMFLOAT3 oldPos;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);
