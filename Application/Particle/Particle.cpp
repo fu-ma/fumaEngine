@@ -43,6 +43,7 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 				particleScale[i].y -= 0.01f;
 				particleScale[i].z -= 0.01f;
 
+				particle[i]->SetRotation(particleScale[i]);
 				particle[i]->SetPosition(this->particlePos[i]);
 				particle[i]->SetScale(particleScale[i]);
 
@@ -73,6 +74,7 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 				particleScale[i].y -= 0.02f;
 				particleScale[i].z -= 0.02f;
 
+				particle[i]->SetRotation(particleScale[i]);
 				particle[i]->SetPosition(this->particlePos[i]);
 				particle[i]->SetScale(particleScale[i]);
 

@@ -118,6 +118,8 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	}
 
 	titleUICount = 0;
+
+	playerRot = 0;
 }
 
 void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -162,6 +164,8 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 			titleUICount = 0;
 		}
 
+		playerRot -= 2;
+		objPlayer->SetRotation({0,0,playerRot});
 		//背景用の見栄え用オブジェクト
 		for (int i = 0; i < backObjNum; i++)
 		{

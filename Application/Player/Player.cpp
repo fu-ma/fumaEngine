@@ -69,7 +69,7 @@ bool Player::Initialize()
 	position.y = 2;
 	moveFlag = false;
 
-	moveSpeed = 0.2f;
+	moveSpeed = 0.14f;
 
 	jumpChangeBlockFlag = false;
 
@@ -126,12 +126,12 @@ void Player::Move()
 	}
 	if (leftWallJumpFlag == true)
 	{
-		leftWallJumpTimer++;
+		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
 		{
-			position.y += jump;
-			position.x += jump;
+			position.y += jump * 1.5f;
+			position.x += jump * 1.5f;
 			leftWallColFlag = true;
 		}
 		else if (leftWallJumpTimer > wallJumpMax * 2.5f)
@@ -148,12 +148,12 @@ void Player::Move()
 	}
 	if (rightWallJumpFlag == true)
 	{
-		rightWallJumpTimer++;
+		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
 		if (rightWallJumpTimer < wallJumpMax)
 		{
-			position.y += jump;
-			position.x -= jump;
+			position.y += jump * 1.5f;
+			position.x -= jump * 1.5f;
 			rightWallColFlag = true;
 		}
 		else if (rightWallJumpTimer > wallJumpMax * 2.5f)
@@ -298,7 +298,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	{
 		if (Collision::CheckBox2Box({ position.x + 0.2f,position.y + 0.2f,0 },
 			{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y + 0.2f,0 },
-			scale.x + moveSpeed, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+			scale.x + 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 		{
 			rightWallJumpFlag = false;
 			position =
@@ -307,10 +307,8 @@ void Player::CollisionObj(ModelObj *obj2)
 				position.y ,
 				0
 			};
-			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
-			{
-				rightWallJumpFlag = true;
-			}
+			leftWallColFlag = false;
+			moveSpeed = 0.1f;
 		}
 	}
 
@@ -318,7 +316,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	{
 		if (Collision::CheckBox2Box({ position.x - 0.2f,position.y - 0.2f,0 },
 			{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y - 0.2f,0 },
-			scale.x + moveSpeed, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+			scale.x + 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 		{
 			leftWallJumpFlag = false;
 			position =
@@ -327,16 +325,14 @@ void Player::CollisionObj(ModelObj *obj2)
 				position.y ,
 				0
 			};
-			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
-			{
-				leftWallJumpFlag = true;
-			}
+			rightWallColFlag = false;
+			moveSpeed = 0.1f;
 		}
 	}
 
 	if (Collision::CheckBox2Box({ position.x - 0.2f,position.y,0 },
 		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y,0 },
-		scale.x + moveSpeed, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		if (oldPos.x > position.x)
 		{
@@ -350,7 +346,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			if (jumpFlag == true)
 			{
 				speed = gravity * 1.8f;
-				rotation.y = 0;
+				rotation.z = 0;
 				rightWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
@@ -361,7 +357,7 @@ void Player::CollisionObj(ModelObj *obj2)
 	}
 	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y,0 },
 		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y,0 },
-		scale.x + moveSpeed, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		if (oldPos.x < position.x)
 		{
@@ -375,7 +371,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			if (jumpFlag == true)
 			{
 				speed = gravity * 1.8f;
-				rotation.y = 0;
+				rotation.z = 0;
 				leftWallColFlag = false;
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
@@ -387,15 +383,16 @@ void Player::CollisionObj(ModelObj *obj2)
 	
 	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y - 0.2f,0 },
 		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y + 0.2f,0 },
-		scale.x - moveSpeed - 0.2f, scale.y + speed + gravity + 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - moveSpeed - 0.2f, scale.y + 0.01f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		position =
 		{
 			position.x,
-			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.21f ,
+			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.011f ,
 			0
 		};
 		speed = 0;
+		moveSpeed = 0.14f;
 		rotation.y = 0.0f;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
@@ -412,12 +409,12 @@ void Player::CollisionObj(ModelObj *obj2)
 
 	if (Collision::CheckBox2Box({ position.x - 0.2f,position.y + 0.2f,0 },
 		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y - 0.2f,0 },
-		scale.x - moveSpeed - 0.2f, scale.y + speed + gravity + 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+		scale.x - moveSpeed - 0.2f, scale.y + 0.01f, obj2->GetScale().x, obj2->GetScale().y))
 	{
 		position =
 		{
 			position.x,
-			boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.021f - jump ,
+			boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.011f - jump ,
 			0
 		};
 		jumpFlag = true;
@@ -432,24 +429,11 @@ void Player::CollisionEnemy(Enemy *enemy)
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 
-	if (input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true)
+	if (Collision::CheckBox2Box({ position.x,position.y,0 },
+		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
+		scale.x + 0.2f, scale.y - 0.2f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
 	{
-		if (Collision::CheckBox2Box({ position.x - 0.1f,position.y - 0.1f,0 },
-			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y - 0.1f,0 },
-			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
-		{
-			HitEnemy(enemy);
-		}
-	}
-
-	if (input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true)
-	{
-		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y + 0.1f,0 },
-			{ enemy->GetPosition().x - 0.1f,enemy->GetPosition().y + 0.1f,0 },
-			scale.x - 0.1f, scale.y - 0.1f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
-		{
-			HitEnemy(enemy);
-		}
+		HitEnemy(enemy);
 	}
 
 	if (Collision::CheckBox2Box({ position.x,position.y,0 },
@@ -473,7 +457,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 	{
 		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
 			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y + 0.1f,0 },
-			scale.x, scale.y, enemy->GetScale().x, enemy->GetScale().y))
+			scale.x - 0.2f, scale.y + 0.2f, enemy->GetScale().x, enemy->GetScale().y))
 		{
 
 			if (enemy->GetHP() == 1)

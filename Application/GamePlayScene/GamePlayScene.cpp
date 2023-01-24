@@ -64,7 +64,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	}
 
 	playerParticle = new Particle();
-	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
+	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEggShell));
+
 	//カウントダウンクラス初期化
 	countDown = new CountDown();
 	if (wholeScene->GetSelectNum() == 0)
@@ -433,7 +434,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
 		easing::Updete(skullSizeY, 720, 3, gameOverTime);
-		gameOverTime += 0.01f;
+		gameOverTime += 0.001f;
 		if (gameOverTime > 0.2)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));

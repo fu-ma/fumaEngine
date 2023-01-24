@@ -144,7 +144,7 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		stage5SpriteSize = stageSpriteMaxSize;
 	}
 	selectMoveTime = 0.2f;
-	moveStageBlockSpeed = -0.02f;
+	moveStageBlockSpeed = -0.06f;
 	stageSelectJumpFlag = false;
 
 	selectNumber = wholeScene->GetSelectNum();
@@ -283,11 +283,6 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 			for (int x = 0; x < 24; x++)
 			{
 				stageBoxPos[y][x].x += moveStageBlockSpeed;
-				if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
-					input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false)
-				{
-					moveStageBlockSpeed = -0.06f;
-				}
 				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.06f)
 				{
 					if (x == 23)
@@ -301,7 +296,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 				}
 
-				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == -0.06f)
+				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 25 && moveStageBlockSpeed == moveStageBlockSpeed)
 				{
 					if (x == 0)
 					{

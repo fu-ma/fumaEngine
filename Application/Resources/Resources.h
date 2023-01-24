@@ -21,6 +21,7 @@ enum class ResourcesName
 	modelBackObj1,
 	modelBackObj2,
 	modelBackObj3,
+	modelEggShell,
 };
 
 class Resources
@@ -69,6 +70,9 @@ private:
 	Model *modelBackObj1;
 	Model *modelBackObj2;
 	Model *modelBackObj3;
+
+	//エフェクト用の卵の殻
+	Model *modelEggShell;
 
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;

@@ -50,6 +50,7 @@ void Resources::StaticInit(Audio *audio)
 	modelBackObj1 = Model::CreateFromOBJ("backObj1", true);
 	modelBackObj2 = Model::CreateFromOBJ("backObj2", true);
 	modelBackObj3 = Model::CreateFromOBJ("backObj3", true);
+	modelEggShell = Model::CreateFromOBJ("eggShell", true);
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -125,6 +126,10 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelBackObj3)
 	{
 		return modelBackObj3;
+	}
+	else if (resourcesName == ResourcesName::modelEggShell)
+	{
+		return modelEggShell;
 	}
 
 	else

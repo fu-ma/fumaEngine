@@ -22,6 +22,8 @@ private:
 	//プレイヤー
 	Player *objPlayer = nullptr;
 
+	//playerの動きが欲しいから回転させる
+	float playerRot;
 
 	//ステージブロック
 	ModelObj *titleStageBox[6][24] = { nullptr };
