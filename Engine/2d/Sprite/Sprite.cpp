@@ -222,11 +222,19 @@ bool Sprite::LoadTexture(UINT texnumber, const wchar_t *filename)
 	TexMetadata metadata{};
 	ScratchImage scratchImg{};
 
-	result = LoadFromWICFile
+	//DDSテクスチャのロード
+	result = LoadFromDDSFile
+	(
+		filename, DDS_FLAGS_NONE,
+		&metadata, scratchImg
+	);
+
+	//WICテクスチャのロード
+	/*result = LoadFromWICFile
 	(
 		filename, WIC_FLAGS_NONE,
 		&metadata, scratchImg
-	);
+	);*/
 	if (FAILED(result))
 	{
 		assert(0);
@@ -261,21 +269,33 @@ bool Sprite::LoadTexture(UINT texnumber, const wchar_t *filename)
 		return false;
 	}
 
-	// テクスチャバッファにデータ転送
-	result = texBuff[texnumber]->WriteToSubresource
-	(
-		0,
-		nullptr, // 全領域へコピー
-		img->pixels,    // 元データアドレス
-		(UINT)img->rowPitch,  // 1ラインサイズ
-		(UINT)img->slicePitch // 1枚サイズ
-	);
-	if (FAILED(result))
-	{
-		assert(0);
-		return false;
-	}
+	//const Image *img = scratchImg.GetImage(i, 0, 0);
+	//result = texBuff[texnumber]->WriteToSubresource
+	//(
+	//	0,
+	//	nullptr, // 全領域へコピー
+	//	img->pixels,    // 元データアドレス
+	//	(UINT)img->rowPitch,  // 1ラインサイズ
+	//	(UINT)img->slicePitch // 1枚サイズ
+	//);
+	//assert(SUCCEEDED(result));
 
+	// テクスチャバッファにデータ転送
+	for (size_t i = 0; i < metadata.mipLevels; i++)
+	{
+		//ミップマップレベルを指定してイメージを取得
+		const Image *img = scratchImg.GetImage(i, 0, 0);
+		result = texBuff[texnumber]->WriteToSubresource
+		(
+			(UINT)i,
+			nullptr, // 全領域へコピー
+			img->pixels,    // 元データアドレス
+			(UINT)img->rowPitch,  // 1ラインサイズ
+			(UINT)img->slicePitch // 1枚サイズ
+		);
+		assert(SUCCEEDED(result));
+	}
+	
 	// シェーダリソースビュー作成
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{}; // 設定構造体
 	D3D12_RESOURCE_DESC resDesc = texBuff[texnumber]->GetDesc();

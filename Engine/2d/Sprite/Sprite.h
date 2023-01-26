@@ -4,6 +4,7 @@
 #include <wrl.h>
 #include <d3d12.h>
 #include <DirectXMath.h>
+#include<string>
 #include"DirectXApp.h"
 
 /// <summary>
@@ -197,7 +198,6 @@ protected: // メンバ変数
 	XMFLOAT2 texBase = { 0, 0 };
 	// テクスチャ幅、高さ
 	XMFLOAT2 texSize = { 100.0f, 100.0f };
-
 private: // メンバ関数
 	/// <summary>
 	/// 頂点データ転送
