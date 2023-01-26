@@ -15,28 +15,28 @@ void Resources::StaticInit(Audio *audio)
 	soundData3 = audio->SoundLoadWave("Resources/sound/SPACESE.wav", false);
 
 	// テクスチャ読み込み
-	Sprite::LoadTexture(1, L"Resources/img/backGround3.dds");
-	Sprite::LoadTexture(2, L"Resources/img/titleSprite.dds");
-	Sprite::LoadTexture(3, L"Resources/img/StageClear.dds");
-	Sprite::LoadTexture(4, L"Resources/img/skull.dds");
-	Sprite::LoadTexture(5, L"Resources/img/e1.dds");
-	Sprite::LoadTexture(6, L"Resources/img/Stage1.dds");
-	Sprite::LoadTexture(7, L"Resources/img/Stage2.dds");
-	Sprite::LoadTexture(8, L"Resources/img/Stage3.dds");
-	Sprite::LoadTexture(9, L"Resources/img/Stage4.dds");
-	Sprite::LoadTexture(10, L"Resources/img/Stage5.dds");
-	Sprite::LoadTexture(11, L"Resources/img/CountStart.dds");
-	Sprite::LoadTexture(12, L"Resources/img/playerIcon.dds");
-	Sprite::LoadTexture(13, L"Resources/img/GameOver.dds");
-	Sprite::LoadTexture(14, L"Resources/img/title.dds");
-	Sprite::LoadTexture(15, L"Resources/img/restart.dds");
-	Sprite::LoadTexture(16, L"Resources/img/Return.dds");
-	Sprite::LoadTexture(17, L"Resources/img/ClearStage.dds");
-	Sprite::LoadTexture(18, L"Resources/img/fadeIN.dds");
-	Sprite::LoadTexture(19, L"Resources/img/fadeOUT.dds");
-	Sprite::LoadTexture(20, L"Resources/img/TitleUI.dds");
-	Sprite::LoadTexture(21, L"Resources/img/ESCUI.dds");
-	Sprite::LoadTexture(22, L"Resources/img/HOMEUI.dds");
+	Sprite::LoadTexture(1, L"Resources/image/backGround3.dds");
+	Sprite::LoadTexture(2, L"Resources/image/titleSprite.dds");
+	Sprite::LoadTexture(3, L"Resources/image/StageClear.dds");
+	Sprite::LoadTexture(4, L"Resources/image/skull.dds");
+	Sprite::LoadTexture(5, L"Resources/image/e1.dds");
+	Sprite::LoadTexture(6, L"Resources/image/Stage1.dds");
+	Sprite::LoadTexture(7, L"Resources/image/Stage2.dds");
+	Sprite::LoadTexture(8, L"Resources/image/Stage3.dds");
+	Sprite::LoadTexture(9, L"Resources/image/Stage4.dds");
+	Sprite::LoadTexture(10, L"Resources/image/Stage5.dds");
+	Sprite::LoadTexture(11, L"Resources/image/CountStart.dds");
+	Sprite::LoadTexture(12, L"Resources/image/playerIcon.dds");
+	Sprite::LoadTexture(13, L"Resources/image/GameOver.dds");
+	Sprite::LoadTexture(14, L"Resources/image/title.dds");
+	Sprite::LoadTexture(15, L"Resources/image/restart.dds");
+	Sprite::LoadTexture(16, L"Resources/image/Return.dds");
+	Sprite::LoadTexture(17, L"Resources/image/ClearStage.dds");
+	Sprite::LoadTexture(18, L"Resources/image/fadeIN.dds");
+	Sprite::LoadTexture(19, L"Resources/image/fadeOUT.dds");
+	Sprite::LoadTexture(20, L"Resources/image/TitleUI.dds");
+	Sprite::LoadTexture(21, L"Resources/image/ESCUI.dds");
+	Sprite::LoadTexture(22, L"Resources/image/HOMEUI.dds");
 
 	// モデル読み込み
 	modelPlayer = Model::CreateFromOBJ("player", true);
