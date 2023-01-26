@@ -18,6 +18,8 @@ private:
 	Sprite *GameOver = nullptr;
 	Sprite *fadeOut = nullptr;
 	Sprite *fadeIn = nullptr;
+	Sprite *escUI = nullptr;
+	Sprite *homeUI = nullptr;
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -108,7 +110,8 @@ private:
 	double fadeInT;
 	bool fadeInFlag;
 
-
+	//操作しているのがキーボードかコントローラーか判定するフラグ（falseでキーボード、trueでコントローラー）
+	bool operationButton;
 	//ステージ1の配列
 	const int map1[Y_MAX][X_MAX] = { 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 									 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -206,6 +209,10 @@ public:
 		fadeOut = nullptr;
 		delete fadeIn;
 		fadeIn = nullptr;
+		delete escUI;
+		escUI = nullptr;
+		delete homeUI;
+		homeUI = nullptr;
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];

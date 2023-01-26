@@ -13,9 +13,9 @@ bool Particle::Initialize(Model *model)
 	return true;
 }
 
-void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
+void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 {
-	if (moveNum == static_cast<int>(TYPE::explosion) && setFlag == false)
+	if (type == TYPE::explosion && setFlag == false)
 	{
 		for (int i = 0; i < PARTICLE_NUM; i++)
 		{
@@ -29,7 +29,7 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 			//moveFlag[i] = true;
 		}
 	}
-	if (moveNum == static_cast<int>(TYPE::explosion) && setFlag == true)
+	if (type == TYPE::explosion && setFlag == true)
 	{
 		for (int i = 0; i < PARTICLE_NUM; i++)
 		{
@@ -60,7 +60,7 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 		}
 	}
 
-	if (moveNum == static_cast<int>(TYPE::LEFT))
+	if (type == TYPE::LEFT)
 	{
 		time++;
 		for (int i = 0; i < PARTICLE_NUM; i++)
@@ -69,7 +69,7 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 			{
 
 				this->particlePos[i].x += vel[i].x;
-				this->particlePos[i].y += vel[i].y;
+				//this->particlePos[i].y += vel[i].y;
 				particleScale[i].x -= 0.02f;
 				particleScale[i].y -= 0.02f;
 				particleScale[i].z -= 0.02f;
@@ -86,6 +86,127 @@ void Particle::Update(const int &moveNum, const XMFLOAT3 &particlePos)
 				if (particleScale[i].x <= 0.1f)
 				{
 					moveFlag[i] = false;
+				}
+			}
+		}
+	}
+
+	if (type == TYPE::RIGHT)
+	{
+		time++;
+		for (int i = 0; i < PARTICLE_NUM; i++)
+		{
+			if (moveFlag[i] == true)
+			{
+
+				this->particlePos[i].x -= vel[i].x;
+				//this->particlePos[i].y += vel[i].y;
+				particleScale[i].x -= 0.02f;
+				particleScale[i].y -= 0.02f;
+				particleScale[i].z -= 0.02f;
+
+				particle[i]->SetRotation(particleScale[i]);
+				particle[i]->SetPosition(this->particlePos[i]);
+				particle[i]->SetScale(particleScale[i]);
+
+				if (particleScale[i].x <= 0.0f)
+				{
+					particleScale[i] = { 0,0,0 };
+				}
+
+				if (particleScale[i].x <= 0.1f)
+				{
+					moveFlag[i] = false;
+				}
+			}
+		}
+	}
+
+	if (type == TYPE::explosionLEFT && setFlag == false)
+	{
+		for (int i = 0; i < PARTICLE_NUM; i++)
+		{
+			this->particlePos[i] = particlePos;
+			this->vel[i] = { 0,0,0 };
+			particleScale[i] = { 1,1,1 };
+
+			const float rnd_vel = 0.2f;
+			vel[i].x = (float)rand() / RAND_MAX * rnd_vel / 2;
+			vel[i].y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//moveFlag[i] = true;
+		}
+	}
+	if (type == TYPE::explosionLEFT && setFlag == true)
+	{
+		for (int i = 0; i < PARTICLE_NUM; i++)
+		{
+			moveFlag[i] = true;
+			if (moveFlag[i] == true)
+			{
+
+				this->particlePos[i].x += vel[i].x;
+				this->particlePos[i].y += vel[i].y;
+				particleScale[i].x -= 0.04f;
+				particleScale[i].y -= 0.04f;
+				particleScale[i].z -= 0.04f;
+
+				particle[i]->SetRotation(particleScale[i]);
+				particle[i]->SetPosition(this->particlePos[i]);
+				particle[i]->SetScale(particleScale[i]);
+
+				if (particleScale[i].x <= 0.0f)
+				{
+					particleScale[i] = { 0,0,0 };
+				}
+
+				if (particleScale[i].x <= 0.0f)
+				{
+					setFlag = false;
+				}
+			}
+		}
+	}
+
+	if (type == TYPE::explosionRIGHT && setFlag == false)
+	{
+		for (int i = 0; i < PARTICLE_NUM; i++)
+		{
+			this->particlePos[i] = particlePos;
+			this->vel[i] = { 0,0,0 };
+			particleScale[i] = { 1,1,1 };
+
+			const float rnd_vel = 0.2f;
+			vel[i].x = (float)rand() / RAND_MAX * 0 - rnd_vel / 2;
+			vel[i].y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+			//moveFlag[i] = true;
+		}
+	}
+	if (type == TYPE::explosionRIGHT && setFlag == true)
+	{
+		for (int i = 0; i < PARTICLE_NUM; i++)
+		{
+			moveFlag[i] = true;
+			if (moveFlag[i] == true)
+			{
+
+				this->particlePos[i].x += vel[i].x;
+				this->particlePos[i].y += vel[i].y;
+				particleScale[i].x -= 0.04f;
+				particleScale[i].y -= 0.04f;
+				particleScale[i].z -= 0.04f;
+
+				particle[i]->SetRotation(particleScale[i]);
+				particle[i]->SetPosition(this->particlePos[i]);
+				particle[i]->SetScale(particleScale[i]);
+
+				if (particleScale[i].x <= 0.0f)
+				{
+					particleScale[i] = { 0,0,0 };
+				}
+
+				if (particleScale[i].x <= 0.0f)
+				{
+					setFlag = false;
 				}
 			}
 		}

@@ -7,6 +7,8 @@ enum class TYPE
 	move,
 	LEFT,
 	RIGHT,
+	explosionLEFT,
+	explosionRIGHT,
 };
 class Particle
 {
@@ -57,7 +59,7 @@ public:
 	/// ñàÉtÉåÅ[ÉÄèàóù
 	/// </summary>
 	void Set(const XMFLOAT3 &particlePos);
-	void Update(const int& moveNum, const XMFLOAT3 &particlePos);
+	void Update(const TYPE &type, const XMFLOAT3 &particlePos);
 	void Draw();
 
 	void SetPositionAll(XMFLOAT3 pos)

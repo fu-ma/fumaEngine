@@ -17,11 +17,16 @@ enum class ResourcesName
 	modelWireBlock,
 	modelGoal,
 	modelJumpSignA,
+	modelJumpSignSpace,
 	modelWallSignA,
+	modelWallSignSpace,
 	modelBackObj1,
 	modelBackObj2,
 	modelBackObj3,
 	modelEggShell,
+	modelParticle,
+	modelExplosionLeftParticle,
+	modelExplosionRightParticle,
 };
 
 class Resources
@@ -48,7 +53,9 @@ private:
 
 	//チュートリアル用の看板
 	Model *modelJumpSignA;
+	Model *modelJumpSignSpace;
 	Model *modelWallSignA;
+	Model *modelWallSignSpace;
 
 	//雲
 	Model *modelCloud;
@@ -74,6 +81,12 @@ private:
 	//エフェクト用の卵の殻
 	Model *modelEggShell;
 
+	//プレイヤーの移動時のパーティクル
+	Model *modelParticle;
+
+	//壁キック時のパーティクル
+	Model *modelExplosionLeftParticle;
+	Model *modelExplosionRightParticle;
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;
 	Model *model;

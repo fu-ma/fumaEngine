@@ -19,6 +19,15 @@ public:
 	/// <returns></returns>
 	static Player* Create(Model * model = nullptr);
 public:
+	~Player()
+	{
+		delete moveParticle;
+		moveParticle = nullptr;
+		delete explosionLeftParticle;
+		explosionLeftParticle = nullptr;
+		delete explosionRightParticle;
+		explosionRightParticle = nullptr;
+	}
 	/// <summary>
 	/// 初期化
 	/// </summary>
@@ -99,9 +108,16 @@ private:
 	bool jumpChangeBlockFlag;
 
 	//移動時パーティクル
-	Model *modelParticle = nullptr;
 	Particle *moveParticle;
 
+	//壁キック時のパーティクル
+	Particle *explosionLeftParticle;
+	Particle *explosionRightParticle;
+
+	//移動パーティクル用の向きのフラグ（falseで左trueで右）
+	bool moveVecFlag;
+
+	//あたり判定用の過去の位置
 	XMFLOAT3 oldPos;
 private:
 	//重複化を防ぐための関数

@@ -24,6 +24,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	escUI = Sprite::Create(21, { WinApp::window_width - 64,WinApp::window_height - 64 });
+	homeUI = Sprite::Create(22, { WinApp::window_width - 64,WinApp::window_height - 64 });
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -52,8 +54,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
 
 	//チュートリアル用の看板
-	objJumpSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelJumpSignA));
-	objWallSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelWallSignA));
+	objJumpSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelJumpSignSpace));
+	objWallSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelWallSignSpace));
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
@@ -99,6 +101,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	fadeInSizeY = 720 / 2;
 	fadeInT = 0;
 	fadeInFlag = false;
+	operationButton = false;
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -327,6 +330,25 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
 	{
 		gameOverFlag = true;
+	}
+
+	if (input->isKeyTrigger(DIK_ESCAPE) || input->isKeyTrigger(DIK_A) || input->isKeyTrigger(DIK_S) ||
+		input->isKeyTrigger(DIK_D) || input->isKeyTrigger(DIK_W) || input->isKeyTrigger(DIK_SPACE))
+	{
+		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignSpace));
+		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignSpace));
+		operationButton = false;
+	}
+
+	if (controller->TriggerButton(static_cast<int>(Button::START)) || controller->TriggerButton(static_cast<int>(Button::A)) ||
+		controller->TriggerButton(static_cast<int>(Button::B)) || controller->TriggerButton(static_cast<int>(Button::X)) ||
+		controller->TriggerButton(static_cast<int>(Button::Y)) || controller->TriggerButton(static_cast<int>(Button::LEFT)) ||
+		controller->TriggerButton(static_cast<int>(Button::RIGHT)) || controller->TriggerButton(static_cast<int>(Button::UP)) ||
+		controller->TriggerButton(static_cast<int>(Button::DOWN)))
+	{
+		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignA));
+		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignA));
+		operationButton = true;
 	}
 
 	//Escかスタートボタン（コントローラー）を押したときに一時停止する
@@ -652,7 +674,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		backObj3[i]->Update();
 	}
 
-	playerParticle->Update(0, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	playerParticle->Update(TYPE::explosion, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
 	reStart->SetSize({ (float)reStartSpriteSize * 3,(float)reStartSpriteSize });
@@ -777,6 +799,14 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 		goTitle->Draw();
 		reStart->Draw();
 		Return->Draw();
+	}
+	if (operationButton == false)
+	{
+		escUI->Draw();
+	}
+	if (operationButton == true)
+	{
+		homeUI->Draw();
 	}
 
 	//ゲームオーバーの遷移

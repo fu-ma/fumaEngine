@@ -35,6 +35,8 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(18, L"Resources/img/fadeIN.png");
 	Sprite::LoadTexture(19, L"Resources/img/fadeOUT.png");
 	Sprite::LoadTexture(20, L"Resources/img/TitleUI.png");
+	Sprite::LoadTexture(21, L"Resources/img/ESCUI.png");
+	Sprite::LoadTexture(22, L"Resources/img/HOMEUI.png");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);
@@ -46,11 +48,16 @@ void Resources::StaticInit(Audio *audio)
 	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
 	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
 	modelJumpSignA = Model::CreateFromOBJ("jumpSignA", true);
+	modelJumpSignSpace = Model::CreateFromOBJ("jumpSignSpace", true);
 	modelWallSignA = Model::CreateFromOBJ("wallSignA", true);
+	modelWallSignSpace = Model::CreateFromOBJ("wallSignSpace", true);
 	modelBackObj1 = Model::CreateFromOBJ("backObj1", true);
 	modelBackObj2 = Model::CreateFromOBJ("backObj2", true);
 	modelBackObj3 = Model::CreateFromOBJ("backObj3", true);
 	modelEggShell = Model::CreateFromOBJ("eggShell", true);
+	modelParticle = Model::CreateFromOBJ("player", true);
+	modelExplosionLeftParticle = Model::CreateFromOBJ("eggShell", true);
+	modelExplosionRightParticle = Model::CreateFromOBJ("eggShell", true);
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -111,9 +118,17 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	{
 		return modelJumpSignA;
 	}
+	else if (resourcesName == ResourcesName::modelJumpSignSpace)
+	{
+		return modelJumpSignSpace;
+	}
 	else if (resourcesName == ResourcesName::modelWallSignA)
 	{
 		return modelWallSignA;
+	}
+	else if (resourcesName == ResourcesName::modelWallSignSpace)
+	{
+		return modelWallSignSpace;
 	}
 	else if (resourcesName == ResourcesName::modelBackObj1)
 	{
@@ -130,6 +145,18 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelEggShell)
 	{
 		return modelEggShell;
+	}
+	else if (resourcesName == ResourcesName::modelParticle)
+	{
+		return modelParticle;
+	}
+	else if (resourcesName == ResourcesName::modelExplosionLeftParticle)
+	{
+		return modelExplosionLeftParticle;
+	}
+	else if (resourcesName == ResourcesName::modelExplosionRightParticle)
+	{
+		return modelExplosionRightParticle;
 	}
 
 	else

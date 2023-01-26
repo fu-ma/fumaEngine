@@ -6,6 +6,7 @@
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
 #include"Engine/Input/Controller.h"
+#include"Resources.h"
 
 using namespace DirectX;
 
@@ -34,9 +35,16 @@ Player * Player::Create(Model * model)
 
 bool Player::Initialize()
 {
-	modelParticle = Model::CreateFromOBJ("player", true);
+	Resources *resources = Resources::GetInstance();
+
 	moveParticle = new Particle();
-	moveParticle->Initialize(modelParticle);
+	moveParticle->Initialize(resources->GetModel(ResourcesName::modelParticle));
+
+	explosionLeftParticle = new Particle();
+	explosionLeftParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionLeftParticle));
+
+	explosionRightParticle = new Particle();
+	explosionRightParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionRightParticle));
 
 	if (!ModelObj::Initialize())
 	{
@@ -76,11 +84,16 @@ bool Player::Initialize()
 	moveParticle->SetFlag(true);
 
 	oldPos = {};
+
+	moveVecFlag = false;
 	return true;
 }
 
 void Player::Update()
 {
+	Input *input = Input::GetInstance();
+	Controller *controller = Controller::GetInstance();
+
 	if (HP == 2)
 	{
 		scale = { 1.0f,1.0f,1.0f };
@@ -94,7 +107,17 @@ void Player::Update()
 		scale = { 0.0f,0.0f,0.0f };
 	}
 
-	moveParticle->Update(2, { position.x,position.y , 0 });
+	if (moveVecFlag == false)
+	{
+		moveParticle->Update(TYPE::LEFT, { position.x,position.y , 0 });
+	}
+	if (moveVecFlag == true)
+	{
+		moveParticle->Update(TYPE::RIGHT, { position.x,position.y , 0 });
+	}
+
+	explosionLeftParticle->Update(TYPE::explosionLEFT, { position.x,position.y,0 });
+	explosionRightParticle->Update(TYPE::explosionRIGHT, { position.x,position.y,0 });
 
 	oldPos = position;
 
@@ -109,6 +132,8 @@ void Player::Draw()
 		ModelObj::Draw();
 	}
 	moveParticle->Draw();
+	explosionLeftParticle->Draw();
+	explosionRightParticle->Draw();
 }
 
 void Player::Move()
@@ -126,6 +151,10 @@ void Player::Move()
 	}
 	if (leftWallJumpFlag == true)
 	{
+		if (leftWallJumpTimer == 0)
+		{
+			explosionLeftParticle->SetFlag(true);
+		}
 		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
@@ -148,6 +177,10 @@ void Player::Move()
 	}
 	if (rightWallJumpFlag == true)
 	{
+		if (rightWallJumpTimer == 0)
+		{
+			explosionRightParticle->SetFlag(true);
+		}
 		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
 		if (rightWallJumpTimer < wallJumpMax)
@@ -177,6 +210,7 @@ void Player::Move()
 			//プレイヤーの向きを左側にする
 			rotation.z += 2;
 			moveParticle->Set({ position.x,position.y , 0 });
+			moveVecFlag = false;
 		}
 		else if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
 			(input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false))
@@ -189,6 +223,7 @@ void Player::Move()
 			//プレイヤーの向きを右側にする
 			rotation.z -= 2;
 			moveParticle->Set({ position.x,position.y , 0 });
+			moveVecFlag = true;
 		}
 	}
 
@@ -308,7 +343,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				0
 			};
 			leftWallColFlag = false;
-			moveSpeed = 0.1f;
+			moveSpeed = 0.01f;
 		}
 	}
 
@@ -326,7 +361,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				0
 			};
 			rightWallColFlag = false;
-			moveSpeed = 0.1f;
+			moveSpeed = 0.01f;
 		}
 	}
 
