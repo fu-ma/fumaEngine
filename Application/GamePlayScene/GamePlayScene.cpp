@@ -13,6 +13,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 {
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
+	Json *json = Json::GetInstance();
 
 	// 背景スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });

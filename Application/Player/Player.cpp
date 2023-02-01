@@ -7,6 +7,7 @@
 #include "CollisionAttribute.h"
 #include"Engine/Input/Controller.h"
 #include"Resources.h"
+#include"Json.h"
 
 using namespace DirectX;
 
@@ -87,6 +88,15 @@ bool Player::Initialize()
 
 	moveVecFlag = false;
 	return true;
+}
+
+void Player::SetValue()
+{
+	Json *json = Json::GetInstance();
+
+	json->AddString("jump", "0.5f");
+	json->AddString("HP", "2");
+	json->AddString("moveSpeed", "0.14f");
 }
 
 void Player::Update()

@@ -34,6 +34,8 @@ public:
 	/// <returns>成否</returns>
 	bool Initialize() override;
 
+	void SetValue();
+
 	/// <summary>
 	/// 毎フレーム処理
 	/// </summary>

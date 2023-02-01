@@ -13,6 +13,7 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 {
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
+	Json *json = Json::GetInstance();
 
 	// ”wŒiƒXƒvƒ‰ƒCƒg¶¬
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
@@ -45,6 +46,7 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	}
 
 	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
+	objPlayer->SetValue();
 	objPlayer->Initialize();
 	for (int i = 0; i < 10; i++)
 	{
