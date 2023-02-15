@@ -1,5 +1,6 @@
 #pragma once
 #include "GameSceneManagerState.h"
+#include"Json.h"
 
 class GamePlayScene : public GameSceneManagerState
 {

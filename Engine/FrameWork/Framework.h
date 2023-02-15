@@ -17,6 +17,7 @@
 #include"Engine/Input/Controller.h"
 #include"ImguiCommon.h"
 #include"Resources.h"
+#include"Json.h"
 
 /// <summary>
 /// フレームワーク
@@ -102,5 +103,6 @@ protected:
 	MultipleTexPtr postEffect;
 	FpsPtr fps;
 	Resources *resources;
+	Json *json;
 };
 

@@ -74,7 +74,6 @@ void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 				particleScale[i].y -= 0.02f;
 				particleScale[i].z -= 0.02f;
 
-				particle[i]->SetRotation(particleScale[i]);
 				particle[i]->SetPosition(this->particlePos[i]);
 				particle[i]->SetScale(particleScale[i]);
 
@@ -105,7 +104,6 @@ void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 				particleScale[i].y -= 0.02f;
 				particleScale[i].z -= 0.02f;
 
-				particle[i]->SetRotation(particleScale[i]);
 				particle[i]->SetPosition(this->particlePos[i]);
 				particle[i]->SetScale(particleScale[i]);
 
@@ -218,7 +216,7 @@ void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 	}
 }
 
-void Particle::Set(const XMFLOAT3 &particlePos)
+void Particle::Set(const XMFLOAT3 &particlePos, const XMFLOAT3 &rotation)
 {
 	for (int i = 0; i < PARTICLE_NUM; i++)
 	{
@@ -229,6 +227,7 @@ void Particle::Set(const XMFLOAT3 &particlePos)
 			particle[i]->SetPosition(particlePos);
 			particleScale[i] = { 1,1,1 };
 			particle[i]->SetScale(particleScale[i]);
+			particle[i]->SetRotation(rotation);
 
 			const float rnd_vel = 0.1f;
 			vel[i].y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;

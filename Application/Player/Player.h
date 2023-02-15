@@ -104,7 +104,17 @@ private:
 	//エフェクトの判定フラグ
 	bool onCollisionFlag = false;
 
+	//移動スピード
 	float moveSpeed;
+
+	//プレイヤーの移動時の回転速度
+	float rotSpeed;
+
+	//プレイヤーの移動時の回転速度固定用
+	float constRotSpeed;
+
+	//固定用の移動スピード
+	float constMoveSpeed;
 
 	//ジャンプで切り替わる床用のフラグ
 	bool jumpChangeBlockFlag;

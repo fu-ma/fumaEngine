@@ -10,7 +10,7 @@
 
 GameSceneManager::GameSceneManager()
 {
-	keepState = new TitleScene();
+	keepState = new ClearScene();
 	inputFlag = false;
 	deleteFlag = false;
 }

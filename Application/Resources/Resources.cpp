@@ -58,6 +58,8 @@ void Resources::StaticInit(Audio *audio)
 	modelParticle = Model::CreateFromOBJ("player", true);
 	modelExplosionLeftParticle = Model::CreateFromOBJ("eggShell", true);
 	modelExplosionRightParticle = Model::CreateFromOBJ("eggShell", true);
+
+	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -158,9 +160,21 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	{
 		return modelExplosionRightParticle;
 	}
-
 	else
 	{
 		return model;
 	}
+}
+
+FBXModel *Resources::GetFBXModel(ResourcesName resourcesName)
+{
+	if (resourcesName == ResourcesName::modelEgg)
+	{
+		return modelEgg;
+	}
+	else
+	{
+		return 0;
+	}
+
 }

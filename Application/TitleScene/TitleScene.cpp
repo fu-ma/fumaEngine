@@ -46,7 +46,6 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	}
 
 	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
-	objPlayer->SetValue();
 	objPlayer->Initialize();
 	for (int i = 0; i < 10; i++)
 	{
@@ -95,8 +94,9 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		}
 	}
 	// カメラ注視点をセット
+	camera->SetUp({ 0, 1, 0 });
+	camera->SetEye({ objPlayer->GetPosition().x + 10, 10, -20 });
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
-	camera->SetDistance(20.0f);
 
 	fadeInSizeX = 1280 / 2;
 	fadeInSizeY = 720 / 2;

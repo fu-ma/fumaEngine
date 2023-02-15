@@ -6,12 +6,12 @@ using namespace DirectX;
 /// <summary>
 /// 静的メンバ変数の実体
 /// </summary>
-const std::string FbxLoader::baseDirectory = "Resources/";
+const std::string FbxLoader::baseDirectory = "Resources/obj/";
 
 /// <summary>
 /// テクスチャがない場合の標準テクスチャファイル名
 /// </summary>
-const std::string FbxLoader::defaultTextureFileName = "white1.png";
+const std::string FbxLoader::defaultTextureFileName = "egg/egg.png";
 
 FbxLoader *FbxLoader::GetInstance()
 {

@@ -2,6 +2,7 @@
 #include"Sprite.h"
 #include"Audio.h"
 #include"Model.h"
+#include"FBXLoader.h"
 
 enum class ResourcesName
 {
@@ -27,6 +28,7 @@ enum class ResourcesName
 	modelParticle,
 	modelExplosionLeftParticle,
 	modelExplosionRightParticle,
+	modelEgg,
 };
 
 class Resources
@@ -43,6 +45,7 @@ public:
 	void StaticInit(Audio *audio);
 	SoundData &GetSoundData(ResourcesName resourcesName);
 	Model *GetModel(ResourcesName resourcesName);
+	FBXModel *GetFBXModel(ResourcesName resourcesName);
 private:
 	SoundData soundData1;
 	SoundData soundData2;
@@ -90,6 +93,9 @@ private:
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;
 	Model *model;
+
+	//egg用のモデル
+	FBXModel *modelEgg;
 private:
 	Resources() = default;
 	~Resources() = default;

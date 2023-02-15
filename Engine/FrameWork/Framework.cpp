@@ -67,6 +67,8 @@ void Framework::staticInit()
 
 	resources = Resources::GetInstance();
 	resources->StaticInit(audio.get());
+
+	json = Json::GetInstance();
 }
 
 void Framework::Init()

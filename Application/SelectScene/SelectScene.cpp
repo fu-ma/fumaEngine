@@ -99,8 +99,8 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 		}
 	}
 	// カメラ注視点をセット
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
-	camera->SetDistance(20.0f);
+	camera->SetTarget({ objPlayer->GetPosition().x, 10, 0 });
+	camera->SetEye({ objPlayer->GetPosition().x, 10, -20 });
 	gameTimer = 180 * 61;
 
 	if (wholeScene->GetSelectNum() == 0)
@@ -172,8 +172,9 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 #pragma region 更新処理
 	// カメラ注視点をセット
+	camera->SetUp({ 0, 1, 0 });
 	camera->SetTarget({ objPlayer->GetPosition().x, 10, 0 });
-	camera->SetDistance(20.0f);
+	camera->SetEye({ objPlayer->GetPosition().x, 10, -20 });
 
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);

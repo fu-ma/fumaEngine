@@ -302,8 +302,9 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
 	// カメラ注視点をセット
+	camera->SetUp({ 0, 1, 0 });
+	camera->SetEye({ objPlayer->GetPosition().x + 10, 12, -20 });
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
-	camera->SetDistance(20.0f);
 	//fadein
 	if (fadeInFlag == true)
 	{

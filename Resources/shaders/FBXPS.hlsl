@@ -148,7 +148,7 @@ float3 BRDF(float3 L, float3 V)
 	return diffuseColor + specularColor;
 }
 
-//エントリーポイント
+////エントリーポイント
 //PSOutput main(VSOutput input)
 //{
 //	PSOutput output;

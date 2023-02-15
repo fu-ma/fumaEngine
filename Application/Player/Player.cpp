@@ -37,6 +37,7 @@ Player * Player::Create(Model * model)
 bool Player::Initialize()
 {
 	Resources *resources = Resources::GetInstance();
+	Json *json = Json::GetInstance();
 
 	moveParticle = new Particle();
 	moveParticle->Initialize(resources->GetModel(ResourcesName::modelParticle));
@@ -71,14 +72,18 @@ bool Player::Initialize()
 	jumpTimer = 0;
 
 	invincibleTimer = 0;
-	HP = 2;
+	HP = (int)json->ReadFile("data.json","HP");
 	rotation.y = 0;
 	rotation.z = 0;
 	position.x = 10;
 	position.y = 2;
 	moveFlag = false;
 
-	moveSpeed = 0.14f;
+	constMoveSpeed = json->ReadFile("data.json","moveSpeed");
+	moveSpeed = constMoveSpeed;
+
+	constRotSpeed = json->ReadFile("data.json", "rotSpeed");
+	rotSpeed = constRotSpeed;
 
 	jumpChangeBlockFlag = false;
 
@@ -97,6 +102,7 @@ void Player::SetValue()
 	json->AddString("jump", "0.5f");
 	json->AddString("HP", "2");
 	json->AddString("moveSpeed", "0.14f");
+	json->AddString("rotSpeed", "3.5f");
 }
 
 void Player::Update()
@@ -218,8 +224,8 @@ void Player::Move()
 			}
 
 			//プレイヤーの向きを左側にする
-			rotation.z += 2;
-			moveParticle->Set({ position.x,position.y , 0 });
+			rotation.z += rotSpeed;
+			moveParticle->Set({ position.x,position.y , 0 }, rotation);
 			moveVecFlag = false;
 		}
 		else if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
@@ -231,8 +237,8 @@ void Player::Move()
 			}
 
 			//プレイヤーの向きを右側にする
-			rotation.z -= 2;
-			moveParticle->Set({ position.x,position.y , 0 });
+			rotation.z -= rotSpeed;
+			moveParticle->Set({ position.x,position.y , 0 }, rotation);
 			moveVecFlag = true;
 		}
 	}
@@ -379,6 +385,10 @@ void Player::CollisionObj(ModelObj *obj2)
 		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y,0 },
 		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
+		if (oldPos.x < position.x + moveSpeed * 2 && oldPos.x>position.x - moveSpeed * 2)
+		{
+			rotSpeed = 0;
+		}
 		if (oldPos.x > position.x)
 		{
 			position =
@@ -399,11 +409,19 @@ void Player::CollisionObj(ModelObj *obj2)
 				}
 			}
 		}
+		else
+		{
+			rotSpeed = constRotSpeed;
+		}
 	}
 	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y,0 },
 		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y,0 },
 		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
+		if (oldPos.x < position.x + moveSpeed * 2 && oldPos.x>position.x - moveSpeed * 2)
+		{
+			rotSpeed = 0;
+		}
 		if (oldPos.x < position.x)
 		{
 			position =
@@ -424,6 +442,10 @@ void Player::CollisionObj(ModelObj *obj2)
 				}
 			}
 		}
+		else
+		{
+			rotSpeed = constRotSpeed;
+		}
 	}
 	
 	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y - 0.2f,0 },
@@ -437,7 +459,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			0
 		};
 		speed = 0;
-		moveSpeed = 0.14f;
+		moveSpeed = constMoveSpeed;
 		rotation.y = 0.0f;
 		//着地しているときのみジャンプを可能にする
 		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))

@@ -58,7 +58,7 @@ public:
 	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€ˆ—
 	/// </summary>
-	void Set(const XMFLOAT3 &particlePos);
+	void Set(const XMFLOAT3 &particlePos, const XMFLOAT3 &rotation = {});
 	void Update(const TYPE &type, const XMFLOAT3 &particlePos);
 	void Draw();
 

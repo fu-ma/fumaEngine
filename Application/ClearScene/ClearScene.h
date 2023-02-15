@@ -7,6 +7,7 @@ private:
 	Sprite *StageClear = nullptr;
 	Sprite *fadeOut = nullptr;
 	Sprite *fadeIn = nullptr;
+	FBXObject3d *egg = nullptr;
 
 	//開始時のフェイドアウト用変数
 	double fadeOutSizeX;
