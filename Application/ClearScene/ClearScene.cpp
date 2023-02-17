@@ -11,7 +11,7 @@
 void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
 	Resources *resources = Resources::GetInstance();
-	StageClear = Sprite::Create(3, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	StageClear = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 
@@ -22,6 +22,15 @@ void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	egg->PlayAnimation();
 	egg->SetRotation({ 0,180,0 });
 	egg->SetScale({ 0.1f,0.1f,0.1f });
+
+	gameClear = new FBXObject3d;
+	gameClear->Initialize();
+	gameClear->SetModel(resources->GetFBXModel(ResourcesName::modelStageClear));
+	//gameClear->PlayAnimation();
+	gameClear->SetPosition({ 0,30,-10 });
+	gameClear->SetRotation({ 90,0,0 });
+	gameClear->SetScale({ 0.1f,0.1f,0.1f });
+
 	fadeOutSizeX = 1280 * 5;
 	fadeOutSizeY = 720 * 5;
 	fadeOutT = 0;
@@ -35,7 +44,7 @@ void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	goSelectFlag = false;
 
 	camera->SetUp({ 0, 1, 0 });
-	camera->SetEye({ egg->GetPosition().x, 20, -30 });
+	camera->SetEye({ egg->GetPosition().x, 20, -50 });
 	camera->SetTarget({ egg->GetPosition().x, 20, 0 });
 }
 
@@ -72,6 +81,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	if (fadeOutFlag == false)
 	{
 		egg->Update();
+		gameClear->Update();
 		camera->Update();
 		//シーン遷移
 		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
@@ -96,13 +106,8 @@ void ClearScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	/*スプライト描画*/
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
-	//StageClear->Draw();
+	StageClear->Draw();
 	/*スプライト描画後処理*/
-	//fadein
-	if (fadeInFlag == true)
-	{
-		fadeIn->Draw();
-	}
 	//fadeout
 	if (fadeOutFlag == true)
 	{
@@ -115,5 +120,16 @@ void ClearScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	/*モデル描画前処理*/
 	ModelObj::PreDraw(common->GetCmdList().Get());
 	egg->Draw(common->GetCmdList().Get());
+	gameClear->Draw(common->GetCmdList().Get());
 	ModelObj::PostDraw();
+	Sprite::PreDraw(common->GetCmdList().Get());
+	/*スプライト描画後処理*/
+	//fadein
+	if (fadeInFlag == true)
+	{
+		fadeIn->Draw();
+	}
+	Sprite::PostDraw();
+	//深度バッファクリア
+	common->ClearDepthBuffer();
 }

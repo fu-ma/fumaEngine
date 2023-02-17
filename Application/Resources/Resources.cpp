@@ -60,6 +60,18 @@ void Resources::StaticInit(Audio *audio)
 	modelExplosionRightParticle = Model::CreateFromOBJ("eggShell", true);
 
 	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
+	modelEgg->SetBaseColor(XMFLOAT3(1, 1, 1));
+	modelEgg->SetMetalness(1.0f);
+	modelEgg->SetSpecular(1.0f);
+	modelEgg->SetRoughness(0.5f);
+	modelEgg->TransferMaterial();
+
+	modelStageClear = FbxLoader::GetInstance()->LoadModelFromFile("StageClear");
+	modelStageClear->SetBaseColor(XMFLOAT3(1, 0, 0));
+	modelStageClear->SetMetalness(0.2f);
+	modelStageClear->SetSpecular(0.5f);
+	modelStageClear->SetRoughness(1.0f);
+	modelStageClear->TransferMaterial();
 }
 
 SoundData &Resources::GetSoundData(ResourcesName resourcesName)
@@ -171,6 +183,10 @@ FBXModel *Resources::GetFBXModel(ResourcesName resourcesName)
 	if (resourcesName == ResourcesName::modelEgg)
 	{
 		return modelEgg;
+	}
+	else if (resourcesName == ResourcesName::modelStageClear)
+	{
+		return modelStageClear;
 	}
 	else
 	{

@@ -54,6 +54,7 @@ public:
 	const bool &GetJumpChangeBlockFlag() { return jumpChangeBlockFlag; }
 	const bool &GetPlayerStop() { return moveFlag; }
 	const int &GetJumpTimer() { return jumpTimer; }
+	const bool &GetShakeFlag() { return shakeFlag; }
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
@@ -131,6 +132,9 @@ private:
 
 	//あたり判定用の過去の位置
 	XMFLOAT3 oldPos;
+
+	//シェイクするかのフラグ
+	bool shakeFlag;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

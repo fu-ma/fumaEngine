@@ -33,7 +33,7 @@ public: // 静的メンバ変数
 	static WholeScene *GetInstance();
 	void StaticInit();
 
-	int GetRand(int min, int max)
+	float GetRand(float min, float max)
 	{
 		static int check;
 		if (check == 0)
@@ -42,7 +42,7 @@ public: // 静的メンバ変数
 			check = 1;
 		}
 
-		return min + (int)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
+		return min + (float)(rand() * (max - min + 1.0) / (1.0 + RAND_MAX));
 	}
 
 	const int &GetSelectNum() { return selectNum; }

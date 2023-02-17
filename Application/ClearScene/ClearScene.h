@@ -8,6 +8,7 @@ private:
 	Sprite *fadeOut = nullptr;
 	Sprite *fadeIn = nullptr;
 	FBXObject3d *egg = nullptr;
+	FBXObject3d *gameClear = nullptr;
 
 	//開始時のフェイドアウト用変数
 	double fadeOutSizeX;
@@ -34,6 +35,10 @@ public:
 		fadeOut = nullptr;
 		delete fadeIn;
 		fadeIn = nullptr;
+		delete egg;
+		egg = nullptr;
+		delete gameClear;
+		gameClear = nullptr;
 	}
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);
 	void Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);

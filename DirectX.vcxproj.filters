@@ -196,7 +196,7 @@
       <Filter>Game\GameScene\SelectScene</Filter>
     </ClCompile>
     <ClCompile Include="Application\Resources\Resources.cpp">
-      <Filter>Game\GameScene\Resources</Filter>
+      <Filter>Game\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application\GamePlayScene\GamePlayScene.cpp">
       <Filter>Game\GameScene\GamePlayScene</Filter>
@@ -397,7 +397,7 @@
       <Filter>Game\GameScene\SelectScene</Filter>
     </ClInclude>
     <ClInclude Include="Application\Resources\Resources.h">
-      <Filter>Game\GameScene\Resources</Filter>
+      <Filter>Game\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Application\GamePlayScene\GamePlayScene.h">
       <Filter>Game\GameScene\GamePlayScene</Filter>
@@ -593,9 +593,6 @@
     <Filter Include="Game\GameScene\SelectScene">
       <UniqueIdentifier>{266e7cab-8e23-40c9-a328-8ea752d5ca85}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameScene\Resources">
-      <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameScene\GamePlayScene">
       <UniqueIdentifier>{ec29613d-04a5-4a4c-b7ff-76a0fa900d31}</UniqueIdentifier>
     </Filter>
@@ -613,6 +610,9 @@
     </Filter>
     <Filter Include="Game\GameScene\GameSceneManagerState">
       <UniqueIdentifier>{bb24f8c3-a051-4a60-9bf1-c70fc388718c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Resources">
+      <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

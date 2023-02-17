@@ -292,6 +292,9 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	goTitleFlag = false;
 	reStartFlag = false;
 	clearFlag = false;
+
+	shakeFlag = false;
+	shakeTimer = 0;
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -304,7 +307,27 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ objPlayer->GetPosition().x + 10, 12, -20 });
-	camera->SetTarget({ objPlayer->GetPosition().x + 10, 12, 0 });
+	camera->SetTarget({ objPlayer->GetPosition().x + 10 + shakePos.x, 12 + shakePos.y, 0 });
+
+	//画面シェイク
+	if (objPlayer->GetShakeFlag() == true)
+	{
+		shakeFlag = true;
+	}
+	if (shakeFlag == false)
+	{
+		shakePos = { 0,0,0 };
+		shakeTimer = 0;
+	}
+	if (shakeFlag == true)
+	{
+		shakeTimer++;
+		shakePos.x = (float)wholeScene->GetRand(0, 0.2f);
+		if (shakeTimer > 5)
+		{
+			shakeFlag = false;
+		}
+	}
 	//fadein
 	if (fadeInFlag == true)
 	{
@@ -576,6 +599,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			for (int x = 0; x < X_MAX; x++)
 			{
 				objPlayer->CollisionObj(objStageBox[y][x]);
+
 				objPlayer->CollisionEnemy(enemy[y][x]);
 				if (objPlayer->GetJumpChangeBlockFlag() == false)
 				{

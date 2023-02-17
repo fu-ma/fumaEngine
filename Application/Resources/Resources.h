@@ -29,6 +29,7 @@ enum class ResourcesName
 	modelExplosionLeftParticle,
 	modelExplosionRightParticle,
 	modelEgg,
+	modelStageClear,
 };
 
 class Resources
@@ -96,6 +97,9 @@ private:
 
 	//egg用のモデル
 	FBXModel *modelEgg;
+
+	//GameClear用のモデル
+	FBXModel *modelStageClear;
 private:
 	Resources() = default;
 	~Resources() = default;

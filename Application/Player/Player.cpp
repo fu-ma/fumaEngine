@@ -92,6 +92,8 @@ bool Player::Initialize()
 	oldPos = {};
 
 	moveVecFlag = false;
+
+	shakeFlag = false;
 	return true;
 }
 
@@ -171,6 +173,10 @@ void Player::Move()
 		{
 			explosionLeftParticle->SetFlag(true);
 		}
+		if (leftWallJumpTimer >= 2)
+		{
+			shakeFlag = false;
+		}
 		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
@@ -196,6 +202,10 @@ void Player::Move()
 		if (rightWallJumpTimer == 0)
 		{
 			explosionRightParticle->SetFlag(true);
+		}
+		if (rightWallJumpTimer >= 2)
+		{
+			shakeFlag = false;
 		}
 		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
@@ -360,6 +370,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			};
 			leftWallColFlag = false;
 			moveSpeed = 0.01f;
+			shakeFlag = false;
 		}
 	}
 
@@ -378,6 +389,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			};
 			rightWallColFlag = false;
 			moveSpeed = 0.01f;
+			shakeFlag = false;
 		}
 	}
 
@@ -385,10 +397,6 @@ void Player::CollisionObj(ModelObj *obj2)
 		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y,0 },
 		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
-		if (oldPos.x < position.x + moveSpeed * 2 && oldPos.x>position.x - moveSpeed * 2)
-		{
-			rotSpeed = 0;
-		}
 		if (oldPos.x > position.x)
 		{
 			position =
@@ -406,6 +414,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
 					leftWallJumpFlag = true;
+					shakeFlag = true;
 				}
 			}
 		}
@@ -418,10 +427,6 @@ void Player::CollisionObj(ModelObj *obj2)
 		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y,0 },
 		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
 	{
-		if (oldPos.x < position.x + moveSpeed * 2 && oldPos.x>position.x - moveSpeed * 2)
-		{
-			rotSpeed = 0;
-		}
 		if (oldPos.x < position.x)
 		{
 			position =
@@ -439,6 +444,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 				{
 					rightWallJumpFlag = true;
+					shakeFlag = true;
 				}
 			}
 		}
@@ -488,7 +494,6 @@ void Player::CollisionObj(ModelObj *obj2)
 		rightWallJumpFlag = false;
 		leftWallJumpFlag = false;
 	}
-
 }
 
 void Player::CollisionEnemy(Enemy *enemy)
