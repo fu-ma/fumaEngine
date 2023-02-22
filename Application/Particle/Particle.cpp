@@ -23,7 +23,7 @@ void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 			this->vel[i] = { 0,0,0 };
 			particleScale[i] = { 1,1,1 };
 
-			const float rnd_vel = 0.1f;
+			const float rnd_vel = 0.3f;
 			vel[i].x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 			vel[i].y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
 			//moveFlag[i] = true;
@@ -39,9 +39,9 @@ void Particle::Update(const TYPE &type, const XMFLOAT3 &particlePos)
 
 				this->particlePos[i].x += vel[i].x;
 				this->particlePos[i].y += vel[i].y;
-				particleScale[i].x -= 0.01f;
-				particleScale[i].y -= 0.01f;
-				particleScale[i].z -= 0.01f;
+				particleScale[i].x -= 0.03f;
+				particleScale[i].y -= 0.03f;
+				particleScale[i].z -= 0.03f;
 
 				particle[i]->SetRotation(particleScale[i]);
 				particle[i]->SetPosition(this->particlePos[i]);

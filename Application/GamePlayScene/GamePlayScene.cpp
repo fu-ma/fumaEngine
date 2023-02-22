@@ -295,6 +295,9 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 
 	shakeFlag = false;
 	shakeTimer = 0;
+
+	enemyHitShakeFlag = false;
+	enemyHitShakeTimer = 0;
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -307,7 +310,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ objPlayer->GetPosition().x + 10, 12, -20 });
-	camera->SetTarget({ objPlayer->GetPosition().x + 10 + shakePos.x, 12 + shakePos.y, 0 });
+	camera->SetTarget({ objPlayer->GetPosition().x + 10 + shakePos.x + enemyHitShakePos.x, 12 + shakePos.y + enemyHitShakePos.y, 0 });
 
 	//画面シェイク
 	if (objPlayer->GetShakeFlag() == true)
@@ -326,6 +329,27 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (shakeTimer > 5)
 		{
 			shakeFlag = false;
+		}
+	}
+
+	if (objPlayer->GetEnemyHitShakeFlag() == true)
+	{
+		enemyHitShakeFlag = true;
+	}
+	if (enemyHitShakeFlag == false)
+	{
+		enemyHitShakePos = { 0,0,0 };
+		enemyHitShakeTimer = 0;
+	}
+	if (enemyHitShakeFlag == true)
+	{
+		enemyHitShakeTimer++;
+		enemyHitShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
+		enemyHitShakePos.y = (float)wholeScene->GetRand(0, 0.2f);
+		if (enemyHitShakeTimer > 5)
+		{
+			enemyHitShakeFlag = false;
+			objPlayer->SetNotEnemyHitShakeFlag();
 		}
 	}
 	//fadein

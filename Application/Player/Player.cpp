@@ -48,6 +48,9 @@ bool Player::Initialize()
 	explosionRightParticle = new Particle();
 	explosionRightParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionRightParticle));
 
+	pushEnemyParticle = new Particle();
+	pushEnemyParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
+
 	if (!ModelObj::Initialize())
 	{
 		return false;
@@ -94,6 +97,7 @@ bool Player::Initialize()
 	moveVecFlag = false;
 
 	shakeFlag = false;
+	enemyHitShakeFlag = false;
 	return true;
 }
 
@@ -136,6 +140,7 @@ void Player::Update()
 
 	explosionLeftParticle->Update(TYPE::explosionLEFT, { position.x,position.y,0 });
 	explosionRightParticle->Update(TYPE::explosionRIGHT, { position.x,position.y,0 });
+	pushEnemyParticle->Update(TYPE::explosion, { position.x,position.y-1,0 });
 
 	oldPos = position;
 
@@ -152,6 +157,7 @@ void Player::Draw()
 	moveParticle->Draw();
 	explosionLeftParticle->Draw();
 	explosionRightParticle->Draw();
+	pushEnemyParticle->Draw();
 }
 
 void Player::Move()
@@ -534,6 +540,8 @@ void Player::CollisionEnemy(Enemy *enemy)
 
 			if (enemy->GetHP() == 1)
 			{
+				pushEnemyParticle->SetFlag(true);
+				enemyPos = enemy->GetPosition();
 				t = 0;
 				treadTime = 0;
 				treadFlag = true;
@@ -587,6 +595,7 @@ void Player::HitEnemy(Enemy *enemy)
 		if (invincibleFlag == false)
 		{
 			HP--;
+			enemyHitShakeFlag = true;
 			onCollisionFlag = true;
 		}
 		invincibleFlag = true;

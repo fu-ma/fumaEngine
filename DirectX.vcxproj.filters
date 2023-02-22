@@ -217,6 +217,7 @@
       <Filter>Game\GameScene\GameSceneManagerState</Filter>
     </ClCompile>
     <ClCompile Include="Json.cpp" />
+    <ClCompile Include="GameControl.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -418,6 +419,7 @@
       <Filter>Game\GameScene\GameSceneManagerState</Filter>
     </ClInclude>
     <ClInclude Include="Json.h" />
+    <ClInclude Include="GameControl.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

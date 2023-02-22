@@ -55,6 +55,8 @@ public:
 	const bool &GetPlayerStop() { return moveFlag; }
 	const int &GetJumpTimer() { return jumpTimer; }
 	const bool &GetShakeFlag() { return shakeFlag; }
+	const bool &GetEnemyHitShakeFlag() { return enemyHitShakeFlag; }
+	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
@@ -127,6 +129,10 @@ private:
 	Particle *explosionLeftParticle;
 	Particle *explosionRightParticle;
 
+	//敵を踏んだ時のパーティクル
+	Particle *pushEnemyParticle;
+	XMFLOAT3 enemyPos;
+
 	//移動パーティクル用の向きのフラグ（falseで左trueで右）
 	bool moveVecFlag;
 
@@ -135,6 +141,7 @@ private:
 
 	//シェイクするかのフラグ
 	bool shakeFlag;
+	bool enemyHitShakeFlag;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);
