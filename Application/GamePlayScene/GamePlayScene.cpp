@@ -302,8 +302,6 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
@@ -381,19 +379,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		gameOverFlag = true;
 	}
 
-	if (input->isKeyTrigger(DIK_ESCAPE) || input->isKeyTrigger(DIK_A) || input->isKeyTrigger(DIK_S) ||
-		input->isKeyTrigger(DIK_D) || input->isKeyTrigger(DIK_W) || input->isKeyTrigger(DIK_SPACE))
+	if (gameControl->menuControl(Menu::ANYKEYBORD))
 	{
 		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignSpace));
 		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignSpace));
 		operationButton = false;
 	}
 
-	if (controller->TriggerButton(static_cast<int>(Button::START)) || controller->TriggerButton(static_cast<int>(Button::A)) ||
-		controller->TriggerButton(static_cast<int>(Button::B)) || controller->TriggerButton(static_cast<int>(Button::X)) ||
-		controller->TriggerButton(static_cast<int>(Button::Y)) || controller->TriggerButton(static_cast<int>(Button::LEFT)) ||
-		controller->TriggerButton(static_cast<int>(Button::RIGHT)) || controller->TriggerButton(static_cast<int>(Button::UP)) ||
-		controller->TriggerButton(static_cast<int>(Button::DOWN)))
+	if (gameControl->menuControl(Menu::ANYPAD))
 	{
 		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignA));
 		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignA));
@@ -401,7 +394,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//Escかスタートボタン（コントローラー）を押したときに一時停止する
-	if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
+	if (gameControl->menuControl(Menu::ESCAPETRIGGER))
 	{
 		stopFlag = !stopFlag;
 	}
@@ -409,7 +402,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//一時停止したとき
 	if (stopFlag == true)
 	{
-		if (input->isKeyTrigger(DIK_W) || controller->TriggerButton(static_cast<int>(Button::UP)) == true)
+		if (gameControl->menuControl(Menu::UPTRIGGER))
 		{
 			if (stopNum < 2 && stopMoveTime >= 0.2f)
 			{
@@ -417,7 +410,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 				stopNum++;
 			}
 		}
-		else if (input->isKeyTrigger(DIK_S) || controller->TriggerButton(static_cast<int>(Button::DOWN)) == true)
+		else if (gameControl->menuControl(Menu::DOWNTRIGGER))
 		{
 			if (stopNum > 0 && stopMoveTime >= 0.2f)
 			{
@@ -449,7 +442,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		easing::Updete(ReturnSpriteSize, stopSpriteMinSize, InSine, stopMoveTime);
 	}
 
-	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+	if (gameControl->menuControl(Menu::SPACETRIGGER))
 	{
 		//モドルボタンを押したとき
 		if (stopNum == 0 && stopMoveTime >= 0.2f)

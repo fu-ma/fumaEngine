@@ -216,8 +216,12 @@
     <ClCompile Include="Application\GameSceneManagerState\GameSceneManagerState.cpp">
       <Filter>Game\GameScene\GameSceneManagerState</Filter>
     </ClCompile>
-    <ClCompile Include="Json.cpp" />
-    <ClCompile Include="GameControl.cpp" />
+    <ClCompile Include="Application\GameControl\GameControl.cpp">
+      <Filter>Game\GameControl</Filter>
+    </ClCompile>
+    <ClCompile Include="Engine\Json\Json.cpp">
+      <Filter>Engine\Json</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -418,8 +422,12 @@
     <ClInclude Include="Application\GameSceneManagerState\GameSceneManagerState.h">
       <Filter>Game\GameScene\GameSceneManagerState</Filter>
     </ClInclude>
-    <ClInclude Include="Json.h" />
-    <ClInclude Include="GameControl.h" />
+    <ClInclude Include="Application\GameControl\GameControl.h">
+      <Filter>Game\GameControl</Filter>
+    </ClInclude>
+    <ClInclude Include="Engine\Json\Json.h">
+      <Filter>Engine\Json</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -615,6 +623,12 @@
     </Filter>
     <Filter Include="Game\Resources">
       <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameControl">
+      <UniqueIdentifier>{aed0aa6d-97ff-4158-bfe5-89414349559a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\Json">
+      <UniqueIdentifier>{4b75db4b-fef1-40f5-9d5c-a687f30ffcd9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

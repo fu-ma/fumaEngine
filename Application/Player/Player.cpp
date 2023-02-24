@@ -1,11 +1,9 @@
 ﻿#include "Player.h"
-#include "Engine/Input/Input.h"
 #include "DebugText.h"
 #include "SphereCollider.h"
 #include "ParticleManager.h"
 #include "CollisionManager.h"
 #include "CollisionAttribute.h"
-#include"Engine/Input/Controller.h"
 #include"Resources.h"
 #include"Json.h"
 
@@ -75,17 +73,17 @@ bool Player::Initialize()
 	jumpTimer = 0;
 
 	invincibleTimer = 0;
-	HP = (int)json->ReadFile("data.json","HP");
+	HP = (int)json->ReadFile("Resources/data.json","HP");
 	rotation.y = 0;
 	rotation.z = 0;
 	position.x = 10;
 	position.y = 2;
 	moveFlag = false;
 
-	constMoveSpeed = json->ReadFile("data.json","moveSpeed");
+	constMoveSpeed = json->ReadFile("Resources/data.json","moveSpeed");
 	moveSpeed = constMoveSpeed;
 
-	constRotSpeed = json->ReadFile("data.json", "rotSpeed");
+	constRotSpeed = json->ReadFile("Resources/data.json", "rotSpeed");
 	rotSpeed = constRotSpeed;
 
 	jumpChangeBlockFlag = false;
@@ -113,9 +111,6 @@ void Player::SetValue()
 
 void Player::Update()
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	if (HP == 2)
 	{
 		scale = { 1.0f,1.0f,1.0f };
@@ -162,9 +157,6 @@ void Player::Draw()
 
 void Player::Move()
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	//プレイヤーの重力処理
 	Gravity();
 
@@ -231,8 +223,7 @@ void Player::Move()
 	//移動処理
 	if (moveFlag == false)
 	{
-		if ((input->isKey(DIK_A) || controller->PushButton(static_cast<int>(Button::LEFT)) == true) &&
-			input->isKey(DIK_D) == false && controller->PushButton(static_cast<int>(Button::RIGHT)) == false)
+		if (gameControl->moveControl(Move::LEFT))
 		{
 			if (leftWallJumpFlag == false)
 			{
@@ -244,8 +235,7 @@ void Player::Move()
 			moveParticle->Set({ position.x,position.y , 0 }, rotation);
 			moveVecFlag = false;
 		}
-		else if ((input->isKey(DIK_D) || controller->PushButton(static_cast<int>(Button::RIGHT)) == true) &&
-			(input->isKey(DIK_A) == false && controller->PushButton(static_cast<int>(Button::LEFT)) == false))
+		else if (gameControl->moveControl(Move::RIGHT))
 		{
 			if (rightWallJumpFlag == false)
 			{
@@ -285,9 +275,6 @@ void Player::Move()
 
 void Player::Jump()
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	//重力処理
 	if (speed > gravity * 20)
 	{
@@ -311,11 +298,11 @@ void Player::Jump()
 
 	if (jumpFlag == false)
 	{
-		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+		if (gameControl->moveControl(Move::JUMPTRIGGER))
 		{
 			jumpChangeBlockFlag = !jumpChangeBlockFlag;
 		}
-		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+		if (gameControl->moveControl(Move::JUMP))
 		{
 			if (jumpTimer < jumpMax)
 			{
@@ -348,14 +335,11 @@ void Player::Jump()
 
 void Player::CollisionObj(ModelObj *obj2)
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
 	//空中処理
-	if (speed < gravity && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
+	if (speed < gravity && !(gameControl->moveControl(Move::JUMP)))
 	{
 		jumpFlag = true;
 	}
@@ -417,7 +401,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				rotation.z = 0;
 				rightWallColFlag = false;
-				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+				if (gameControl->moveControl(Move::WALLJUMPLEFT))
 				{
 					leftWallJumpFlag = true;
 					shakeFlag = true;
@@ -447,7 +431,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				speed = gravity * 1.8f;
 				rotation.z = 0;
 				leftWallColFlag = false;
-				if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+				if (gameControl->moveControl(Move::WALLJUMPRIGHT))
 				{
 					rightWallJumpFlag = true;
 					shakeFlag = true;
@@ -474,7 +458,7 @@ void Player::CollisionObj(ModelObj *obj2)
 		moveSpeed = constMoveSpeed;
 		rotation.y = 0.0f;
 		//着地しているときのみジャンプを可能にする
-		if ((!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
+		if (!(gameControl->moveControl(Move::JUMP)))
 		{
 			jumpChangeTimer++;
 			jumpTimer = 0;
@@ -504,9 +488,6 @@ void Player::CollisionObj(ModelObj *obj2)
 
 void Player::CollisionEnemy(Enemy *enemy)
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	if (Collision::CheckBox2Box({ position.x,position.y,0 },
 		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
 		scale.x + 0.2f, scale.y - 0.2f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
@@ -519,7 +500,7 @@ void Player::CollisionEnemy(Enemy *enemy)
 		scale.x, scale.y - 0.3f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
 	{
 		HitEnemy(enemy);
-		if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+		if (gameControl->moveControl(Move::JUMP))
 		{
 			enemyNotUpFlag = true;
 		}
@@ -625,9 +606,6 @@ void Player::Gravity()
 
 void Player::PlayerJump()
 {
-	Input *input = Input::GetInstance();
-	Controller *controller = Controller::GetInstance();
-
 	//1.2.3段ジャンプ処理
 	if (jumpChange == 0)
 	{
@@ -646,11 +624,11 @@ void Player::PlayerJump()
 	{
 		if (jumpFlag == false)
 		{
-			if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
 				jumpChangeBlockFlag = !jumpChangeBlockFlag;
 			}
-			if (input->isKey(DIK_SPACE) || controller->PushButton(static_cast<int>(Button::A)) == true)
+			if (gameControl->moveControl(Move::JUMP))
 			{
 				if (jumpTimer < jumpMax)
 				{
@@ -681,7 +659,7 @@ void Player::PlayerJump()
 		}
 	}
 
-	if (jumpTimer > 0 && (!(input->isKey(DIK_SPACE))) && !(controller->PushButton(static_cast<int>(Button::A)) == true))
+	if (jumpTimer > 0 && (!gameControl->moveControl(Move::JUMP)))
 	{
 		jumpFlag = true;
 	}

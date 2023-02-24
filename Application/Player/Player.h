@@ -7,6 +7,7 @@
 #include"Enemy.h"
 #include"easing.h"
 #include"Particle.h"
+#include"GameControl.h"
 
 class Player : public ModelObj
 {
@@ -27,6 +28,10 @@ public:
 		explosionLeftParticle = nullptr;
 		delete explosionRightParticle;
 		explosionRightParticle = nullptr;
+		delete pushEnemyParticle;
+		pushEnemyParticle = nullptr;
+		delete gameControl;
+		gameControl = nullptr;
 	}
 	/// <summary>
 	/// 初期化
@@ -142,6 +147,9 @@ private:
 	//シェイクするかのフラグ
 	bool shakeFlag;
 	bool enemyHitShakeFlag;
+
+	//入力用のまとめクラス
+	GameControl *gameControl;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

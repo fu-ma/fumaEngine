@@ -1,6 +1,7 @@
 #pragma once
 #include "GameSceneManagerState.h"
 #include"Json.h"
+#include"GameControl.h"
 
 class GamePlayScene : public GameSceneManagerState
 {
@@ -10,6 +11,10 @@ class GamePlayScene : public GameSceneManagerState
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 private:
+	//ゲーム用の操作のクラス
+	GameControl *gameControl = nullptr;
+
+	//スプライト
 	Sprite *backGround = nullptr;
 	Sprite *goTitle = nullptr;
 	Sprite *reStart = nullptr;
@@ -201,6 +206,10 @@ public:
 	void Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText);
 	~GamePlayScene()
 	{
+		//ゲームの操作クラス
+		delete gameControl;
+		gameControl = nullptr;
+		//スプライト
 		delete backGround;
 		backGround = nullptr;
 		delete goTitle;
