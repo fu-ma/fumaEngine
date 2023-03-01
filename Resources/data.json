@@ -1,0 +1,7 @@
+{
+	Name : Data
+	jump : 0.5f
+	HP : 2
+	moveSpeed : 0.14f
+	rotSpeed : 3.5f
+}

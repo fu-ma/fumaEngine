@@ -94,8 +94,11 @@ bool Player::Initialize()
 
 	moveVecFlag = false;
 
-	shakeFlag = false;
+	leftWallHitShakeFlag = false;
+	rightWallHitShakeFlag = false;
 	enemyHitShakeFlag = false;
+	shadowSize.x = SHADOW_MAX_SIZE;
+	shadowSize.y = SHADOW_MAX_SIZE;
 	return true;
 }
 
@@ -173,7 +176,7 @@ void Player::Move()
 		}
 		if (leftWallJumpTimer >= 2)
 		{
-			shakeFlag = false;
+			leftWallHitShakeFlag = false;
 		}
 		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
@@ -185,7 +188,6 @@ void Player::Move()
 		}
 		else if (leftWallJumpTimer > wallJumpMax * 2.5f)
 		{
-			//leftWallColFlag = false;
 			leftWallJumpFlag = false;
 		}
 	}
@@ -203,7 +205,7 @@ void Player::Move()
 		}
 		if (rightWallJumpTimer >= 2)
 		{
-			shakeFlag = false;
+			rightWallHitShakeFlag = false;
 		}
 		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
@@ -215,7 +217,6 @@ void Player::Move()
 		}
 		else if (rightWallJumpTimer > wallJumpMax * 2.5f)
 		{
-			//rightWallColFlag = false;
 			rightWallJumpFlag = false;
 		}
 	}
@@ -307,6 +308,12 @@ void Player::Jump()
 			if (jumpTimer < jumpMax)
 			{
 				position.y += jump;
+				//影が最小までなるまで小さくする
+				if (shadowSize.x >= SHADOW_MIN_SIZE)
+				{
+					shadowSize.x -= SHADOW_SIZE_CHANGE;
+					shadowSize.y -= SHADOW_SIZE_CHANGE;
+				}
 			}
 			jumpTimer+=2;
 
@@ -360,7 +367,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			};
 			leftWallColFlag = false;
 			moveSpeed = 0.01f;
-			shakeFlag = false;
+			rightWallHitShakeFlag = false;
 		}
 	}
 
@@ -379,7 +386,7 @@ void Player::CollisionObj(ModelObj *obj2)
 			};
 			rightWallColFlag = false;
 			moveSpeed = 0.01f;
-			shakeFlag = false;
+			leftWallHitShakeFlag = false;
 		}
 	}
 
@@ -404,7 +411,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				if (gameControl->moveControl(Move::WALLJUMPLEFT))
 				{
 					leftWallJumpFlag = true;
-					shakeFlag = true;
+					leftWallHitShakeFlag = true;
 				}
 			}
 		}
@@ -434,7 +441,7 @@ void Player::CollisionObj(ModelObj *obj2)
 				if (gameControl->moveControl(Move::WALLJUMPRIGHT))
 				{
 					rightWallJumpFlag = true;
-					shakeFlag = true;
+					rightWallHitShakeFlag = true;
 				}
 			}
 		}
@@ -457,6 +464,11 @@ void Player::CollisionObj(ModelObj *obj2)
 		speed = 0;
 		moveSpeed = constMoveSpeed;
 		rotation.y = 0.0f;
+
+		//着地してるとき影の大きさをリセット
+		shadowSize.x = SHADOW_MAX_SIZE;
+		shadowSize.y = SHADOW_MAX_SIZE;
+
 		//着地しているときのみジャンプを可能にする
 		if (!(gameControl->moveControl(Move::JUMP)))
 		{

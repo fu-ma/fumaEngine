@@ -293,11 +293,20 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	reStartFlag = false;
 	clearFlag = false;
 
-	shakeFlag = false;
-	shakeTimer = 0;
+	leftWallShakeFlag = false;
+	leftWallShakeTimer = 0;
+
+	rightWallShakeFlag = false;
+	rightWallShakeTimer = 0;
 
 	enemyHitShakeFlag = false;
 	enemyHitShakeTimer = 0;
+
+	timerPosX = 1280 / 2 - 20;
+	timerPosY = 720 / 2 - 45;
+	timerSize = 0;
+	timerMoveT = 0;
+	timerSizeT = 0;
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -305,30 +314,54 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
+	lightGroup->SetCircleShadowDir(0, XMVECTOR({ 0,-1,0 }));
+	lightGroup->SetCircleShadowCasterPos(0, objPlayer->GetPosition());
+	lightGroup->SetCircleShadowAtten(0, XMFLOAT3({ objPlayer->GetShadowSize().x,objPlayer->GetShadowSize().y,0.0f }));
+	lightGroup->SetCircleShadowFactorAngle(0, objPlayer->GetShadowSize());
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ objPlayer->GetPosition().x + 10, 12, -20 });
-	camera->SetTarget({ objPlayer->GetPosition().x + 10 + shakePos.x + enemyHitShakePos.x, 12 + shakePos.y + enemyHitShakePos.y, 0 });
+	camera->SetTarget({ objPlayer->GetPosition().x + 10 - leftWallShakePos.x + rightWallShakePos.x + enemyHitShakePos.x, 12 + enemyHitShakePos.y, 0 });
 
 	//画面シェイク
-	if (objPlayer->GetShakeFlag() == true)
+	if (objPlayer->GetLeftWallHitShakeFlag() == true)
 	{
-		shakeFlag = true;
+		leftWallShakeFlag = true;
 	}
-	if (shakeFlag == false)
+	if (leftWallShakeFlag == false)
 	{
-		shakePos = { 0,0,0 };
-		shakeTimer = 0;
+		leftWallShakePos = { 0,0,0 };
+		leftWallShakeTimer = 0;
 	}
-	if (shakeFlag == true)
+	if (leftWallShakeFlag == true)
 	{
-		shakeTimer++;
-		shakePos.x = (float)wholeScene->GetRand(0, 0.2f);
-		if (shakeTimer > 5)
+		leftWallShakeTimer++;
+		leftWallShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
+		if (leftWallShakeTimer > 5)
 		{
-			shakeFlag = false;
+			leftWallShakeFlag = false;
 		}
 	}
+
+	if (objPlayer->GetRightWallHitShakeFlag() == true)
+	{
+		rightWallShakeFlag = true;
+	}
+	if (rightWallShakeFlag == false)
+	{
+		rightWallShakePos = { 0,0,0 };
+		rightWallShakeTimer = 0;
+	}
+	if (rightWallShakeFlag == true)
+	{
+		rightWallShakeTimer++;
+		rightWallShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
+		if (rightWallShakeTimer > 5)
+		{
+			rightWallShakeFlag = false;
+		}
+	}
+
 
 	if (objPlayer->GetEnemyHitShakeFlag() == true)
 	{
@@ -374,7 +407,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer < 0)
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer <= 0)
 	{
 		gameOverFlag = true;
 	}
@@ -536,21 +569,40 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//スターと表示がされてからしばらくして
 	if (countDown->GetStart() >= 0.8)
 	{
-		//一時停止していなかったら
-		if (stopFlag == false && clearStopFlag == false)
+		if (timerSizeT <= 0.5)
 		{
-			gameTimer--;
+			timerSizeT += 0.008f;
+			easing::Updete(timerSize, 1, 3, timerSizeT);
+		}
+		if (timerSizeT > 0.5)
+		{
+			timerMoveT += 0.008f;
+			easing::Updete(timerPosX, 1200, 3, timerMoveT);
+			easing::Updete(timerPosY, 50, 3, timerMoveT);
+			easing::Updete(timerSize, 0.3, 3, timerMoveT);
+		}
+		if (timerMoveT > 0.2)
+		{
+			timerMoveT = 0.21f;
+			//一時停止していなかったら
+			if (stopFlag == false && clearStopFlag == false)
+			{
+				if (gameTimer > 0)
+				{
+					gameTimer--;
+				}
+			}
 		}
 	}
 
 	//タイマーを表示
-	debugText->SetPos(1200, 50);
-	debugText->SetSize(3);
+	debugText->SetPos((float)timerPosX, (float)timerPosY);
+	debugText->SetSize((float)timerSize);
 	debugText->Printf("%d", gameTimer / 60);
 
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
-	debugText->SetSize(5);
+	debugText->SetSize(0.5f);
 	debugText->Printf("%d", wholeScene->GetTotalPlayerNum());
 
 	//雲の移動

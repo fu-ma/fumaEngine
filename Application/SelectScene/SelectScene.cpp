@@ -178,7 +178,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
-	debugText->SetSize(5);
+	debugText->SetSize(0.5f);
 	debugText->Printf("%d", wholeScene->GetTotalPlayerNum());
 
 	//タイトルから来たときにplayerのジャンプを防ぐ

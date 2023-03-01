@@ -119,10 +119,21 @@ private:
 	//操作しているのがキーボードかコントローラーか判定するフラグ（falseでキーボード、trueでコントローラー）
 	bool operationButton;
 
+	//タイマーの位置
+	double timerPosX;
+	double timerPosY;
+	double timerMoveT;
+	double timerSize;
+	double timerSizeT;
+
 	//画面シェイク用の変数
-	XMFLOAT3 shakePos;
-	bool shakeFlag;
-	int shakeTimer;
+	XMFLOAT3 leftWallShakePos;
+	bool leftWallShakeFlag;
+	int leftWallShakeTimer;
+
+	XMFLOAT3 rightWallShakePos;
+	bool rightWallShakeFlag;
+	int rightWallShakeTimer;
 
 	XMFLOAT3 enemyHitShakePos;
 	bool enemyHitShakeFlag;
@@ -199,6 +210,7 @@ private:
 	int totalPlayer;
 	//ステージ選択用の数字（代入用）
 	int selectNum;
+
 public:
 	GamePlayScene(const int stageNum = 0) { }
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);

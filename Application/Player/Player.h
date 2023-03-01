@@ -59,9 +59,11 @@ public:
 	const bool &GetJumpChangeBlockFlag() { return jumpChangeBlockFlag; }
 	const bool &GetPlayerStop() { return moveFlag; }
 	const int &GetJumpTimer() { return jumpTimer; }
-	const bool &GetShakeFlag() { return shakeFlag; }
+	const bool &GetLeftWallHitShakeFlag() { return leftWallHitShakeFlag; }
+	const bool &GetRightWallHitShakeFlag() { return rightWallHitShakeFlag; }
 	const bool &GetEnemyHitShakeFlag() { return enemyHitShakeFlag; }
 	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
+	const XMFLOAT2 &GetShadowSize() { return shadowSize; }
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
@@ -145,11 +147,23 @@ private:
 	XMFLOAT3 oldPos;
 
 	//シェイクするかのフラグ
-	bool shakeFlag;
+	bool leftWallHitShakeFlag;
+	bool rightWallHitShakeFlag;
 	bool enemyHitShakeFlag;
+
+	//影の大きさ
+	XMFLOAT2 shadowSize;
 
 	//入力用のまとめクラス
 	GameControl *gameControl;
+
+private:
+	//影のサイズ変更のための変数
+	const float SHADOW_SIZE_CHANGE = 0.003f;
+	//影のマックスの大きさ
+	const float SHADOW_MAX_SIZE = 0.3f;
+	//影のマックスの小ささ
+	const float SHADOW_MIN_SIZE = 0.001f;
 private:
 	//重複化を防ぐための関数
 	void HitEnemy(Enemy *enemy);

@@ -21,7 +21,7 @@ void GameScene::staticInit()
 	lightGroup->SetDirLightActive(1, true);
 	lightGroup->SetDirLightActive(2, true);
 
-	lightGroup->SetSpotLightActive(0, true);
+	lightGroup->SetSpotLightActive(0, false);
 	lightGroup->SetCircleShadowActive(0, true);
 
 	// 3Dオブジェクトにカメラをセット
