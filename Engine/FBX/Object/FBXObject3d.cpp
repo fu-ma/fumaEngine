@@ -266,9 +266,12 @@ void FBXObject3d::Update()
 		//1フレーム進める
 		currentTime += frameTime;
 		//最後まで再生したら先頭に戻す
-		if (currentTime > endTime)
+		if (isLoop)
 		{
-			currentTime = startTime;
+			if (currentTime > endTime)
+			{
+				currentTime = startTime;
+			}
 		}
 	}
 
@@ -318,11 +321,11 @@ void FBXObject3d::Draw(ID3D12GraphicsCommandList *cmdList)
 	model->Draw(cmdList);
 }
 
-void FBXObject3d::PlayAnimation()
+void FBXObject3d::PlayAnimation(const int &animationNum, const bool &isLoop)
 {
 	FbxScene *fbxScene = model->GetFbxScene();
 	//0番のアニメーション取得
-	FbxAnimStack *animstack = fbxScene->GetSrcObject<FbxAnimStack>(0);
+	FbxAnimStack *animstack = fbxScene->GetSrcObject<FbxAnimStack>(animationNum);
 	//アニメーションの名前取得
 	const char *animstackname = animstack->GetName();
 	//アニメーションの時間情報
@@ -336,4 +339,6 @@ void FBXObject3d::PlayAnimation()
 	currentTime = startTime;
 	//再生中状態にする
 	isPlay = true;
+	//ループするかどうか
+	this->isLoop = isLoop;
 }

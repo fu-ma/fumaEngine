@@ -58,6 +58,7 @@ void Resources::StaticInit(Audio *audio)
 	modelParticle = Model::CreateFromOBJ("player", true);
 	modelExplosionLeftParticle = Model::CreateFromOBJ("eggShell", true);
 	modelExplosionRightParticle = Model::CreateFromOBJ("eggShell", true);
+	modelExplosionUpParticle = Model::CreateFromOBJ("eggShell", true);
 
 	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
 	modelEgg->SetBaseColor(XMFLOAT3(1, 1, 1));
@@ -171,6 +172,10 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelExplosionRightParticle)
 	{
 		return modelExplosionRightParticle;
+	}
+	else if (resourcesName == ResourcesName::modelExplosionUpParticle)
+	{
+		return modelExplosionUpParticle;
 	}
 	else
 	{

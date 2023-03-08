@@ -28,6 +28,7 @@ enum class ResourcesName
 	modelParticle,
 	modelExplosionLeftParticle,
 	modelExplosionRightParticle,
+	modelExplosionUpParticle,
 	modelEgg,
 	modelStageClear,
 };
@@ -91,6 +92,10 @@ private:
 	//壁キック時のパーティクル
 	Model *modelExplosionLeftParticle;
 	Model *modelExplosionRightParticle;
+
+	//ジャンプ時のパーティクル
+	Model *modelExplosionUpParticle;
+
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;
 	Model *model;

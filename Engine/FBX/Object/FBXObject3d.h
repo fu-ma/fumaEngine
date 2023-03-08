@@ -112,7 +112,7 @@ public://メンバ関数
 	/// <summary>
 	/// アニメーション開始
 	/// </summary>
-	void PlayAnimation();
+	void PlayAnimation(const int& animationNum = 0,const bool& isLoop = true);
 
 protected://メンバ変数
 	//定数バッファ
@@ -139,7 +139,8 @@ protected://メンバ変数
 	FbxTime currentTime;
 	//アニメーション再生中
 	bool isPlay = false;
-
+	//アニメーションがループするかいなか
+	bool isLoop = false;
 private://静的メンバ変数
 	//デバイス
 	static ID3D12Device *device;

@@ -38,7 +38,7 @@ bool Player::Initialize()
 	Json *json = Json::GetInstance();
 
 	moveParticle = new Particle();
-	moveParticle->Initialize(resources->GetModel(ResourcesName::modelParticle));
+	moveParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionUpParticle));
 
 	explosionLeftParticle = new Particle();
 	explosionLeftParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionLeftParticle));
@@ -88,17 +88,15 @@ bool Player::Initialize()
 
 	jumpChangeBlockFlag = false;
 
-	moveParticle->SetFlag(true);
-
 	oldPos = {};
-
-	moveVecFlag = false;
 
 	leftWallHitShakeFlag = false;
 	rightWallHitShakeFlag = false;
 	enemyHitShakeFlag = false;
 	shadowSize.x = SHADOW_MAX_SIZE;
 	shadowSize.y = SHADOW_MAX_SIZE;
+
+	cameraMoveY = 0;
 	return true;
 }
 
@@ -127,15 +125,7 @@ void Player::Update()
 		scale = { 0.0f,0.0f,0.0f };
 	}
 
-	if (moveVecFlag == false)
-	{
-		moveParticle->Update(TYPE::LEFT, { position.x,position.y , 0 });
-	}
-	if (moveVecFlag == true)
-	{
-		moveParticle->Update(TYPE::RIGHT, { position.x,position.y , 0 });
-	}
-
+	moveParticle->Update(TYPE::explosionUP, { position.x,position.y - scale.y/2 , 0 });
 	explosionLeftParticle->Update(TYPE::explosionLEFT, { position.x,position.y,0 });
 	explosionRightParticle->Update(TYPE::explosionRIGHT, { position.x,position.y,0 });
 	pushEnemyParticle->Update(TYPE::explosion, { position.x,position.y-1,0 });
@@ -233,8 +223,6 @@ void Player::Move()
 
 			//プレイヤーの向きを左側にする
 			rotation.z += rotSpeed;
-			moveParticle->Set({ position.x,position.y , 0 }, rotation);
-			moveVecFlag = false;
 		}
 		else if (gameControl->moveControl(Move::RIGHT))
 		{
@@ -245,8 +233,6 @@ void Player::Move()
 
 			//プレイヤーの向きを右側にする
 			rotation.z -= rotSpeed;
-			moveParticle->Set({ position.x,position.y , 0 }, rotation);
-			moveVecFlag = true;
 		}
 	}
 
@@ -302,6 +288,8 @@ void Player::Jump()
 		if (gameControl->moveControl(Move::JUMPTRIGGER))
 		{
 			jumpChangeBlockFlag = !jumpChangeBlockFlag;
+			//ジャンプパーティクル
+			moveParticle->SetFlag(true);
 		}
 		if (gameControl->moveControl(Move::JUMP))
 		{
@@ -315,8 +303,15 @@ void Player::Jump()
 					shadowSize.y -= SHADOW_SIZE_CHANGE;
 				}
 			}
-			jumpTimer+=2;
+			if (jumpTimer < jumpMax)
+			{
+				jumpTimer += 2;
+			}
 
+			if (jumpChange > 2)
+			{
+				jumpChange = 0;
+			}
 			if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
 			{
 				jumpChange++;
@@ -474,6 +469,7 @@ void Player::CollisionObj(ModelObj *obj2)
 		{
 			jumpChangeTimer++;
 			jumpTimer = 0;
+			cameraMoveY = 0;
 			jumpFlag = false;
 		}
 		rightWallJumpFlag = false;
@@ -639,6 +635,8 @@ void Player::PlayerJump()
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
 				jumpChangeBlockFlag = !jumpChangeBlockFlag;
+				//ジャンプパーティクル
+				moveParticle->SetFlag(true);
 			}
 			if (gameControl->moveControl(Move::JUMP))
 			{
@@ -646,8 +644,15 @@ void Player::PlayerJump()
 				{
 					position.y += jump;
 				}
-				jumpTimer+=2;
+				if (jumpTimer < jumpMax)
+				{
+					jumpTimer += 2;
+				}
 
+				if (jumpChange > 2)
+				{
+					jumpChange = 0;
+				}
 				if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
 				{
 					jumpChange++;
@@ -668,11 +673,47 @@ void Player::PlayerJump()
 					rotation.y -= 5;
 				}
 			}
+			//2段階目かつ重力よりもジャンプ力が高い場合
+			if ((abs(speed + gravity)) < abs(jump) && jumpTimer < jumpMax)
+			{
+				if (jumpMax == 40)
+				{
+					cameraMoveY += 0.02f;
+				}
+				if (jumpMax == 60)
+				{
+					cameraMoveY += 0.05f;
+				}
+			}
+			//2段階目かつ重力よりもジャンプ力が低い場合
+			if (jumpTimer >= jumpMax && cameraMoveY > 0.0f)
+			{
+				if (jumpMax == 40)
+				{
+					cameraMoveY -= 0.02f;
+				}
+				if (jumpMax == 60)
+				{
+					cameraMoveY -= 0.05f;
+				}
+			}
 		}
 	}
 
 	if (jumpTimer > 0 && (!gameControl->moveControl(Move::JUMP)))
 	{
+		//2段階目かつ重力よりもジャンプ力が低い場合
+		if (cameraMoveY > 0.0f)
+		{
+			if (jumpMax == 40)
+			{
+				cameraMoveY -= 0.02f;
+			}
+			if (jumpMax == 60)
+			{
+				cameraMoveY -= 0.05f;
+			}
+		}
 		jumpFlag = true;
 	}
 }

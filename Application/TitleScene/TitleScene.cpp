@@ -132,6 +132,12 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
 #pragma region XVˆ—
+	//‰e‚ÌˆÊ’u
+	lightGroup->SetCircleShadowDir(0, XMVECTOR({ 0,-1,0 }));
+	lightGroup->SetCircleShadowCasterPos(0, objPlayer->GetPosition());
+	lightGroup->SetCircleShadowAtten(0, XMFLOAT3({ objPlayer->GetShadowSize().x,objPlayer->GetShadowSize().y,0.0f }));
+	lightGroup->SetCircleShadowFactorAngle(0, objPlayer->GetShadowSize());
+
 	//fadein
 	if (fadeInFlag == true)
 	{

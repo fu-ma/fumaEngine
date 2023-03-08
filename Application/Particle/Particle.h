@@ -9,6 +9,7 @@ enum class TYPE
 	RIGHT,
 	explosionLEFT,
 	explosionRIGHT,
+	explosionUP,
 };
 class Particle
 {

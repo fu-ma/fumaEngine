@@ -320,8 +320,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	lightGroup->SetCircleShadowFactorAngle(0, objPlayer->GetShadowSize());
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
-	camera->SetEye({ objPlayer->GetPosition().x + 10, 12, -20 });
-	camera->SetTarget({ objPlayer->GetPosition().x + 10 - leftWallShakePos.x + rightWallShakePos.x + enemyHitShakePos.x, 12 + enemyHitShakePos.y, 0 });
+	camera->SetEye({ objPlayer->GetPosition().x + 10, 12 + objPlayer->GetCameraMoveY(), -20 });
+	camera->SetTarget({ objPlayer->GetPosition().x + 10 - leftWallShakePos.x + rightWallShakePos.x + enemyHitShakePos.x, 12 + enemyHitShakePos.y + objPlayer->GetCameraMoveY(), 0});
 
 	//画面シェイク
 	if (objPlayer->GetLeftWallHitShakeFlag() == true)

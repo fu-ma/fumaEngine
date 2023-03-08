@@ -171,6 +171,12 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
 #pragma region 更新処理
+	//影の位置
+	lightGroup->SetCircleShadowDir(0, XMVECTOR({ 0,-1,0 }));
+	lightGroup->SetCircleShadowCasterPos(0, objPlayer->GetPosition());
+	lightGroup->SetCircleShadowAtten(0, XMFLOAT3({ objPlayer->GetShadowSize().x,objPlayer->GetShadowSize().y,0.0f }));
+	lightGroup->SetCircleShadowFactorAngle(0, objPlayer->GetShadowSize());
+
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetTarget({ objPlayer->GetPosition().x, 10, 0 });

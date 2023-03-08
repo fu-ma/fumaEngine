@@ -64,6 +64,7 @@ public:
 	const bool &GetEnemyHitShakeFlag() { return enemyHitShakeFlag; }
 	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
 	const XMFLOAT2 &GetShadowSize() { return shadowSize; }
+	const float &GetCameraMoveY() { return cameraMoveY; }
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
@@ -140,9 +141,6 @@ private:
 	Particle *pushEnemyParticle;
 	XMFLOAT3 enemyPos;
 
-	//移動パーティクル用の向きのフラグ（falseで左trueで右）
-	bool moveVecFlag;
-
 	//あたり判定用の過去の位置
 	XMFLOAT3 oldPos;
 
@@ -150,6 +148,12 @@ private:
 	bool leftWallHitShakeFlag;
 	bool rightWallHitShakeFlag;
 	bool enemyHitShakeFlag;
+
+	//ジャンプによってエフェクトを変化させる
+	int jumpEffectNum;
+
+	//2段3段ジャンプしたときにカメラを移動させるための変数
+	float cameraMoveY;
 
 	//影の大きさ
 	XMFLOAT2 shadowSize;
