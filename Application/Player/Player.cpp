@@ -335,7 +335,120 @@ void Player::Jump()
 	}
 }
 
-void Player::CollisionObj(ModelObj *obj2)
+void Player::HitObjLeft(ModelObj *obj2)
+{
+	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
+	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	if (oldPos.x > position.x)
+	{
+		position =
+		{
+			boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
+			position.y ,
+			0
+		};
+
+		if (jumpFlag == true)
+		{
+			speed = gravity * 1.8f;
+			rotation.z = 0;
+			rightWallColFlag = false;
+			if (gameControl->moveControl(Move::WALLJUMPLEFT))
+			{
+				leftWallJumpFlag = true;
+				leftWallHitShakeFlag = true;
+			}
+		}
+	}
+	else
+	{
+		rotSpeed = constRotSpeed;
+	}
+}
+
+void Player::HitObjRight(ModelObj *obj2)
+{
+	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
+	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	if (oldPos.x < position.x)
+	{
+		position =
+		{
+			boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
+			position.y ,
+			0
+		};
+
+		if (jumpFlag == true)
+		{
+			speed = gravity * 1.8f;
+			rotation.z = 0;
+			leftWallColFlag = false;
+			if (gameControl->moveControl(Move::WALLJUMPRIGHT))
+			{
+				rightWallJumpFlag = true;
+				rightWallHitShakeFlag = true;
+			}
+		}
+	}
+	else
+	{
+		rotSpeed = constRotSpeed;
+	}
+}
+
+void Player::HitObjDown(ModelObj *obj2)
+{
+	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
+	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	position =
+	{
+		position.x,
+		boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.011f ,
+		0
+	};
+	speed = 0;
+	moveSpeed = constMoveSpeed;
+	rotation.y = 0.0f;
+
+	//着地してるとき影の大きさをリセット
+	shadowSize.x = SHADOW_MAX_SIZE;
+	shadowSize.y = SHADOW_MAX_SIZE;
+
+	//着地しているときのみジャンプを可能にする
+	if (!(gameControl->moveControl(Move::JUMP)))
+	{
+		jumpChangeTimer++;
+		jumpTimer = 0;
+		cameraMoveY = 0;
+		jumpFlag = false;
+	}
+	rightWallJumpFlag = false;
+	rightWallColFlag = false;
+	leftWallJumpFlag = false;
+	leftWallColFlag = false;
+}
+
+void Player::HitObjUp(ModelObj *obj2)
+{
+	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
+	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	position =
+	{
+		position.x,
+		boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.011f - jump ,
+		0
+	};
+	jumpFlag = true;
+	rightWallJumpFlag = false;
+	leftWallJumpFlag = false;
+}
+
+void Player::HitObjBase(ModelObj *obj2)
 {
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
@@ -385,135 +498,24 @@ void Player::CollisionObj(ModelObj *obj2)
 		}
 	}
 
-	if (Collision::CheckBox2Box({ position.x - 0.2f,position.y,0 },
-		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y,0 },
-		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
+}
+
+void Player::HitEnemyLeftAndRight(Enemy *enemy)
+{
+	HitEnemy(enemy);
+}
+
+void Player::HitEnemyDown(Enemy *enemy)
+{
+	HitEnemy(enemy);
+	if (gameControl->moveControl(Move::JUMP))
 	{
-		if (oldPos.x > position.x)
-		{
-			position =
-			{
-				boxPos.m128_f32[0] + boxRad.m128_f32[0] + scale.x + 0.11f,
-				position.y ,
-				0
-			};
-
-			if (jumpFlag == true)
-			{
-				speed = gravity * 1.8f;
-				rotation.z = 0;
-				rightWallColFlag = false;
-				if (gameControl->moveControl(Move::WALLJUMPLEFT))
-				{
-					leftWallJumpFlag = true;
-					leftWallHitShakeFlag = true;
-				}
-			}
-		}
-		else
-		{
-			rotSpeed = constRotSpeed;
-		}
-	}
-	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y,0 },
-		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y,0 },
-		scale.x - 0.2f, scale.y - 0.2f, obj2->GetScale().x, obj2->GetScale().y))
-	{
-		if (oldPos.x < position.x)
-		{
-			position =
-			{
-				boxPos.m128_f32[0] - boxRad.m128_f32[0] - scale.x - 0.11f,
-				position.y ,
-				0
-			};
-
-			if (jumpFlag == true)
-			{
-				speed = gravity * 1.8f;
-				rotation.z = 0;
-				leftWallColFlag = false;
-				if (gameControl->moveControl(Move::WALLJUMPRIGHT))
-				{
-					rightWallJumpFlag = true;
-					rightWallHitShakeFlag = true;
-				}
-			}
-		}
-		else
-		{
-			rotSpeed = constRotSpeed;
-		}
-	}
-	
-	if (Collision::CheckBox2Box({ position.x + 0.2f,position.y - 0.2f,0 },
-		{ obj2->GetPosition().x + 0.2f,obj2->GetPosition().y + 0.2f,0 },
-		scale.x - moveSpeed - 0.2f, scale.y + 0.01f, obj2->GetScale().x, obj2->GetScale().y))
-	{
-		position =
-		{
-			position.x,
-			boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.011f ,
-			0
-		};
-		speed = 0;
-		moveSpeed = constMoveSpeed;
-		rotation.y = 0.0f;
-
-		//着地してるとき影の大きさをリセット
-		shadowSize.x = SHADOW_MAX_SIZE;
-		shadowSize.y = SHADOW_MAX_SIZE;
-
-		//着地しているときのみジャンプを可能にする
-		if (!(gameControl->moveControl(Move::JUMP)))
-		{
-			jumpChangeTimer++;
-			jumpTimer = 0;
-			cameraMoveY = 0;
-			jumpFlag = false;
-		}
-		rightWallJumpFlag = false;
-		rightWallColFlag = false;
-		leftWallJumpFlag = false;
-		leftWallColFlag = false;
-	}
-
-	if (Collision::CheckBox2Box({ position.x - 0.2f,position.y + 0.2f,0 },
-		{ obj2->GetPosition().x - 0.2f,obj2->GetPosition().y - 0.2f,0 },
-		scale.x - moveSpeed - 0.2f, scale.y + 0.01f, obj2->GetScale().x, obj2->GetScale().y))
-	{
-		position =
-		{
-			position.x,
-			boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.011f - jump ,
-			0
-		};
-		jumpFlag = true;
-		rightWallJumpFlag = false;
-		leftWallJumpFlag = false;
+		enemyNotUpFlag = true;
 	}
 }
 
-void Player::CollisionEnemy(Enemy *enemy)
+void Player::HitEnemyUp(Enemy *enemy)
 {
-	if (Collision::CheckBox2Box({ position.x,position.y,0 },
-		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
-		scale.x + 0.2f, scale.y - 0.2f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
-	{
-		HitEnemy(enemy);
-	}
-
-	if (Collision::CheckBox2Box({ position.x,position.y,0 },
-		{ enemy->GetPosition().x,enemy->GetPosition().y,0 },
-		scale.x, scale.y - 0.3f, enemy->GetScale().x + enemy->GetSpeed(), enemy->GetScale().y))
-	{
-		HitEnemy(enemy);
-		if (gameControl->moveControl(Move::JUMP))
-		{
-			enemyNotUpFlag = true;
-		}
-	}
-
 	//プレイヤーが敵より上に行ったら
 	if (position.y > enemy->GetPosition().y + enemy->GetScale().y * 2.0f)
 	{
@@ -522,59 +524,34 @@ void Player::CollisionEnemy(Enemy *enemy)
 
 	if (notHitFlag == false && enemyNotUpFlag == false)
 	{
-		if (Collision::CheckBox2Box({ position.x + 0.1f,position.y - 0.1f,0 },
-			{ enemy->GetPosition().x + 0.1f,enemy->GetPosition().y + 0.1f,0 },
-			scale.x - 0.2f, scale.y + 0.2f, enemy->GetScale().x, enemy->GetScale().y))
+		if (enemy->GetHP() == 1)
 		{
-
-			if (enemy->GetHP() == 1)
-			{
-				pushEnemyParticle->SetFlag(true);
-				enemyPos = enemy->GetPosition();
-				t = 0;
-				treadTime = 0;
-				treadFlag = true;
-				rotation.y = 0.0f;
-				enemy->Death();
-			}
+			pushEnemyParticle->SetFlag(true);
+			enemyPos = enemy->GetPosition();
+			t = 0;
+			treadTime = 0;
+			treadFlag = true;
+			rotation.y = 0.0f;
+			enemy->Death();
 		}
-	}
-
-}
-
-void Player::CollisionGimmick(ModelObj *obj2)
-{
-	if (Collision::CheckBox2Box({ position.x,position.y,0 },
-		{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
-		scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
-	{
-		if (invincibleFlag == false)
-		{
-			HP--;
-			onCollisionFlag = true;
-		}
-		invincibleFlag = true;
 	}
 }
 
-bool Player::CollisionGoal(ModelObj *obj2)
+void Player::HitGimmick(ModelObj *obj2)
 {
-	if (Collision::CheckBox2Box({ position.x,position.y,0 },
-		{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
-		scale.x, scale.y, obj2->GetScale().x, 10.0f))
+	if (invincibleFlag == false)
 	{
-		speed = 0;
-		moveFlag = true;
-		position.y -= 0.02f;
-		if (Collision::CheckBox2Box({ position.x,position.y,0 },
-			{ obj2->GetPosition().x,obj2->GetPosition().y,0 },
-			scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
-		{
-			return true;
-		}
+		HP--;
+		onCollisionFlag = true;
 	}
+	invincibleFlag = true;
+}
 
-	return false;
+void Player::HitGoal(ModelObj *obj2)
+{
+	speed = 0;
+	moveFlag = true;
+	position.y -= 0.02f;
 }
 
 void Player::HitEnemy(Enemy *enemy)

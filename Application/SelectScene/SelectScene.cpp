@@ -425,7 +425,24 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		for (int x = 0; x < 24; x++)
 		{
 			titleStageBox[y][x]->Update();
-			objPlayer->CollisionObj(titleStageBox[y][x]);
+			objPlayer->HitObjBase(titleStageBox[y][x]);
+
+			if (GameCollision::CollisionPlayerLeftToObj(objPlayer, titleStageBox[y][x]))
+			{
+				objPlayer->HitObjLeft(titleStageBox[y][x]);
+			}
+			else if (GameCollision::CollisionPlayerRightToObj(objPlayer, titleStageBox[y][x]))
+			{
+				objPlayer->HitObjRight(titleStageBox[y][x]);
+			}
+			else if (GameCollision::CollisionPlayerDownToObj(objPlayer, titleStageBox[y][x]))
+			{
+				objPlayer->HitObjDown(titleStageBox[y][x]);
+			}
+			else if (GameCollision::CollisionPlayerUpToObj(objPlayer, titleStageBox[y][x]))
+			{
+				objPlayer->HitObjUp(titleStageBox[y][x]);
+			}
 		}
 	}
 

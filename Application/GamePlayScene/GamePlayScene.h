@@ -2,6 +2,7 @@
 #include "GameSceneManagerState.h"
 #include"Json.h"
 #include"GameControl.h"
+#include"GameCollision.h"
 
 class GamePlayScene : public GameSceneManagerState
 {

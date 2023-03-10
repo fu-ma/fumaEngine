@@ -667,16 +667,81 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			for (int x = 0; x < X_MAX; x++)
 			{
-				objPlayer->CollisionObj(objStageBox[y][x]);
+				//ブロックとプレイヤーの当たり判定
+				objPlayer->HitObjBase(objStageBox[y][x]);
+				if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objStageBox[y][x]))
+				{
+					objPlayer->HitObjLeft(objStageBox[y][x]);
+				}
+				if (GameCollision::CollisionPlayerRightToObj(objPlayer, objStageBox[y][x]))
+				{
+					objPlayer->HitObjRight(objStageBox[y][x]);
+				}
+				if (GameCollision::CollisionPlayerDownToObj(objPlayer, objStageBox[y][x]))
+				{
+					objPlayer->HitObjDown(objStageBox[y][x]);
+				}
+				if (GameCollision::CollisionPlayerUpToObj(objPlayer, objStageBox[y][x]))
+				{
+					objPlayer->HitObjUp(objStageBox[y][x]);
+				}
 
-				objPlayer->CollisionEnemy(enemy[y][x]);
+				//敵とプレイヤーの当たり判定
+				if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer, enemy[y][x]))
+				{
+					objPlayer->HitEnemyLeftAndRight(enemy[y][x]);
+				}
+				if (GameCollision::CollisionPlayerDownToEnemy(objPlayer, enemy[y][x]))
+				{
+					objPlayer->HitEnemyDown(enemy[y][x]);
+				}
+				if (GameCollision::CollisionPlayerUpToEnemy(objPlayer, enemy[y][x]))
+				{
+					objPlayer->HitEnemyUp(enemy[y][x]);
+				}
+
 				if (objPlayer->GetJumpChangeBlockFlag() == false)
 				{
-					objPlayer->CollisionObj(objRedBlock[y][x]);
+					objPlayer->HitObjBase(objRedBlock[y][x]);
+
+					if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objRedBlock[y][x]))
+					{
+						objPlayer->HitObjLeft(objRedBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerRightToObj(objPlayer, objRedBlock[y][x]))
+					{
+						objPlayer->HitObjRight(objRedBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerDownToObj(objPlayer, objRedBlock[y][x]))
+					{
+						objPlayer->HitObjDown(objRedBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerUpToObj(objPlayer, objRedBlock[y][x]))
+					{
+						objPlayer->HitObjUp(objRedBlock[y][x]);
+					}
+
 				}
 				if (objPlayer->GetJumpChangeBlockFlag() == true)
 				{
-					objPlayer->CollisionObj(objBlueBlock[y][x]);
+					objPlayer->HitObjBase(objBlueBlock[y][x]);
+
+					if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objBlueBlock[y][x]))
+					{
+						objPlayer->HitObjLeft(objBlueBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerRightToObj(objPlayer, objBlueBlock[y][x]))
+					{
+						objPlayer->HitObjRight(objBlueBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerDownToObj(objPlayer, objBlueBlock[y][x]))
+					{
+						objPlayer->HitObjDown(objBlueBlock[y][x]);
+					}
+					if (GameCollision::CollisionPlayerUpToObj(objPlayer, objBlueBlock[y][x]))
+					{
+						objPlayer->HitObjUp(objBlueBlock[y][x]);
+					}
 				}
 			}
 		}
@@ -685,22 +750,47 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	for (auto &fireBar : fire)
 	{
 		fireBar->Move();
-		objPlayer->CollisionObj(fireBar->GetCenter());
+		objPlayer->HitObjBase(fireBar->GetCenter());
+
+		if (GameCollision::CollisionPlayerLeftToObj(objPlayer, fireBar->GetCenter()))
+		{
+			objPlayer->HitObjLeft(fireBar->GetCenter());
+		}
+		if (GameCollision::CollisionPlayerRightToObj(objPlayer, fireBar->GetCenter()))
+		{
+			objPlayer->HitObjRight(fireBar->GetCenter());
+		}
+		if (GameCollision::CollisionPlayerDownToObj(objPlayer, fireBar->GetCenter()))
+		{
+			objPlayer->HitObjDown(fireBar->GetCenter());
+		}
+		if (GameCollision::CollisionPlayerUpToObj(objPlayer, fireBar->GetCenter()))
+		{
+			objPlayer->HitObjUp(fireBar->GetCenter());
+		}
+
 		for (int i = 0; i < fireBar->GetNum(); i++)
 		{
 			if (i != 0)
 			{
-				objPlayer->CollisionGimmick(fireBar->GetFire(i));
+				if (GameCollision::CollisionPlayerToGimmick(objPlayer, fireBar->GetFire(i)))
+				{
+					objPlayer->HitGimmick(fireBar->GetFire(i));
+				}
 			}
 		}
 		fireBar->Update();
 	}
 
 	//ゴールとのあたり判定
-	if (objPlayer->CollisionGoal(objGoal) == true)
+	if (GameCollision::CollisionPlayerToGoalflag(objPlayer,objGoal))
 	{
-		fadeInFlag = true;
-		clearFlag = true;
+		objPlayer->HitGoal(objGoal);
+		if (GameCollision::CollisionPlayerToGoal(objPlayer, objGoal))
+		{
+			fadeInFlag = true;
+			clearFlag = true;
+		}
 	}
 
 	//クリアー画面に行くための処理

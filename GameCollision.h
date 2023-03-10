@@ -1,0 +1,23 @@
+#pragma once
+#include"Collision.h"
+#include"Player.h"
+#include"ModelObj.h"
+#include"Enemy.h"
+
+class GameCollision : public Collision
+{
+public:
+	static bool CollisionPlayerLeftToObj(Player *player, ModelObj *obj);
+	static bool CollisionPlayerRightToObj(Player *player, ModelObj *obj);
+	static bool CollisionPlayerDownToObj(Player *player, ModelObj *obj);
+	static bool CollisionPlayerUpToObj(Player *player, ModelObj *obj);
+
+	static bool CollisionPlayerLeftAndRightToEnemy(Player *player, Enemy *enemy);
+	static bool CollisionPlayerDownToEnemy(Player *player, Enemy *enemy);
+	static bool CollisionPlayerUpToEnemy(Player *player, Enemy *enemy);
+
+	static bool CollisionPlayerToGimmick(Player *player, ModelObj *gimmick);
+	static bool CollisionPlayerToGoalflag(Player *player, ModelObj *goal);
+	static bool CollisionPlayerToGoal(Player *player, ModelObj *goal);
+};
+

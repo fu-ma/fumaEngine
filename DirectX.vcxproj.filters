@@ -222,6 +222,7 @@
     <ClCompile Include="Engine\Json\Json.cpp">
       <Filter>Engine\Json</Filter>
     </ClCompile>
+    <ClCompile Include="GameCollision.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -428,6 +429,7 @@
     <ClInclude Include="Engine\Json\Json.h">
       <Filter>Engine\Json</Filter>
     </ClInclude>
+    <ClInclude Include="GameCollision.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

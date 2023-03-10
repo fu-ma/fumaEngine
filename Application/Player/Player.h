@@ -48,10 +48,19 @@ public:
 	void Draw() override;
 	void Move();
 	void Jump();
-	void CollisionObj(ModelObj *obj2);
-	void CollisionEnemy(Enemy *enemy);
-	void CollisionGimmick(ModelObj *obj2);
-	bool CollisionGoal(ModelObj *obj2);
+	void HitObjLeft(ModelObj *obj2);
+	void HitObjRight(ModelObj *obj2);
+	void HitObjDown(ModelObj *obj2);
+	void HitObjUp(ModelObj *obj2);
+	void HitObjBase(ModelObj *obj2);
+
+	void HitEnemyLeftAndRight(Enemy *enemy);
+	void HitEnemyDown(Enemy *enemy);
+	void HitEnemyUp(Enemy *enemy);
+
+	void HitGimmick(ModelObj *obj2);
+	void HitGoal(ModelObj *obj2);
+
 	const int &GetHP() { return HP; }
 
 	const bool &GetOnCollision() { return onCollisionFlag; }
@@ -65,6 +74,8 @@ public:
 	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
 	const XMFLOAT2 &GetShadowSize() { return shadowSize; }
 	const float &GetCameraMoveY() { return cameraMoveY; }
+	const float &GetMoveSpeed() { return moveSpeed; }
+
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;
 	//const float gravity = (-9.8f / 60 / 40);
