@@ -6,6 +6,7 @@
 
 class GameCollision : public Collision
 {
+	using XMFLOAT3 = DirectX::XMFLOAT3;
 public:
 	static bool CollisionPlayerLeftToObj(Player *player, ModelObj *obj);
 	static bool CollisionPlayerRightToObj(Player *player, ModelObj *obj);
@@ -16,7 +17,7 @@ public:
 	static bool CollisionPlayerDownToEnemy(Player *player, Enemy *enemy);
 	static bool CollisionPlayerUpToEnemy(Player *player, Enemy *enemy);
 
-	static bool CollisionPlayerToGimmick(Player *player, ModelObj *gimmick);
+	static bool CollisionPlayerToGimmick(Player *player, ModelObj *gimmick,XMFLOAT3 gimmickScale);
 	static bool CollisionPlayerToGoalflag(Player *player, ModelObj *goal);
 	static bool CollisionPlayerToGoal(Player *player, ModelObj *goal);
 };

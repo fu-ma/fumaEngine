@@ -46,12 +46,19 @@ public:
 	/// </summary>
 	void Update() override;
 	void Draw() override;
+	//プレイヤーのすべての動き
 	void Move();
+	//ステージセレクト用に使うジャンプだけの処理
 	void Jump();
+	//壁の左に当たった時の処理
 	void HitObjLeft(ModelObj *obj2);
+	//壁の右に当たった時の処理
 	void HitObjRight(ModelObj *obj2);
+	//壁の下に当たった時の処理
 	void HitObjDown(ModelObj *obj2);
+	//壁の上に当たった時の処理
 	void HitObjUp(ModelObj *obj2);
+	//壁（どこでも）に当たった時の処理
 	void HitObjBase(ModelObj *obj2);
 
 	void HitEnemyLeftAndRight(Enemy *enemy);
@@ -68,8 +75,6 @@ public:
 	const bool &GetJumpChangeBlockFlag() { return jumpChangeBlockFlag; }
 	const bool &GetPlayerStop() { return moveFlag; }
 	const int &GetJumpTimer() { return jumpTimer; }
-	const bool &GetLeftWallHitShakeFlag() { return leftWallHitShakeFlag; }
-	const bool &GetRightWallHitShakeFlag() { return rightWallHitShakeFlag; }
 	const bool &GetEnemyHitShakeFlag() { return enemyHitShakeFlag; }
 	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
 	const XMFLOAT2 &GetShadowSize() { return shadowSize; }
@@ -156,8 +161,6 @@ private:
 	XMFLOAT3 oldPos;
 
 	//シェイクするかのフラグ
-	bool leftWallHitShakeFlag;
-	bool rightWallHitShakeFlag;
 	bool enemyHitShakeFlag;
 
 	//ジャンプによってエフェクトを変化させる

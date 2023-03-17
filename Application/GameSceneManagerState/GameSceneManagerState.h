@@ -18,6 +18,7 @@
 #include"CountDown.h"
 #include"Resources.h"
 #include"Json.h"
+#include "ThornStick.h"
 
 class GameSceneManager;
 

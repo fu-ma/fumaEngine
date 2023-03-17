@@ -77,11 +77,11 @@ bool GameCollision::CollisionPlayerUpToEnemy(Player *player, Enemy *enemy)
 	return false;
 }
 
-bool GameCollision::CollisionPlayerToGimmick(Player *player, ModelObj *gimmick)
+bool GameCollision::CollisionPlayerToGimmick(Player *player, ModelObj *gimmick, XMFLOAT3 gimmickScale)
 {
 	if (Collision::CheckBox2Box({ player->GetPosition().x,player->GetPosition().y,0 },
 		{ gimmick->GetPosition().x,gimmick->GetPosition().y,0 },
-		player->GetScale().x, player->GetScale().y, gimmick->GetScale().x, gimmick->GetScale().y))
+		player->GetScale().x, player->GetScale().y, gimmickScale.x, gimmickScale.y))
 	{
 		return true;
 	}

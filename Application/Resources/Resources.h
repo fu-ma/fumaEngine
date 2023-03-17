@@ -31,6 +31,7 @@ enum class ResourcesName
 	modelExplosionUpParticle,
 	modelEgg,
 	modelStageClear,
+	modelThornStick,
 };
 
 class Resources
@@ -96,6 +97,8 @@ private:
 	//ジャンプ時のパーティクル
 	Model *modelExplosionUpParticle;
 
+	//とげこん棒用
+	Model *modelThornStick;
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;
 	Model *model;

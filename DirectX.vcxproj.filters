@@ -223,6 +223,7 @@
       <Filter>Engine\Json</Filter>
     </ClCompile>
     <ClCompile Include="GameCollision.cpp" />
+    <ClCompile Include="ThornStick.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -430,6 +431,7 @@
       <Filter>Engine\Json</Filter>
     </ClInclude>
     <ClInclude Include="GameCollision.h" />
+    <ClInclude Include="ThornStick.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">

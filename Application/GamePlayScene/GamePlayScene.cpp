@@ -41,6 +41,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		{
 			objStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
 			enemy[y][x] = Enemy::Create(resources->GetModel(ResourcesName::modelEnemy));
+			thornStick[y][x] = ThornStick::Create(resources->GetModel(ResourcesName::modelThornStick));
 			objRedBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock));
 			objBlueBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock));
 		}
@@ -140,6 +141,10 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			enemy[y][x]->Initialize();
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			thornStick[y][x]->Initialize();
+			thornStick[y][x]->SetPosition({ -100, 0, 0 });
+
 			objRedBlock[y][x]->SetPosition({ -100,0,0 });
 			objBlueBlock[y][x]->SetPosition({ -100,0,0 });
 
@@ -195,6 +200,12 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 				objWallSignA->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 10 });
 				objWallSignA->SetRotation({ 0,90,0 });
 				objWallSignA->SetScale({ 1,5,5 });
+			}
+			//とげこん棒
+			if (map[y][x] == 8)
+			{
+				thornStick[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f-6, 0 });
+				thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
 			}
 			//ゴール
 			if (map[y][x] == 10)
@@ -293,12 +304,6 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	reStartFlag = false;
 	clearFlag = false;
 
-	leftWallShakeFlag = false;
-	leftWallShakeTimer = 0;
-
-	rightWallShakeFlag = false;
-	rightWallShakeTimer = 0;
-
 	enemyHitShakeFlag = false;
 	enemyHitShakeTimer = 0;
 
@@ -321,48 +326,9 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ objPlayer->GetPosition().x + 10, 12 + objPlayer->GetCameraMoveY(), -20 });
-	camera->SetTarget({ objPlayer->GetPosition().x + 10 - leftWallShakePos.x + rightWallShakePos.x + enemyHitShakePos.x, 12 + enemyHitShakePos.y + objPlayer->GetCameraMoveY(), 0});
+	camera->SetTarget({ objPlayer->GetPosition().x + 10 + enemyHitShakePos.x, 12 + enemyHitShakePos.y + objPlayer->GetCameraMoveY(), 0});
 
 	//画面シェイク
-	if (objPlayer->GetLeftWallHitShakeFlag() == true)
-	{
-		leftWallShakeFlag = true;
-	}
-	if (leftWallShakeFlag == false)
-	{
-		leftWallShakePos = { 0,0,0 };
-		leftWallShakeTimer = 0;
-	}
-	if (leftWallShakeFlag == true)
-	{
-		leftWallShakeTimer++;
-		leftWallShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
-		if (leftWallShakeTimer > 5)
-		{
-			leftWallShakeFlag = false;
-		}
-	}
-
-	if (objPlayer->GetRightWallHitShakeFlag() == true)
-	{
-		rightWallShakeFlag = true;
-	}
-	if (rightWallShakeFlag == false)
-	{
-		rightWallShakePos = { 0,0,0 };
-		rightWallShakeTimer = 0;
-	}
-	if (rightWallShakeFlag == true)
-	{
-		rightWallShakeTimer++;
-		rightWallShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
-		if (rightWallShakeTimer > 5)
-		{
-			rightWallShakeFlag = false;
-		}
-	}
-
-
 	if (objPlayer->GetEnemyHitShakeFlag() == true)
 	{
 		enemyHitShakeFlag = true;
@@ -635,6 +601,13 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			objPlayer->Move();
 		}
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				thornStick[y][x]->Move();
+			}
+		}
 
 		for (int y = 0; y < Y_MAX; y++)
 		{
@@ -773,7 +746,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			if (i != 0)
 			{
-				if (GameCollision::CollisionPlayerToGimmick(objPlayer, fireBar->GetFire(i)))
+				if (GameCollision::CollisionPlayerToGimmick(objPlayer, fireBar->GetFire(i),fireBar->GetFire(i)->GetScale()))
 				{
 					objPlayer->HitGimmick(fireBar->GetFire(i));
 				}
@@ -782,6 +755,18 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		fireBar->Update();
 	}
 
+	//とげこん棒との当たり判定
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
+				XMFLOAT3(thornStick[y][x]->GetScale().x, thornStick[y][x]->GetScale().y*6, thornStick[y][x]->GetScale().z)))
+			{
+				objPlayer->HitGimmick(thornStick[y][x]);
+			}
+		}
+	}
 	//ゴールとのあたり判定
 	if (GameCollision::CollisionPlayerToGoalflag(objPlayer,objGoal))
 	{
@@ -835,6 +820,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			if (enemy[y][x]->GetPosition().x >= 0)
 			{
 				enemy[y][x]->Update();
+			}
+			if (thornStick[y][x]->GetPosition().x >= 0)
+			{
+				thornStick[y][x]->Update();
 			}
 			if (objRedBlock[y][x]->GetPosition().x >= 0)
 			{
@@ -905,6 +894,10 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 			if (enemy[y][x]->GetPosition().x >= 0)
 			{
 				enemy[y][x]->Draw();
+			}
+			if (thornStick[y][x]->GetPosition().x >= 0)
+			{
+				thornStick[y][x]->Draw();
 			}
 			if (objStageBox[y][x]->GetPosition().x >= 0)
 			{

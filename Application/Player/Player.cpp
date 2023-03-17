@@ -90,8 +90,6 @@ bool Player::Initialize()
 
 	oldPos = {};
 
-	leftWallHitShakeFlag = false;
-	rightWallHitShakeFlag = false;
 	enemyHitShakeFlag = false;
 	shadowSize.x = SHADOW_MAX_SIZE;
 	shadowSize.y = SHADOW_MAX_SIZE;
@@ -164,10 +162,6 @@ void Player::Move()
 		{
 			explosionLeftParticle->SetFlag(true);
 		}
-		if (leftWallJumpTimer >= 2)
-		{
-			leftWallHitShakeFlag = false;
-		}
 		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
@@ -192,10 +186,6 @@ void Player::Move()
 		if (rightWallJumpTimer == 0)
 		{
 			explosionRightParticle->SetFlag(true);
-		}
-		if (rightWallJumpTimer >= 2)
-		{
-			rightWallHitShakeFlag = false;
 		}
 		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
@@ -357,7 +347,6 @@ void Player::HitObjLeft(ModelObj *obj2)
 			if (gameControl->moveControl(Move::WALLJUMPLEFT))
 			{
 				leftWallJumpFlag = true;
-				leftWallHitShakeFlag = true;
 			}
 		}
 	}
@@ -389,7 +378,6 @@ void Player::HitObjRight(ModelObj *obj2)
 			if (gameControl->moveControl(Move::WALLJUMPRIGHT))
 			{
 				rightWallJumpFlag = true;
-				rightWallHitShakeFlag = true;
 			}
 		}
 	}
@@ -475,7 +463,6 @@ void Player::HitObjBase(ModelObj *obj2)
 			};
 			leftWallColFlag = false;
 			moveSpeed = 0.01f;
-			rightWallHitShakeFlag = false;
 		}
 	}
 
@@ -494,7 +481,6 @@ void Player::HitObjBase(ModelObj *obj2)
 			};
 			rightWallColFlag = false;
 			moveSpeed = 0.01f;
-			leftWallHitShakeFlag = false;
 		}
 	}
 
