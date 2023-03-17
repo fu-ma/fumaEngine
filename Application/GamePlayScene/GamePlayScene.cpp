@@ -104,6 +104,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	fadeInT = 0;
 	fadeInFlag = false;
 	operationButton = false;
+
+	particleMan = ParticleManager::GetInstance();
 }
 
 void GamePlayScene::Update(GameSceneManager *pEngine, Audio* audio,DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -157,6 +159,28 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			if (map[y][x] == 2)
 			{
 				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+				if (stageNum == 2)
+				{
+					if (x == 12)
+					{
+						enemy[y][x]->SetAction("NORMAL");
+					}
+					if (x == 23 || x == 26)
+					{
+
+					}
+					if (x == 67 || x == 70)
+					{
+						enemy[y][x]->SetAction("JUMP");
+					}
+				}
+				if (stageNum == 3)
+				{
+					if (x == 9 || x == 12 || x == 15)
+					{
+						enemy[y][x]->SetAction("NORMAL");
+					}
+				}
 				if (stageNum == 4)
 				{
 					if (x == 12)
@@ -312,6 +336,9 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	timerSize = 0;
 	timerMoveT = 0;
 	timerSizeT = 0;
+
+	timerEmphasisSize = 0;
+	timerEmphasisSizeT = 0;
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -535,6 +562,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//スターと表示がされてからしばらくして
 	if (countDown->GetStart() >= 0.8)
 	{
+		//最初に制限時間を真ん中に出す
 		if (timerSizeT <= 0.5)
 		{
 			timerSizeT += 0.008f;
@@ -563,7 +591,19 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 	//タイマーを表示
 	debugText->SetPos((float)timerPosX, (float)timerPosY);
-	debugText->SetSize((float)timerSize);
+	if ((float)gameTimer / 60.0f == 11 || (float)gameTimer / 60.0f == 10 || (float)gameTimer / 60.0f == 9 || (float)gameTimer / 60.0f == 8 ||
+		(float)gameTimer / 60.0f == 7 || (float)gameTimer / 60.0f == 6 || (float)gameTimer / 60.0f == 5 || (float)gameTimer / 60.0f == 4||
+		(float)gameTimer / 60.0f == 3|| (float)gameTimer / 60.0f == 2|| (float)gameTimer / 60.0f == 1)
+	{
+		timerEmphasisSize = 0.5f;
+		timerEmphasisSizeT = 0;
+	}
+	if (gameTimer / 60 <= 10)
+	{
+		timerEmphasisSizeT += 0.002f;
+		easing::Updete(timerEmphasisSize, 0, 3, timerEmphasisSizeT);
+	}
+	debugText->SetSize((float)timerSize+(float)timerEmphasisSize);
 	debugText->Printf("%d", gameTimer / 60);
 
 	//プレイヤーの総数を表示
@@ -847,7 +887,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		backObj2[i]->Update();
 		backObj3[i]->Update();
 	}
-
+	particleMan->Update();
 	playerParticle->Update(TYPE::explosion, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
@@ -934,7 +974,6 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	{
 		fireBar->Draw();
 	}
-
 	//ゴールの描画
 	objGoal->Draw();
 	//看板の描画
@@ -953,6 +992,8 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
+
+	particleMan->Draw(common->GetCmdList().Get());
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();

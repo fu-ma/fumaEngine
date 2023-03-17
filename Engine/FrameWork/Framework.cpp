@@ -55,6 +55,11 @@ void Framework::staticInit()
 	// カメラ生成
 	camera = std::make_unique<DebugCamera>(WinApp::window_width, WinApp::window_height, input);
 
+	// パーティクルマネージャ初期化
+	ParticleManager::GetInstance()->Initialize(common->GetDev().Get());
+	particleMan = ParticleManager::GetInstance();
+	particleMan->SetCamera(camera.get());
+
 	//カメラをセット
 	FBXObject3d::SetCamera(camera.get());
 	//グラフィックスパイプライン生成

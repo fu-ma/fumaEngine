@@ -6,6 +6,7 @@
 #include "CollisionAttribute.h"
 #include"Resources.h"
 #include"Json.h"
+#include"ParticleManager.h"
 
 using namespace DirectX;
 
@@ -37,14 +38,14 @@ bool Player::Initialize()
 	Resources *resources = Resources::GetInstance();
 	Json *json = Json::GetInstance();
 
-	moveParticle = new Particle();
-	moveParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionUpParticle));
+	//moveParticle = new Particle();
+	//moveParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionUpParticle));
 
-	explosionLeftParticle = new Particle();
-	explosionLeftParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionLeftParticle));
+	//explosionLeftParticle = new Particle();
+	//explosionLeftParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionLeftParticle));
 
-	explosionRightParticle = new Particle();
-	explosionRightParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionRightParticle));
+	//explosionRightParticle = new Particle();
+	//explosionRightParticle->Initialize(resources->GetModel(ResourcesName::modelExplosionRightParticle));
 
 	pushEnemyParticle = new Particle();
 	pushEnemyParticle->Initialize(resources->GetModel(ResourcesName::modelEnemy));
@@ -123,9 +124,9 @@ void Player::Update()
 		scale = { 0.0f,0.0f,0.0f };
 	}
 
-	moveParticle->Update(TYPE::explosionUP, { position.x,position.y - scale.y/2 , 0 });
-	explosionLeftParticle->Update(TYPE::explosionLEFT, { position.x,position.y,0 });
-	explosionRightParticle->Update(TYPE::explosionRIGHT, { position.x,position.y,0 });
+	//moveParticle->Update(TYPE::explosionUP, { position.x,position.y - scale.y/2 , 0 });
+	//explosionLeftParticle->Update(TYPE::explosionLEFT, { position.x,position.y,0 });
+	//explosionRightParticle->Update(TYPE::explosionRIGHT, { position.x,position.y,0 });
 	pushEnemyParticle->Update(TYPE::explosion, { position.x,position.y-1,0 });
 
 	oldPos = position;
@@ -140,9 +141,9 @@ void Player::Draw()
 	{
 		ModelObj::Draw();
 	}
-	moveParticle->Draw();
-	explosionLeftParticle->Draw();
-	explosionRightParticle->Draw();
+	//moveParticle->Draw();
+	//explosionLeftParticle->Draw();
+	//explosionRightParticle->Draw();
 	pushEnemyParticle->Draw();
 }
 
@@ -160,7 +161,16 @@ void Player::Move()
 	{
 		if (leftWallJumpTimer == 0)
 		{
-			explosionLeftParticle->SetFlag(true);
+			//explosionLeftParticle->SetFlag(true);
+			for (int i = 0; i < 60; ++i)
+			{
+				const float rnd_vel = 0.2f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+
+				ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
+			}
 		}
 		leftWallJumpTimer += 2;
 		rightWallColFlag = false;
@@ -185,7 +195,16 @@ void Player::Move()
 	{
 		if (rightWallJumpTimer == 0)
 		{
-			explosionRightParticle->SetFlag(true);
+			//explosionRightParticle->SetFlag(true);
+			for (int i = 0; i < 60; ++i)
+			{
+				const float rnd_vel = 0.2f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * -rnd_vel / 4.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+
+				ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
+			}
 		}
 		rightWallJumpTimer += 2;
 		leftWallColFlag = false;
@@ -279,7 +298,16 @@ void Player::Jump()
 		{
 			jumpChangeBlockFlag = !jumpChangeBlockFlag;
 			//ジャンプパーティクル
-			moveParticle->SetFlag(true);
+			//moveParticle->SetFlag(true);
+			for (int i = 0; i < 60; ++i)
+			{
+				const float rnd_vel = 0.2f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+
+				ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
+			}
 		}
 		if (gameControl->moveControl(Move::JUMP))
 		{
@@ -599,7 +627,16 @@ void Player::PlayerJump()
 			{
 				jumpChangeBlockFlag = !jumpChangeBlockFlag;
 				//ジャンプパーティクル
-				moveParticle->SetFlag(true);
+				//moveParticle->SetFlag(true);
+				for (int i = 0; i < 60; ++i)
+				{
+					const float rnd_vel = 0.2f;
+					XMFLOAT3 vel{};
+					vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+					vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+
+					ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
+				}
 			}
 			if (gameControl->moveControl(Move::JUMP))
 			{

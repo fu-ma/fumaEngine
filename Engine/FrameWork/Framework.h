@@ -18,6 +18,7 @@
 #include"ImguiCommon.h"
 #include"Resources.h"
 #include"Json.h"
+#include"ParticleManager.h"
 
 /// <summary>
 /// フレームワーク
@@ -104,5 +105,6 @@ protected:
 	FpsPtr fps;
 	Resources *resources;
 	Json *json;
+	ParticleManager *particleMan;
 };
 

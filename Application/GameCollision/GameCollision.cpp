@@ -1,43 +1,43 @@
 #include "GameCollision.h"
 
-bool GameCollision::CollisionPlayerLeftToObj(Player *player, ModelObj *obj)
+bool GameCollision::CollisionPlayerLeftToObj(Player *player, ModelObj *obj, XMFLOAT3 objScale)
 {
 	if (CheckBox2Box({ player->GetPosition().x - 0.2f,player->GetPosition().y,0},
 		{ obj->GetPosition().x + 0.2f,obj->GetPosition().y,0 },
-		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, obj->GetScale().x, obj->GetScale().y))
+		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, objScale.x, objScale.y))
 	{
 		return true;
 	}
 	return false;
 }
 
-bool GameCollision::CollisionPlayerRightToObj(Player *player, ModelObj *obj)
+bool GameCollision::CollisionPlayerRightToObj(Player *player, ModelObj *obj, XMFLOAT3 objScale)
 {
 	if (CheckBox2Box({ player->GetPosition().x + 0.2f,player->GetPosition().y,0 },
 		{ obj->GetPosition().x - 0.2f,obj->GetPosition().y,0 },
-		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, obj->GetScale().x, obj->GetScale().y))
+		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, objScale.x, objScale.y))
 	{
 		return true;
 	}
 	return false;
 }
 
-bool GameCollision::CollisionPlayerDownToObj(Player *player, ModelObj *obj)
+bool GameCollision::CollisionPlayerDownToObj(Player *player, ModelObj *obj, XMFLOAT3 objScale)
 {
 	if (CheckBox2Box({ player->GetPosition().x + 0.2f,player->GetPosition().y - 0.2f,0 },
 		{ obj->GetPosition().x + 0.2f,obj->GetPosition().y + 0.2f,0 },
-		player->GetScale().x - player->GetMoveSpeed() - 0.2f, player->GetScale().y + 0.01f, obj->GetScale().x, obj->GetScale().y))
+		player->GetScale().x - player->GetMoveSpeed() - 0.2f, player->GetScale().y + 0.01f, objScale.x, objScale.y))
 	{
 		return true;
 	}
 	return false;
 }
 
-bool GameCollision::CollisionPlayerUpToObj(Player *player, ModelObj *obj)
+bool GameCollision::CollisionPlayerUpToObj(Player *player, ModelObj *obj, XMFLOAT3 objScale)
 {
 	if (CheckBox2Box({ player->GetPosition().x - 0.2f,player->GetPosition().y + 0.2f,0 },
 		{ obj->GetPosition().x - 0.2f,obj->GetPosition().y - 0.2f,0 },
-		player->GetScale().x - player->GetMoveSpeed() - 0.2f, player->GetScale().y - 0.01f, obj->GetScale().x, obj->GetScale().y))
+		player->GetScale().x - player->GetMoveSpeed() - 0.2f, player->GetScale().y - 0.01f, objScale.x, objScale.y))
 	{
 		return true;
 	}
