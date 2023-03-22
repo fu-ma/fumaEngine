@@ -24,10 +24,10 @@ public:
 	{
 		delete moveParticle;
 		moveParticle = nullptr;
-		delete explosionLeftParticle;
+		/*delete explosionLeftParticle;
 		explosionLeftParticle = nullptr;
 		delete explosionRightParticle;
-		explosionRightParticle = nullptr;
+		explosionRightParticle = nullptr;*/
 		delete pushEnemyParticle;
 		pushEnemyParticle = nullptr;
 		delete gameControl;
@@ -150,8 +150,8 @@ private:
 	Particle *moveParticle;
 
 	//壁キック時のパーティクル
-	Particle *explosionLeftParticle;
-	Particle *explosionRightParticle;
+	//Particle *explosionLeftParticle;
+	//Particle *explosionRightParticle;
 
 	//敵を踏んだ時のパーティクル
 	Particle *pushEnemyParticle;
@@ -168,6 +168,9 @@ private:
 
 	//2段3段ジャンプしたときにカメラを移動させるための変数
 	float cameraMoveY;
+
+	//着地しているフラグ
+	bool playerStandFlag;
 
 	//影の大きさ
 	XMFLOAT2 shadowSize;

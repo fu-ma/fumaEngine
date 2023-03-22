@@ -161,6 +161,8 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 
 	selectedStageFlag = false;
 	goTitleFlag = false;
+
+	particleMan = ParticleManager::GetInstance();
 }
 
 void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -417,6 +419,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		objPlayer->Jump();
 	}
 
+	particleMan->Update();
 	lightGroup->Update();
 	camera->Update();
 	objPlayer->Update();
@@ -554,6 +557,9 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 
 	/*モデル描画後処理*/
 	ModelObj::PostDraw();
+
+	//パーティクル描画
+	particleMan->Draw(common->GetCmdList().Get());
 
 	//深度バッファクリア
 	common->ClearDepthBuffer();

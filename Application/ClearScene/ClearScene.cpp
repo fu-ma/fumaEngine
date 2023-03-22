@@ -46,6 +46,12 @@ void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ egg->GetPosition().x, 20, -50 });
 	camera->SetTarget({ egg->GetPosition().x, 20, 0 });
+
+	particleMan = ParticleManager::GetInstance();
+	particleTimer = 0;
+	parPosLeft = {};
+	parPosRight = {};
+	saveVel = 0;
 }
 
 void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -98,6 +104,80 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 				pEngine->changeState(new SelectScene());
 			}
 		}
+
+		if (particleTimer == 0)
+		{
+			//左側のパーティクル
+			for (int i = 0; i < 1; ++i)
+			{
+				const float rnd_vel = 2.5f;
+				XMFLOAT3 vel{};
+				vel.y = 2.5f / 4.0f;
+				//下の計算のために保存する
+				saveVel = vel.y;
+
+				const float rnd_pos = 20.0f;
+				XMFLOAT3 pos{};
+				pos.x = -40;
+				pos.y = 0;
+				pos.z = 0;
+
+				parPosLeft = pos;
+
+				ParticleManager::GetInstance()->Add(60, pos, vel, XMFLOAT3(), 5.0f, 0.0f);
+			}
+			//右側のパーティクル
+			for (int i = 0; i < 1; ++i)
+			{
+				const float rnd_vel = 2.5f;
+				XMFLOAT3 vel{};
+				vel.y = 2.5f / 4.0f;
+				//下の計算のために保存する
+				saveVel = vel.y;
+
+				const float rnd_pos = 20.0f;
+				XMFLOAT3 pos{};
+				pos.x = 40;
+				pos.y = 0;
+				pos.z = 0;
+
+				parPosRight = pos;
+
+				ParticleManager::GetInstance()->Add(60, pos, vel, XMFLOAT3(), 5.0f, 0.0f);
+			}
+
+		}
+		if (particleTimer == 60)
+		{
+			//左側のパーティクル
+			for (int i = 0; i < 30; ++i)
+			{
+				const float rnd_vel = 1.2f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+				ParticleManager::GetInstance()->Add(60, { parPosRight.x,parPosRight.y + (saveVel * 60) ,parPosRight.z }, vel, XMFLOAT3(), 5.0f, 0.0f);
+			}
+			//右側のパーティクル
+			for (int i = 0; i < 30; ++i)
+			{
+				const float rnd_vel = 1.2f;
+				XMFLOAT3 vel{};
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+
+				ParticleManager::GetInstance()->Add(60, { parPosLeft.x,parPosLeft.y + (saveVel * 60) ,parPosLeft.z }, vel, XMFLOAT3(), 5.0f, 0.0f);
+			}
+		}
+		particleTimer++;
+		if (particleTimer > 90)
+		{
+			particleTimer = 0;
+		}
+		particleMan->Update();
 	}
 }
 
@@ -122,6 +202,9 @@ void ClearScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	egg->Draw(common->GetCmdList().Get());
 	gameClear->Draw(common->GetCmdList().Get());
 	ModelObj::PostDraw();
+
+	particleMan->Draw(common->GetCmdList().Get());
+
 	Sprite::PreDraw(common->GetCmdList().Get());
 	/*スプライト描画後処理*/
 	//fadein

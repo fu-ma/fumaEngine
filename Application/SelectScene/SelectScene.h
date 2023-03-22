@@ -23,6 +23,9 @@ private:
 	ModelObj *cloud[10] = { nullptr };
 	XMFLOAT3 cloudPos[10] = {};
 
+	//パーティクル
+	ParticleManager *particleMan = nullptr;
+
 	//プレイヤー
 	Player *objPlayer = nullptr;
 

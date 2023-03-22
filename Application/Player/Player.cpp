@@ -96,6 +96,7 @@ bool Player::Initialize()
 	shadowSize.y = SHADOW_MAX_SIZE;
 
 	cameraMoveY = 0;
+	playerStandFlag = false;
 	return true;
 }
 
@@ -291,7 +292,7 @@ void Player::Jump()
 	{
 		jumpMax = 60;
 	}
-
+	
 	if (jumpFlag == false)
 	{
 		if (gameControl->moveControl(Move::JUMPTRIGGER))
@@ -433,15 +434,16 @@ void Player::HitObjDown(ModelObj *obj2)
 	//着地してるとき影の大きさをリセット
 	shadowSize.x = SHADOW_MAX_SIZE;
 	shadowSize.y = SHADOW_MAX_SIZE;
-
 	//着地しているときのみジャンプを可能にする
 	if (!(gameControl->moveControl(Move::JUMP)))
 	{
 		jumpChangeTimer++;
 		jumpTimer = 0;
-		cameraMoveY = 0;
 		jumpFlag = false;
 	}
+
+	playerStandFlag = true;
+
 	rightWallJumpFlag = false;
 	rightWallColFlag = false;
 	leftWallJumpFlag = false;
@@ -623,23 +625,9 @@ void Player::PlayerJump()
 	{
 		if (jumpFlag == false)
 		{
-			if (gameControl->moveControl(Move::JUMPTRIGGER))
-			{
-				jumpChangeBlockFlag = !jumpChangeBlockFlag;
-				//ジャンプパーティクル
-				//moveParticle->SetFlag(true);
-				for (int i = 0; i < 60; ++i)
-				{
-					const float rnd_vel = 0.2f;
-					XMFLOAT3 vel{};
-					vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
-					vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
-
-					ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
-				}
-			}
 			if (gameControl->moveControl(Move::JUMP))
 			{
+				playerStandFlag = false;
 				if (jumpTimer < jumpMax)
 				{
 					position.y += jump;
@@ -649,10 +637,6 @@ void Player::PlayerJump()
 					jumpTimer += 2;
 				}
 
-				if (jumpChange > 2)
-				{
-					jumpChange = 0;
-				}
 				if (jumpChangeTimer > 0 && jumpChangeTimer < 20)
 				{
 					jumpChange++;
@@ -664,6 +648,11 @@ void Player::PlayerJump()
 					jumpChangeTimer = 0;
 				}
 
+				if (jumpChange > 2)
+				{
+					jumpChange = 0;
+				}
+
 				if (jumpMax == 40)
 				{
 					rotation.y -= 2.5f;
@@ -673,28 +662,70 @@ void Player::PlayerJump()
 					rotation.y -= 5;
 				}
 			}
+			if (gameControl->moveControl(Move::JUMPTRIGGER))
+			{
+				jumpChangeBlockFlag = !jumpChangeBlockFlag;
+				//ジャンプパーティクル
+				//moveParticle->SetFlag(true);
+				if (jumpChange == 0)
+				{
+					for (int i = 0; i < 10; ++i)
+					{
+						const float rnd_vel = 0.2f;
+						XMFLOAT3 vel{};
+						vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+						vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+
+						ParticleManager::GetInstance()->Add(20, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 1.0f, 0.0f);
+					}
+				}
+				if (jumpChange == 1)
+				{
+					for (int i = 0; i < 30; ++i)
+					{
+						const float rnd_vel = 0.2f;
+						XMFLOAT3 vel{};
+						vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+						vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+
+						ParticleManager::GetInstance()->Add(40, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
+					}
+				}
+				if (jumpChange == 2)
+				{
+					for (int i = 0; i < 60; ++i)
+					{
+						const float rnd_vel = 0.2f;
+						XMFLOAT3 vel{};
+						vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
+						vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
+
+						ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 3.0f, 0.0f);
+					}
+				}
+			}
 			//2段階目かつ重力よりもジャンプ力が高い場合
-			if ((abs(speed + gravity)) < abs(jump) && jumpTimer < jumpMax)
+			if ((speed + gravity) < jump && jumpTimer < jumpMax && playerStandFlag == false)
 			{
 				if (jumpMax == 40)
-				{
-					cameraMoveY += 0.02f;
-				}
-				if (jumpMax == 60)
 				{
 					cameraMoveY += 0.05f;
 				}
+				if (jumpMax == 60)
+				{
+					cameraMoveY += 0.1f;
+				}
 			}
 			//2段階目かつ重力よりもジャンプ力が低い場合
-			if (jumpTimer >= jumpMax && cameraMoveY > 0.0f)
+			if (jumpTimer >= jumpMax && cameraMoveY > 0.0f && playerStandFlag == false)
 			{
 				if (jumpMax == 40)
 				{
-					cameraMoveY -= 0.02f;
+					cameraMoveY -= 0.05f;
 				}
 				if (jumpMax == 60)
 				{
-					cameraMoveY -= 0.05f;
+					cameraMoveY -= 0.1f;
 				}
 			}
 		}
@@ -702,18 +733,49 @@ void Player::PlayerJump()
 
 	if (jumpTimer > 0 && (!gameControl->moveControl(Move::JUMP)))
 	{
-		//2段階目かつ重力よりもジャンプ力が低い場合
-		if (cameraMoveY > 0.0f)
+		if (cameraMoveY > 0.0f && playerStandFlag == false)
 		{
 			if (jumpMax == 40)
 			{
-				cameraMoveY -= 0.02f;
+				cameraMoveY -= 0.05f;
 			}
 			if (jumpMax == 60)
 			{
-				cameraMoveY -= 0.05f;
+				cameraMoveY -= 0.1f;
 			}
 		}
 		jumpFlag = true;
+	}
+
+	//プレイヤーが着地している時滑らかにカメラを動かす
+	if (playerStandFlag == true)
+	{
+		if (cameraMoveY <= 0.1f && cameraMoveY >= -0.1f)
+		{
+			cameraMoveY = 0;
+		}
+		else if (cameraMoveY > 0.0f)
+		{
+			if (jumpMax == 40)
+			{
+				cameraMoveY -= 0.05f;
+			}
+			if (jumpMax == 60)
+			{
+				cameraMoveY -= 0.1f;
+			}
+		}
+		else if (cameraMoveY < 0.0f)
+		{
+			if (jumpMax == 40)
+			{
+				cameraMoveY += 0.05f;
+			}
+			if (jumpMax == 60)
+			{
+				cameraMoveY += 0.1f;
+			}
+		}
+
 	}
 }

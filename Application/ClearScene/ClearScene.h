@@ -1,14 +1,17 @@
 #pragma once
 #include "GameSceneManagerState.h"
+#include"ParticleManager.h"
 
 class ClearScene : public GameSceneManagerState
 {
+	using XMFLOAT3 = DirectX::XMFLOAT3;
 private:
 	Sprite *StageClear = nullptr;
 	Sprite *fadeOut = nullptr;
 	Sprite *fadeIn = nullptr;
 	FBXObject3d *egg = nullptr;
 	FBXObject3d *gameClear = nullptr;
+	ParticleManager *particleMan = nullptr;
 
 	//開始時のフェイドアウト用変数
 	double fadeOutSizeX;
@@ -25,6 +28,11 @@ private:
 	//ステージセレクトに行ったか判断するためのフラグ
 	bool goSelectFlag;
 
+	//パーティクル用の座標
+	XMFLOAT3 parPosLeft;
+	XMFLOAT3 parPosRight;
+	float saveVel;
+	int particleTimer;
 public:
 	ClearScene(const int stageNum = 0) { }
 	~ClearScene()
