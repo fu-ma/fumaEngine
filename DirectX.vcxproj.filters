@@ -228,8 +228,8 @@
     <ClCompile Include="Application\ThornStick\ThornStick.cpp">
       <Filter>Game\ThornStick</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleManager.cpp">
-      <Filter>Engine</Filter>
+    <ClCompile Include="Engine\ParticleManager\ParticleManager.cpp">
+      <Filter>Engine\ParticleManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -443,8 +443,8 @@
     <ClInclude Include="Application\ThornStick\ThornStick.h">
       <Filter>Game\ThornStick</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleManager.h">
-      <Filter>Engine</Filter>
+    <ClInclude Include="Engine\ParticleManager\ParticleManager.h">
+      <Filter>Engine\ParticleManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -653,6 +653,9 @@
     </Filter>
     <Filter Include="Game\ThornStick">
       <UniqueIdentifier>{93190ac2-99cf-4f0d-9577-5057b6efce17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Engine\ParticleManager">
+      <UniqueIdentifier>{e4eed67c-64fc-4f4f-84d9-b7890b61a65f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

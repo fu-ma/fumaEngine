@@ -2,6 +2,14 @@
 #include "ModelObj.h"
 #include"easing.h"
 
+enum class ThornDirection
+{
+	UP,
+	DOWN,
+	LEFT,
+	RIGHT,
+};
+
 class ThornStick : public ModelObj
 {
 public:
@@ -27,7 +35,10 @@ public:
 
 	void Draw() override;
 
-	void SetOldStickPos(const XMFLOAT3 &pos) { this->oldPosY = pos.y; }
+	void SetOldStickPos(const XMFLOAT3 &pos) { this->oldPosX = pos.x; this->oldPosY = pos.y; }
+
+	void SetDirection(const ThornDirection &direction) { this->direction = direction; }
+	const ThornDirection &GetDirection() { return direction; }
 private:
 	//“®‚«‚ğ§ŒÀ‚·‚é‚½‚ß‚ÌŠÔ
 	int timer;
@@ -39,7 +50,11 @@ private:
 	double moveT;
 	double moveEndT;
 	double posY;
+	double posX;
 	//‰ŠúˆÊ’u‚ğ•Û‘¶‚·‚é‚½‚ß‚Ì•Ï”
 	double oldPosY;
+	double oldPosX;
+	//•ûŒü
+	ThornDirection direction = ThornDirection::UP;
 };
 

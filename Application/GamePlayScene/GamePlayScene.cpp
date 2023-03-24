@@ -144,8 +144,9 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
 
+			thornStick[y][x]->SetDirection(ThornDirection::UP);
 			thornStick[y][x]->Initialize();
-			thornStick[y][x]->SetPosition({ -100, 0, 0 });
+			thornStick[y][x]->SetPosition({ -100, -100, 0 });
 
 			objRedBlock[y][x]->SetPosition({ -100,0,0 });
 			objBlueBlock[y][x]->SetPosition({ -100,0,0 });
@@ -228,8 +229,16 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			//Ç∆Ç∞Ç±ÇÒñ_
 			if (map[y][x] == 8)
 			{
-				thornStick[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f-6, 0 });
-				thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
+				if (thornStick[y][x]->GetDirection() == ThornDirection::DOWN || thornStick[y][x]->GetDirection() == ThornDirection::UP)
+				{
+					thornStick[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 6, 0 });
+					thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
+				}
+				if (thornStick[y][x]->GetDirection() == ThornDirection::LEFT || thornStick[y][x]->GetDirection() == ThornDirection::RIGHT)
+				{
+					thornStick[y][x]->SetPosition({ 2.0f * x - 6, -2.0f * y + Y_MAX * 2.0f, 0 });
+					thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
+				}
 			}
 			//ÉSÅ[Éã
 			if (map[y][x] == 10)
@@ -645,7 +654,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			for (int x = 0; x < X_MAX; x++)
 			{
-				thornStick[y][x]->Move();
+				if (thornStick[y][x]->GetPosition().x >= 0)
+				{
+					thornStick[y][x]->Move();
+				}
 			}
 		}
 
@@ -800,10 +812,24 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		for (int x = 0; x < X_MAX; x++)
 		{
-			if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
-				XMFLOAT3(thornStick[y][x]->GetScale().x, thornStick[y][x]->GetScale().y*6, thornStick[y][x]->GetScale().z)))
+			if (thornStick[y][x]->GetPosition().x >= 0)
 			{
-				objPlayer->HitGimmick(thornStick[y][x]);
+				if (thornStick[y][x]->GetDirection() == ThornDirection::DOWN || thornStick[y][x]->GetDirection() == ThornDirection::UP)
+				{
+					if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
+						XMFLOAT3(thornStick[y][x]->GetScale().x, thornStick[y][x]->GetScale().y * 5, thornStick[y][x]->GetScale().z)))
+					{
+						objPlayer->HitGimmick(thornStick[y][x]);
+					}
+				}
+				if (thornStick[y][x]->GetDirection() == ThornDirection::LEFT || thornStick[y][x]->GetDirection() == ThornDirection::RIGHT)
+				{
+					if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
+						XMFLOAT3(thornStick[y][x]->GetScale().x * 5, thornStick[y][x]->GetScale().y, thornStick[y][x]->GetScale().z)))
+					{
+						objPlayer->HitGimmick(thornStick[y][x]);
+					}
+				}
 			}
 		}
 	}
