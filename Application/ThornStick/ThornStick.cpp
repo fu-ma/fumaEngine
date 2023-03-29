@@ -150,7 +150,12 @@ bool ThornStick::Initialize()
 	moveEndT = 0;
 	timer = 0;
 	scale = { 1.4f,1.0f,1.4f };
+	return true;
+}
 
+void ThornStick::RollingStick()
+{
+	//Ç∆Ç∞Ç∆Ç∞ÇÃâÒì]
 	if (direction == ThornDirection::UP)
 	{
 		rotation.x = 0;
@@ -168,7 +173,8 @@ bool ThornStick::Initialize()
 		rotation.z = 270;
 	}
 
-	return true;
+	// çsóÒÇÃçXêVÇ»Ç«
+	ModelObj::Update();
 }
 
 void ThornStick::Update()

@@ -29,6 +29,11 @@ public:
 	bool Initialize() override;
 
 	/// <summary>
+	/// ‚Æ‚°‚Æ‚°–_‚Ì‰ñ“]Œü‚«
+	/// </summary>
+	void RollingStick();
+
+	/// <summary>
 	/// –ˆƒtƒŒ[ƒ€ˆ—
 	/// </summary>
 	void Update() override;

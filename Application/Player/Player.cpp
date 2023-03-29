@@ -676,7 +676,7 @@ void Player::PlayerJump()
 						vel.x = (float)rand() / RAND_MAX * rnd_vel / 2.0f - rnd_vel / 4.0f;
 						vel.y = (float)rand() / RAND_MAX * rnd_vel / 4.0f - 0;
 
-						ParticleManager::GetInstance()->Add(20, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 1.0f, 0.0f);
+						ParticleManager::GetInstance()->Add(20, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 1.0f, 0.0f,{0,0,0});
 					}
 				}
 				if (jumpChange == 1)

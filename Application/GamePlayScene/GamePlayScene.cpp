@@ -15,7 +15,12 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	WholeScene *wholeScene = WholeScene::GetInstance();
 	Json *json = Json::GetInstance();
 
-	// 背景スプライト生成
+	//スプライトサイズ変更
+	eggSpriteSize = { 32,32 };
+	startToGoalSize = { 1000,64 };
+	goalSpriteSize = { 64,64 };
+
+	//スプライト生成
 	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	playerIconSprite = Sprite::Create(12, { 64,64 });
 	GameOver = Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
@@ -27,6 +32,14 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	escUI = Sprite::Create(21, { WinApp::window_width - 64,WinApp::window_height - 64 });
 	homeUI = Sprite::Create(22, { WinApp::window_width - 64,WinApp::window_height - 64 });
+	eggSprite = Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x/2 ,150 });
+	startToGoal = Sprite::Create(24, { WinApp::window_width / 2,150 });
+	goalSprite = Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 });
+
+	//スプライトサイズ変更
+	eggSprite->SetSize(eggSpriteSize);
+	startToGoal->SetSize(startToGoalSize);
+	goalSprite->SetSize(goalSpriteSize);
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -144,7 +157,6 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			enemy[y][x]->SetPosition({ -100, 0, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
 
-			thornStick[y][x]->SetDirection(ThornDirection::UP);
 			thornStick[y][x]->Initialize();
 			thornStick[y][x]->SetPosition({ -100, -100, 0 });
 
@@ -229,6 +241,8 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			//とげこん棒
 			if (map[y][x] == 8)
 			{
+				thornStick[y][x]->SetDirection(ThornDirection::UP);
+				thornStick[y][x]->RollingStick();
 				if (thornStick[y][x]->GetDirection() == ThornDirection::DOWN || thornStick[y][x]->GetDirection() == ThornDirection::UP)
 				{
 					thornStick[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 6, 0 });
@@ -598,6 +612,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		}
 	}
 
+	//ゴールまでの距離を測る
+	startToGoalSize.x = objGoal->GetPosition().x * 4.0f;
+	eggSprite->SetPosition({ WinApp::window_width / 2 - startToGoalSize.x / 2 + objPlayer->GetPosition().x * 4.0f , 150 });
+	goalSprite->SetPosition({ WinApp::window_width / 2 - startToGoalSize.x / 2 + objGoal->GetPosition().x * 4.0f , 150 });
+
 	//タイマーを表示
 	debugText->SetPos((float)timerPosX, (float)timerPosY);
 	if ((float)gameTimer / 60.0f == 11 || (float)gameTimer / 60.0f == 10 || (float)gameTimer / 60.0f == 9 || (float)gameTimer / 60.0f == 8 ||
@@ -915,6 +934,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 	particleMan->Update();
 	playerParticle->Update(TYPE::explosion, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
+	//移動してるときのみ卵の画像を回転させる
+	eggSprite->SetRotation(-(objPlayer->GetRotation().z));
+
+	startToGoal->SetSize(startToGoalSize);
 
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
 	reStart->SetSize({ (float)reStartSpriteSize * 3,(float)reStartSpriteSize });
@@ -1053,6 +1076,10 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	{
 		homeUI->Draw();
 	}
+
+	startToGoal->Draw();
+	eggSprite->Draw();
+	goalSprite->Draw();
 
 	//ゲームオーバーの遷移
 	if (gameOverFlag == true)
