@@ -458,7 +458,7 @@ void Player::HitObjUp(ModelObj *obj2)
 	position =
 	{
 		position.x,
-		boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.011f - jump ,
+		boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.021f - jump/2 ,
 		0
 	};
 	jumpFlag = true;
@@ -492,7 +492,7 @@ void Player::HitObjBase(ModelObj *obj2)
 				0
 			};
 			leftWallColFlag = false;
-			moveSpeed = 0.01f;
+			//moveSpeed = 0.01f;
 		}
 	}
 
@@ -510,7 +510,7 @@ void Player::HitObjBase(ModelObj *obj2)
 				0
 			};
 			rightWallColFlag = false;
-			moveSpeed = 0.01f;
+			//moveSpeed = 0.01f;
 		}
 	}
 

@@ -24,8 +24,10 @@ void Json::Write()
 	file.close();
 }
 
-float Json::ReadFile(const char *filename, const char *Name)
+float Json::ReadFile(const char *filename, const char* Name)
 {
+	x = 0;
+	y = 0;
 	error = fopen_s(&fp,filename, "r");
 	if (error != 0)
 	{
@@ -36,11 +38,36 @@ float Json::ReadFile(const char *filename, const char *Name)
 		//一行目は飛ばす
 		fgets(str, 100, fp);
 		//二行目から値を調べる
-		while (fscanf_s(fp, "%s : %f", name, MAXSTRING_NUM, &num) != EOF)
+		while (fscanf_s(fp, "%s : %s", name, MAXSTRING_NUM, num, MAXSTRING_NUM) != EOF)
 		{
-			if (strcmp(name,Name) == 0)
+			//検索をかけた文字列と一致したら
+			if (strcmp(name, Name) == 0)
 			{
-				number = num;
+				//[が見つかったら
+				if (strcmp(num, "[") == 0)
+				{
+					//]が見つかるまで続ける
+					while (strcmp(arrayNum, "]") != 0)
+					{
+						fscanf_s(fp, "%s,", arrayNum, MAXSTRING_NUM);
+						mapData[y][x] = (int)atof(arrayNum);
+						x++;
+						if (x > MAXMAPSIZE_X - 1)
+						{
+							x = 0;
+							y++;
+						}
+						if (y > MAXMAPSIZE_Y - 1)
+						{
+							break;
+						}
+					}
+				}
+				else
+				{
+					//配列ではない場合数値を読み込む
+					number = (float)atof(num);
+				}
 			}
 		}
 		fclose(fp);

@@ -87,23 +87,63 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	countDown = new CountDown();
 	if (wholeScene->GetSelectNum() == 0)
 	{
-		StageSet(map1, wholeScene->GetStageFireNum(), audio, fps);
+		json->ReadFile("Resources/data.json", "map1");
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				mapData[y][x] = json->GetMapData(y, x);
+			}
+		}
+		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
 	if (wholeScene->GetSelectNum() == 1)
 	{
-		StageSet(map2, wholeScene->GetStageFireNum(), audio, fps);
+		json->ReadFile("Resources/data.json", "map2");
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				mapData[y][x] = json->GetMapData(y, x);
+			}
+		}
+		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
 	if (wholeScene->GetSelectNum() == 2)
 	{
-		StageSet(map3, wholeScene->GetStageFireNum(), audio, fps);
+		json->ReadFile("Resources/data.json", "map3");
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				mapData[y][x] = json->GetMapData(y, x);
+			}
+		}
+		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
 	if (wholeScene->GetSelectNum() == 3)
 	{
-		StageSet(map4, wholeScene->GetStageFireNum(), audio, fps);
+		json->ReadFile("Resources/data.json", "map4");
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				mapData[y][x] = json->GetMapData(y, x);
+			}
+		}
+		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
 	if (wholeScene->GetSelectNum() == 4)
 	{
-		StageSet(map5, wholeScene->GetStageFireNum(), audio, fps);
+		json->ReadFile("Resources/data.json", "map5");
+		for (int y = 0; y < Y_MAX; y++)
+		{
+			for (int x = 0; x < X_MAX; x++)
+			{
+				mapData[y][x] = json->GetMapData(y, x);
+			}
+		}
+		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
 
 	objPlayer->SetPosition({ 10, 5, 0 });
