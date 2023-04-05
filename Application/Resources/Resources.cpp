@@ -63,6 +63,7 @@ void Resources::StaticInit(Audio *audio)
 	modelExplosionRightParticle = Model::CreateFromOBJ("eggShell", true);
 	modelExplosionUpParticle = Model::CreateFromOBJ("eggShell", true);
 	modelThornStick = Model::CreateFromOBJ("thornStick", true);
+	modelFire = Model::CreateFromOBJ("gimmick", true);
 
 	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
 	modelEgg->SetBaseColor(XMFLOAT3(1, 1, 1));
@@ -184,6 +185,10 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelThornStick)
 	{
 		return modelThornStick;
+	}
+	else if (resourcesName == ResourcesName::modelFire)
+	{
+		return modelFire;
 	}
 	else
 	{

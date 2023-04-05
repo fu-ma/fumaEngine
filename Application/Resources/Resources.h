@@ -32,6 +32,7 @@ enum class ResourcesName
 	modelEgg,
 	modelStageClear,
 	modelThornStick,
+	modelFire,
 };
 
 class Resources
@@ -97,6 +98,9 @@ private:
 	//ジャンプ時のパーティクル
 	Model *modelExplosionUpParticle;
 
+	//火の玉のモデル
+	Model *modelFire;
+	
 	//とげこん棒用
 	Model *modelThornStick;
 	//設定したリソースを読み込まなかった場合エラーを出るようにする

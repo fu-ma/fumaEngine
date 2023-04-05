@@ -216,7 +216,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 				{
 					if (x == 12)
 					{
-						enemy[y][x]->SetAction("NORMAL");
+						enemy[y][x]->SetAction("FIRE");
 					}
 					if (x == 23 || x == 26)
 					{
@@ -726,7 +726,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			{
 				if (enemy[y][x]->GetPosition().x >= 0 && (objPlayer->GetPosition().x + 2.0 * 13 > enemy[y][x]->GetPosition().x))
 				{
-					enemy[y][x]->Move();
+					enemy[y][x]->Move(objPlayer->GetPosition());
 					for (int w = 0; w < Y_MAX; w++)
 					{
 						for (int z = 0; z < X_MAX; z++)
@@ -783,6 +783,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 				{
 					objPlayer->HitEnemyUp(enemy[y][x]);
 				}
+				//敵が出すファイアーとプレイヤーの当たり判定
+				if (GameCollision::CollisionPlayerToGimmick(objPlayer, enemy[y][x]->GetFire(), enemy[y][x]->GetFire()->GetScale()))
+				{
+					if (enemy[y][x]->GetFire()->GetScale().x >= 0.1f)
+					{
+						objPlayer->HitGimmick(enemy[y][x]->GetFire());
+					}
+				}
 
 				if (objPlayer->GetJumpChangeBlockFlag() == false)
 				{
@@ -833,8 +841,6 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 	for (auto &fireBar : fire)
 	{
-		fireBar->Move();
-		objPlayer->HitObjBase(fireBar->GetCenter());
 
 		if (GameCollision::CollisionPlayerLeftToObj(objPlayer, fireBar->GetCenter()))
 		{
@@ -844,14 +850,15 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			objPlayer->HitObjRight(fireBar->GetCenter());
 		}
-		if (GameCollision::CollisionPlayerDownToObj(objPlayer, fireBar->GetCenter()))
-		{
-			objPlayer->HitObjDown(fireBar->GetCenter());
-		}
 		if (GameCollision::CollisionPlayerUpToObj(objPlayer, fireBar->GetCenter()))
 		{
 			objPlayer->HitObjUp(fireBar->GetCenter());
 		}
+		if (GameCollision::CollisionPlayerDownToObj(objPlayer, fireBar->GetCenter()) && !gameControl->moveControl(Move::JUMPTRIGGER))
+		{
+			objPlayer->HitObjDown(fireBar->GetCenter());
+		}
+		objPlayer->HitObjBase(fireBar->GetCenter());
 
 		for (int i = 0; i < fireBar->GetNum(); i++)
 		{

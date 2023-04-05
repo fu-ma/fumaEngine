@@ -1,6 +1,7 @@
 #include "Enemy.h"
 #include"Engine/Input/Input.h"
 #include"Engine/Input/Controller.h"
+#include"Resources.h"
 
 Enemy *Enemy::Create(Model *model)
 {
@@ -25,6 +26,7 @@ Enemy *Enemy::Create(Model *model)
 
 bool Enemy::Initialize()
 {
+	Resources *resources = Resources::GetInstance();
 	if (!ModelObj::Initialize())
 	{
 		return false;
@@ -34,6 +36,13 @@ bool Enemy::Initialize()
 	angleSpeed = -0.03f;
 	jumpTimer = 60;
 	jump = 0.1f;
+	fire = ModelObj::Create(resources->GetModel(ResourcesName::modelFire));
+	fire->Initialize();
+	fire->SetPosition(position);
+	shotFlag = false;
+	shotTimer = 0;
+	fireScale = { 0.5f,0.5f,0.5f };
+	fire->SetScale(fireScale);
 	return true;
 }
 
@@ -41,9 +50,10 @@ void Enemy::Update()
 {
 	// s—ñ‚ÌXV‚È‚Ç
 	ModelObj::Update();
+	fire->Update();
 }
 
-void Enemy::Move()
+void Enemy::Move(const XMFLOAT3 &playerPos)
 {
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
@@ -78,6 +88,45 @@ void Enemy::Move()
 		position.y += speed;
 		position.x += angleSpeed;
 	}
+	if (enemyName == "FIRE")
+	{
+		shotTimer++;
+		if (shotTimer > 60)
+		{
+			shotFlag = true;
+		}
+		if (shotFlag == false)
+		{
+			fire->SetPosition(position);
+
+			firePosX = fire->GetPosition().x;
+			firePosY = fire->GetPosition().y;
+
+			playerPosX = playerPos.x;
+			playerPosY = playerPos.y;
+
+			differenceX = playerPosX - firePosX;
+			differenceY = playerPosY - firePosY;
+			movement = sqrtf(differenceX * differenceX + differenceY * differenceY);
+		}
+		if (shotFlag == true)
+		{
+			fireScale.x -= 0.001f;
+			fireScale.y -= 0.001f;
+			fireScale.z -= 0.001f;
+
+			fire->SetScale(fireScale);
+			fire->SetPosition({ fire->GetPosition().x + ((differenceX / movement) * 0.2f), fire->GetPosition().y + ((differenceY / movement) * 0.2f), fire->GetPosition().z });
+			if (fire->GetScale().x <= 0.0f)
+			{
+				shotTimer = 0;
+				fireScale.x = 0.5f;
+				fireScale.y = 0.5f;
+				fireScale.z = 0.5f;
+				shotFlag = false;
+			}
+		}
+	}
 }
 
 void Enemy::Draw()
@@ -86,6 +135,11 @@ void Enemy::Draw()
 	{
 		ModelObj::Draw();
 	}
+
+	if (shotFlag && HP != 0)
+	{
+		fire->Draw();
+	}
 }
 
 void Enemy::CollisionObject(ModelObj *obj2)
@@ -93,7 +147,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
-	if (enemyName == "NORMAL" || enemyName == "")
+	if (enemyName == "NORMAL" || enemyName == "" || enemyName == "FIRE")
 	{
 		if (oldPos.x > position.x)
 		{
@@ -192,6 +246,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 			jumpTimer = 0;
 		}
 	}
+
 }
 
 void Enemy::Death()

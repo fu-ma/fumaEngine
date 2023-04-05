@@ -1,6 +1,7 @@
 #pragma once
 #include "ModelObj.h"
 #include"Collision.h"
+#include<math.h>
 
 class Enemy : public ModelObj
 {
@@ -24,7 +25,7 @@ public:
 	/// 毎フレーム処理
 	/// </summary>
 	void Update() override;
-	void Move();
+	void Move(const XMFLOAT3& playerPos);
 	void Draw() override;
 	void CollisionObject(ModelObj *obj2);
 
@@ -34,6 +35,8 @@ public:
 	const int &GetHP() { return HP; }
 	const float &GetSpeed() { return speed; }
 	void Death();
+
+	ModelObj *GetFire() { return fire; }
 private:
 	int HP = 1;
 	const float gravity = (-9.8f / 60 / 20);
@@ -49,5 +52,12 @@ private:
 
 	//動きをセットするための変数
 	std::string enemyName;
+
+	//火を吹く敵の火の玉
+	ModelObj *fire;
+	bool shotFlag;
+	int shotTimer;
+	float movement, differenceX, differenceY, playerPosX, playerPosY, firePosX, firePosY;
+	XMFLOAT3 fireScale;
 };
 

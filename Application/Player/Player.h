@@ -79,7 +79,7 @@ public:
 	void SetNotEnemyHitShakeFlag() { enemyHitShakeFlag = false; }
 	const XMFLOAT2 &GetShadowSize() { return shadowSize; }
 	const float &GetCameraMoveY() { return cameraMoveY; }
-	const float &GetMoveSpeed() { return jump; }
+	const float &GetMoveSpeed() { return moveSpeed; }
 
 private:
 	const float gravity = (- 9.8f / 60/ 15) * 1.2f;

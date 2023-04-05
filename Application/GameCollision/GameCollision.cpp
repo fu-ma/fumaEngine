@@ -4,7 +4,7 @@ bool GameCollision::CollisionPlayerLeftToObj(Player *player, ModelObj *obj, XMFL
 {
 	if (CheckBox2Box({ player->GetPosition().x - 0.2f,player->GetPosition().y,0},
 		{ obj->GetPosition().x + 0.2f,obj->GetPosition().y,0 },
-		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, objScale.x, objScale.y))
+		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f - player->GetMoveSpeed(), objScale.x, objScale.y))
 	{
 		return true;
 	}
@@ -15,7 +15,7 @@ bool GameCollision::CollisionPlayerRightToObj(Player *player, ModelObj *obj, XMF
 {
 	if (CheckBox2Box({ player->GetPosition().x + 0.2f,player->GetPosition().y,0 },
 		{ obj->GetPosition().x - 0.2f,obj->GetPosition().y,0 },
-		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f, objScale.x, objScale.y))
+		player->GetScale().x - 0.2f, player->GetScale().y - 0.2f - player->GetMoveSpeed(), objScale.x, objScale.y))
 	{
 		return true;
 	}

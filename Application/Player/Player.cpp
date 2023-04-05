@@ -424,9 +424,10 @@ void Player::HitObjDown(ModelObj *obj2)
 	position =
 	{
 		position.x,
-		boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.011f ,
+		boxPos.m128_f32[1] + boxRad.m128_f32[1] + scale.y + 0.011f,
 		0
 	};
+	//jump = 0;
 	speed = 0;
 	moveSpeed = constMoveSpeed;
 	rotation.y = 0.0f;
@@ -458,7 +459,7 @@ void Player::HitObjUp(ModelObj *obj2)
 	position =
 	{
 		position.x,
-		boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.021f - jump/2 ,
+		boxPos.m128_f32[1] - boxRad.m128_f32[0] - scale.x - 0.021f - jump ,
 		0
 	};
 	jumpFlag = true;
