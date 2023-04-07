@@ -43,6 +43,8 @@ private:
 	//敵
 	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
 
+	//スター（収集物）
+	Star *star[Y_MAX][X_MAX] = { nullptr };
 	//とげこん棒
 	ThornStick *thornStick[Y_MAX][X_MAX] = { nullptr };
 
@@ -147,7 +149,7 @@ private:
 	bool enemyHitShakeFlag;
 	int enemyHitShakeTimer;
 
-	//ステージ1の配列
+	//ステージの配列
 	int mapData[Y_MAX][X_MAX];
 
 	//代入用の配列
@@ -209,6 +211,8 @@ public:
 			{
 				delete enemy[y][x];
 				enemy[y][x] = nullptr;
+				delete star[y][x];
+				star[y][x] = nullptr;
 				delete thornStick[y][x];
 				thornStick[y][x] = nullptr;
 				delete objStageBox[y][x];

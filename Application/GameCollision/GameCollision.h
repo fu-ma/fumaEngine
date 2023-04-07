@@ -3,6 +3,7 @@
 #include"Player.h"
 #include"ModelObj.h"
 #include"Enemy.h"
+#include"Star.h"
 
 class GameCollision : public Collision
 {
@@ -20,5 +21,6 @@ public:
 	static bool CollisionPlayerToGimmick(Player *player, ModelObj *gimmick,XMFLOAT3 gimmickScale);
 	static bool CollisionPlayerToGoalflag(Player *player, ModelObj *goal);
 	static bool CollisionPlayerToGoal(Player *player, ModelObj *goal);
+	static bool CollisionPlayerToStar(Player *player, Star *star);
 };
 

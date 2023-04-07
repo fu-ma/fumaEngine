@@ -67,6 +67,7 @@ public:
 
 	void HitGimmick(ModelObj *obj2);
 	void HitGoal(ModelObj *obj2);
+	void HitStar(ModelObj *obj2);
 
 	const int &GetHP() { return HP; }
 

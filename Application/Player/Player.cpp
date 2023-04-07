@@ -571,6 +571,11 @@ void Player::HitGoal(ModelObj *obj2)
 	position.y -= 0.02f;
 }
 
+void Player::HitStar(ModelObj *obj2)
+{
+
+}
+
 void Player::HitEnemy(Enemy *enemy)
 {
 	if (enemy->GetHP() == 1)

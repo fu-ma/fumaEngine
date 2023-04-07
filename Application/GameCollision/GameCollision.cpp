@@ -109,3 +109,14 @@ bool GameCollision::CollisionPlayerToGoal(Player *player, ModelObj *goal)
 	}
 	return false;
 }
+
+bool GameCollision::CollisionPlayerToStar(Player *player, Star *star)
+{
+	if (Collision::CheckBox2Box({ player->GetPosition().x,player->GetPosition().y,0 },
+		{ star->GetPosition().x,star->GetPosition().y,0 },
+		player->GetScale().x, player->GetScale().y, star->GetScale().x, star->GetScale().y))
+	{
+		return true;
+	}
+	return false;
+}

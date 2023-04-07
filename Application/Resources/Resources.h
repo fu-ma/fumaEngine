@@ -33,6 +33,7 @@ enum class ResourcesName
 	modelStageClear,
 	modelThornStick,
 	modelFire,
+	modelStar,
 };
 
 class Resources
@@ -103,6 +104,10 @@ private:
 	
 	//とげこん棒用
 	Model *modelThornStick;
+
+	//星用のモデル
+	Model *modelStar;
+
 	//設定したリソースを読み込まなかった場合エラーを出るようにする
 	SoundData sound;
 	Model *model;

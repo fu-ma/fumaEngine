@@ -54,6 +54,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		{
 			objStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
 			enemy[y][x] = Enemy::Create(resources->GetModel(ResourcesName::modelEnemy));
+			star[y][x] = Star::Create(resources->GetModel(ResourcesName::modelStar));
 			thornStick[y][x] = ThornStick::Create(resources->GetModel(ResourcesName::modelThornStick));
 			objRedBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock));
 			objBlueBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock));
@@ -192,16 +193,20 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 		for (int x = 0; x < X_MAX; x++)
 		{
 
-			objStageBox[y][x]->SetPosition({ -100, 0, 0 });
+			objStageBox[y][x]->SetPosition({ -100, -100, 0 });
 			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, 0, 0 });
+			enemy[y][x]->SetPosition({ -100, -100, 0 });
 			enemy[y][x]->SetRotation({ 0,180,0 });
+
+			star[y][x]->Initialize();
+			star[y][x]->SetPosition({ -100, -100, 0 });
+			star[y][x]->SetRotation({ 90,0,0 });
 
 			thornStick[y][x]->Initialize();
 			thornStick[y][x]->SetPosition({ -100, -100, 0 });
 
-			objRedBlock[y][x]->SetPosition({ -100,0,0 });
-			objBlueBlock[y][x]->SetPosition({ -100,0,0 });
+			objRedBlock[y][x]->SetPosition({ -100,-100,0 });
+			objBlueBlock[y][x]->SetPosition({ -100,-100,0 });
 
 			//ブロック
 			if (map[y][x] == 1)
@@ -293,6 +298,11 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 					thornStick[y][x]->SetPosition({ 2.0f * x - 6, -2.0f * y + Y_MAX * 2.0f, 0 });
 					thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
 				}
+			}
+			//スター（収集物）
+			if (map[y][x] == 9)
+			{
+				star[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//ゴール
 			if (map[y][x] == 10)
@@ -792,6 +802,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 					}
 				}
 
+				//スターとプレイヤーの当たり判定
+				if (GameCollision::CollisionPlayerToStar(objPlayer, star[y][x]))
+				{
+					star[y][x]->GetStar();
+				}
 				if (objPlayer->GetJumpChangeBlockFlag() == false)
 				{
 					objPlayer->HitObjBase(objRedBlock[y][x]);
@@ -953,6 +968,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			{
 				enemy[y][x]->Update();
 			}
+			if (star[y][x]->GetPosition().x >= 0)
+			{
+				star[y][x]->Update();
+			}
 			if (thornStick[y][x]->GetPosition().x >= 0)
 			{
 				thornStick[y][x]->Update();
@@ -1030,6 +1049,10 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 			if (enemy[y][x]->GetPosition().x >= 0)
 			{
 				enemy[y][x]->Draw();
+			}
+			if (star[y][x]->GetPosition().x >= 0)
+			{
+				star[y][x]->Draw();
 			}
 			if (thornStick[y][x]->GetPosition().x >= 0)
 			{

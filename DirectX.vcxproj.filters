@@ -228,6 +228,9 @@
     <ClCompile Include="Engine\ParticleManager\ParticleManager.cpp">
       <Filter>Engine\ParticleManager</Filter>
     </ClCompile>
+    <ClCompile Include="Application\Star\Star.cpp">
+      <Filter>Game\Star</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
@@ -440,6 +443,9 @@
     <ClInclude Include="Engine\ParticleManager\ParticleManager.h">
       <Filter>Engine\ParticleManager</Filter>
     </ClInclude>
+    <ClInclude Include="Application\Star\Star.h">
+      <Filter>Game\Star</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\shaders\Basic.hlsli">
@@ -647,6 +653,9 @@
     </Filter>
     <Filter Include="Engine\ParticleManager">
       <UniqueIdentifier>{e4eed67c-64fc-4f4f-84d9-b7890b61a65f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\Star">
+      <UniqueIdentifier>{8729caa2-8203-4731-b95f-58a71d5fbc9c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
