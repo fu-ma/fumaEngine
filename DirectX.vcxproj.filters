@@ -51,9 +51,6 @@
     <ClCompile Include="Application\GameScene\GameScene.cpp">
       <Filter>Game\GameScene</Filter>
     </ClCompile>
-    <ClCompile Include="Application\Particle\ParticleManager.cpp">
-      <Filter>Engine\3D\Particle</Filter>
-    </ClCompile>
     <ClCompile Include="Application\Player\Player.cpp">
       <Filter>Game\Player</Filter>
     </ClCompile>
@@ -235,9 +232,6 @@
   <ItemGroup>
     <ClInclude Include="Application\GameScene\GameScene.h">
       <Filter>Game\GameScene</Filter>
-    </ClInclude>
-    <ClInclude Include="Application\Particle\ParticleManager.h">
-      <Filter>Engine\3D\Particle</Filter>
     </ClInclude>
     <ClInclude Include="Application\Player\Player.h">
       <Filter>Game\Player</Filter>
@@ -560,9 +554,6 @@
     </Filter>
     <Filter Include="Engine\2D">
       <UniqueIdentifier>{a23a54fd-b6a6-4aef-ada6-b5b61c08176b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Engine\3D\Particle">
-      <UniqueIdentifier>{459d2abb-6547-40f0-bd3a-2aacf9be2505}</UniqueIdentifier>
     </Filter>
     <Filter Include="Engine\2D\PostEffect">
       <UniqueIdentifier>{b5807ae9-18e1-4b65-8583-0c553611ef15}</UniqueIdentifier>
