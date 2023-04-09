@@ -29,17 +29,34 @@ bool Star::Initialize()
 	}
 
 	toNotDisplay = false;
+	moveingFlag = false;
 	return true;
 }
 
 void Star::GetStar()
 {
-	//Ç∆ÇËÇ†Ç¶Ç∏éÊìæÇµÇΩÇÁè¡Ç¶ÇÈÇæÇØ
-	toNotDisplay = true;
+	moveingFlag = true;
+}
+
+void Star::Moveing()
+{
+	if (moveingFlag == true)
+	{
+		rotation.y += 5;
+		position.y += 0.2f;
+		scale.x -= 0.02f;
+		scale.y -= 0.02f;
+		scale.z -= 0.02f;
+		if (scale.x <= 0.05f && scale.x >= -0.05f)
+		{
+			toNotDisplay = true;
+		}
+	}
 }
 
 void Star::Update()
 {
+	Moveing();
 	// çsóÒÇÃçXêVÇ»Ç«
 	ModelObj::Update();
 }
