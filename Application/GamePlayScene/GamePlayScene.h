@@ -144,6 +144,12 @@ private:
 	double timerEmphasisSize;
 	double timerEmphasisSizeT;
 
+	//スターの位置をソートする用の変数
+	float starPosX[3];
+	float tmp;
+	int swapI;
+	XMFLOAT3 starToget;
+
 	//画面シェイク用の変数
 	XMFLOAT3 enemyHitShakePos;
 	bool enemyHitShakeFlag;

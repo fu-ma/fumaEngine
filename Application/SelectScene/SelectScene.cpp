@@ -24,6 +24,14 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	playerIconSprite = Sprite::Create(12, { 64,64 });
 	fadeIN = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
 	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
+	for (int j = 0; j < 5; j++)
+	{
+		for (int i = 0; i < 3; i++)
+		{
+			starSprite[i][j] = Sprite::Create(26, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f});
+			noStarSprite[i][j] = Sprite::Create(27, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f});
+		}
+	}
 
 	// 3Dオブジェクト生成
 	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
@@ -161,6 +169,9 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 
 	selectedStageFlag = false;
 	goTitleFlag = false;
+
+	playerRotationZ = 0;
+	afterplayerRotZ = 0;
 
 	particleMan = ParticleManager::GetInstance();
 }
@@ -331,12 +342,14 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 			&& wholeScene->GetSelectNum() > 0 && selectMoveTime >= 0.2f)
 		{
 			selectMoveTime = 0;
+			afterplayerRotZ += 180;
 			selectNumber -= 1;
 		}
 		else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
 			&& wholeScene->GetSelectNum() < 4 && selectMoveTime >= 0.2f)
 		{
 			selectMoveTime = 0;
+			afterplayerRotZ -= 180;
 			selectNumber += 1;
 		}
 		else
@@ -345,6 +358,8 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		}
 	}
 	easing::Updete(selectPos, selectInterval * wholeScene->GetSelectNum(), InSine, selectMoveTime);
+	easing::Updete(playerRotationZ, afterplayerRotZ, InSine, selectMoveTime);
+	objPlayer->SetRotation({ objPlayer->GetPosition().x, objPlayer->GetPosition().y, (float)playerRotationZ });
 
 	//タイトルに戻るときに
 	if (goTitleFlag == true)
@@ -460,7 +475,33 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
+	//スターの位置と大きさ
+	for (int i = 0; i < 3; i++)
+	{
+		starSprite[i][0]->SetSize({ (float)stage1SpriteSize / 4,(float)stage1SpriteSize / 4 });
+		starSprite[i][1]->SetSize({ (float)stage2SpriteSize / 4,(float)stage2SpriteSize / 4 });
+		starSprite[i][2]->SetSize({ (float)stage3SpriteSize / 4,(float)stage3SpriteSize / 4 });
+		starSprite[i][3]->SetSize({ (float)stage4SpriteSize / 4,(float)stage4SpriteSize / 4 });
+		starSprite[i][4]->SetSize({ (float)stage5SpriteSize / 4,(float)stage5SpriteSize / 4 });
 
+		noStarSprite[i][0]->SetSize({ (float)stage1SpriteSize / 4,(float)stage1SpriteSize / 4 });
+		noStarSprite[i][1]->SetSize({ (float)stage2SpriteSize / 4,(float)stage2SpriteSize / 4 });
+		noStarSprite[i][2]->SetSize({ (float)stage3SpriteSize / 4,(float)stage3SpriteSize / 4 });
+		noStarSprite[i][3]->SetSize({ (float)stage4SpriteSize / 4,(float)stage4SpriteSize / 4 });
+		noStarSprite[i][4]->SetSize({ (float)stage5SpriteSize / 4,(float)stage5SpriteSize / 4 });
+
+		starSprite[i][0]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 0 - (float)selectPos - (float)stage1SpriteSize / 4 + (((float)stage1SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage1SpriteSize / 2 });
+		starSprite[i][1]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 1 - (float)selectPos - (float)stage2SpriteSize / 4 + (((float)stage2SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage2SpriteSize / 2 });
+		starSprite[i][2]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos - (float)stage3SpriteSize / 4 + (((float)stage3SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage3SpriteSize / 2 });
+		starSprite[i][3]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos - (float)stage4SpriteSize / 4 + (((float)stage4SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage4SpriteSize / 2 });
+		starSprite[i][4]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos - (float)stage5SpriteSize / 4 + (((float)stage5SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage5SpriteSize / 2 });
+
+		noStarSprite[i][0]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 0 - (float)selectPos - (float)stage1SpriteSize / 4 + (((float)stage1SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage1SpriteSize / 2 });
+		noStarSprite[i][1]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 1 - (float)selectPos - (float)stage2SpriteSize / 4 + (((float)stage2SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage2SpriteSize / 2 });
+		noStarSprite[i][2]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos - (float)stage3SpriteSize / 4 + (((float)stage3SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage3SpriteSize / 2 });
+		noStarSprite[i][3]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos - (float)stage4SpriteSize / 4 + (((float)stage4SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage4SpriteSize / 2 });
+		noStarSprite[i][4]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos - (float)stage5SpriteSize / 4 + (((float)stage5SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage5SpriteSize / 2 });
+	}
 	//指定の位置でSpaceを押すとそのステージにとぶ
 	if (objPlayer->GetJumpTimer() > 5 && fadeOutFlag == false)
 	{
@@ -518,6 +559,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText)
 {
 #pragma region 描画処理
+	WholeScene *wholeScene = WholeScene::GetInstance();
 
 	/*スプライト描画*/
 	/*スプライト描画前処理*/
@@ -572,11 +614,43 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	//プレイヤーアイコン表示
 	playerIconSprite->Draw();
 
+	//ステージ番号の描画
 	Stage1Sprite->Draw();
 	Stage2Sprite->Draw();
 	Stage3Sprite->Draw();
 	Stage4Sprite->Draw();
 	Stage5Sprite->Draw();
+
+	//星をどのくらいゲットしたか描画する
+	for (int i = 0; i < 5; i++)
+	{
+		if (wholeScene->GetStarNum(i).x == 1)
+		{
+			starSprite[0][i]->Draw();
+		}
+		if (wholeScene->GetStarNum(i).x == 0)
+		{
+			noStarSprite[0][i]->Draw();
+		}
+
+		if (wholeScene->GetStarNum(i).y == 1)
+		{
+			starSprite[1][i]->Draw();
+		}
+		if (wholeScene->GetStarNum(i).y == 0)
+		{
+			noStarSprite[1][i]->Draw();
+		}
+
+		if (wholeScene->GetStarNum(i).z == 1)
+		{
+			starSprite[2][i]->Draw();
+		}
+		if (wholeScene->GetStarNum(i).z == 0)
+		{
+			noStarSprite[2][i]->Draw();
+		}
+	}
 
 	//fadein
 	if (easingFlag == true)

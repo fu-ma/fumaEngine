@@ -40,6 +40,8 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(23, L"Resources/image/egg.dds");
 	Sprite::LoadTexture(24, L"Resources/image/startToGoal.dds");
 	Sprite::LoadTexture(25, L"Resources/image/goal.dds");
+	Sprite::LoadTexture(26, L"Resources/image/starSprite.dds");
+	Sprite::LoadTexture(27, L"Resources/image/noStarSprite.dds");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);

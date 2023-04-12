@@ -159,6 +159,9 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	fadeInFlag = false;
 	operationButton = false;
 
+	tmp = 0;
+	swapI = 0;
+	starToget = wholeScene->GetStarNum(wholeScene->GetSelectNum());
 	particleMan = ParticleManager::GetInstance();
 }
 
@@ -359,7 +362,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	fire.clear();
 	for (int i = 0; i < gimmickCenterNum; i++)
 	{
-		wholeScene->SetStageData(wholeScene->GetStageDatas(stageNum - 1,i));
+		wholeScene->SetStageData(wholeScene->GetStageDatas(stageNum - 1, i));
 		firebar = new Firebar(gimmickCenter[i].x, gimmickCenter[i].y, wholeScene->GetStageData().firebarNum, wholeScene->GetStageData().direction, wholeScene->GetStageData().firebarSpeed);
 		firebar->StaticInit();
 		fire.push_back(firebar);
@@ -412,6 +415,35 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 
 	timerEmphasisSize = 0;
 	timerEmphasisSizeT = 0;
+
+	for (int y = 0; y < Y_MAX; y++)
+	{
+		for (int x = 0; x < X_MAX; x++)
+		{
+			if (star[y][x]->GetPosition().x >= 0)
+			{
+				//数値だけ一旦移す
+				starPosX[swapI] = star[y][x]->GetPosition().x;
+				if (swapI < 2)
+				{
+					swapI++;
+				}
+			}
+		}
+	}
+	//スターの位置を昇順ソートする
+	for (int i = 0; i < 3; ++i)
+	{
+		for (int j = i + 1; j < 3; ++j)
+		{
+			if (starPosX[i] > starPosX[j])
+			{
+				tmp = starPosX[i];
+				starPosX[i] = starPosX[j];
+				starPosX[j] = tmp;
+			}
+		}
+	}
 }
 
 void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -806,6 +838,20 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 				if (GameCollision::CollisionPlayerToStar(objPlayer, star[y][x]))
 				{
 					star[y][x]->GetStar();
+					//スターの枚数分調べる
+					if (star[y][x]->GetPosition().x == starPosX[0])
+					{
+						starToget.x = 1;
+					}
+					if (star[y][x]->GetPosition().x == starPosX[1])
+					{
+						starToget.y = 1;
+					}
+					if (star[y][x]->GetPosition().x == starPosX[2])
+					{
+						starToget.z = 1;
+					}
+					wholeScene->SetStarNum(starToget, wholeScene->GetStageFireNum() - 1);
 				}
 				if (objPlayer->GetJumpChangeBlockFlag() == false)
 				{

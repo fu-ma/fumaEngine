@@ -51,12 +51,17 @@ public: // 静的メンバ変数
 	const StageData &GetStageDatas(const int &y,const int &x) { return stageDatas[y][x]; }
 	const StageData &GetStageData() { return stageData; }
 	const bool &GetGoTitleFlag() { return goTileEaseFlag; }
+	const XMFLOAT3 &GetStarNum(int stageNum)
+	{
+		return starNum[stageNum];
+	}
 
 	void SetTotalPlayerNum(const int &totalPlayerNum) { this->totalPlayerNum = totalPlayerNum; }
 	void SetSelectNum(const int &selectNum) { this->selectNum = selectNum; }
 	void SetStageFireNum(const int &stageNum) { this->stageNum = stageNum; }
 	void SetStageData(const StageData &stageData) { this->stageData = stageData; }
 	void SetGoTitleFlag(const bool &goTileEaseFlag) { this->goTileEaseFlag = goTileEaseFlag; }
+	void SetStarNum(const XMFLOAT3 &starNum,int stageNum) { this->starNum[stageNum] = starNum; }
 private:
 	static const int X_MAX = 100;
 	static const int Y_MAX = 10;
@@ -77,6 +82,9 @@ private:
 
 	//セレクト画面からtitleに戻った時用のイージングフラグ
 	bool goTileEaseFlag;
+
+	//何個スターを取得したか(1,1,1)で全取得とりあえず5ステージ分配列に
+	XMFLOAT3 starNum[5];
 
 private:
 	WholeScene() = default;

@@ -18,6 +18,8 @@ private:
 	Sprite *playerIconSprite = nullptr;
 	Sprite *fadeIN = nullptr;
 	Sprite *fadeOut = nullptr;
+	Sprite *starSprite[3][5] = {nullptr};
+	Sprite *noStarSprite[3][5] = { nullptr };
 
 	//雲
 	ModelObj *cloud[10] = { nullptr };
@@ -28,6 +30,10 @@ private:
 
 	//プレイヤー
 	Player *objPlayer = nullptr;
+
+	//プレイヤーの回転
+	double playerRotationZ;
+	double afterplayerRotZ;
 
 	//ステージブロック
 	ModelObj *titleStageBox[6][24] = { nullptr };
@@ -92,6 +98,9 @@ private:
 						 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
 						 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	};
+
+	//何個スターを入手したか
+	XMFLOAT3 totalGetStar[5];
 public:
 	SelectScene(const int stageNum = 0) {  }
 	~SelectScene()
@@ -114,6 +123,16 @@ public:
 		fadeIN = nullptr;
 		delete fadeOut;
 		fadeOut = nullptr;
+		for (int j = 0; j < 5; j++)
+		{
+			for (int i = 0; i < 3; i++)
+			{
+				delete starSprite[i][j];
+				starSprite[i][j] = nullptr;
+				delete noStarSprite[i][j];
+				noStarSprite[i][j] = nullptr;
+			}
+		}
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
