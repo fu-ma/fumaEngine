@@ -36,6 +36,12 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	startToGoal = Sprite::Create(24, { WinApp::window_width / 2,150 });
 	goalSprite = Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 });
 
+	for (int i = 0; i < 17; i++)
+	{
+		gaugeSprite[i] = Sprite::Create(28, { WinApp::window_width / 2,WinApp::window_height / 2 },{1,1,1,0.5f});
+		gaugeSprite[i]->SetSize({ 32,128 });
+		gaugeSprite[i]->SetTextureRect({ (float)(128 * i),(float)(0) }, { 128,512 });
+	}
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
 	startToGoal->SetSize(startToGoalSize);
@@ -65,6 +71,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	{
 		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
+		cloudSpeed[i] = (float)wholeScene->GetRand(10, 30);
 	}
 
 	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
@@ -162,6 +169,11 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	tmp = 0;
 	swapI = 0;
 	starToget = wholeScene->GetStarNum(wholeScene->GetSelectNum());
+
+	//スターを取得してからセレクトに戻った時に戻せるように仮変数に保存しておく
+	oldStarToGet = starToget;
+	gaugeStatus = GamePlayScene::GaugeStatus::PUSHOK;
+
 	particleMan = ParticleManager::GetInstance();
 }
 
@@ -436,7 +448,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	{
 		for (int j = i + 1; j < 3; ++j)
 		{
-			if (starPosX[i] > starPosX[j])
+			if (starPosX[i] > starPosX[j] && starPosX[j] != 0)
 			{
 				tmp = starPosX[i];
 				starPosX[i] = starPosX[j];
@@ -606,6 +618,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (fadeInSizeX > 1280 * 15)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			wholeScene->SetStarNum(oldStarToGet, wholeScene->GetStageFireNum() - 1);
 			fire.clear();
 			pEngine->changeState(new GamePlayScene());
 		}
@@ -618,6 +631,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (fadeInSizeX > 1280 * 15)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			wholeScene->SetStarNum(oldStarToGet, wholeScene->GetStageFireNum() - 1);
 			fire.clear();
 			pEngine->changeState(new SelectScene());
 		}
@@ -636,6 +650,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			//残機を減らす
 			totalPlayer--;
 			wholeScene->SetTotalPlayerNum(totalPlayer);
+			wholeScene->SetStarNum(oldStarToGet, wholeScene->GetStageFireNum() - 1);
 
 			if (wholeScene->GetTotalPlayerNum() == 0)
 			{
@@ -725,16 +740,16 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			cloudPos[i].x -= 0.03f;
+			cloudPos[i].x -= cloudSpeed[i] * 0.001f;
 			if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
 			{
 				if (i == 0)
 				{
-					cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
+					cloudPos[i] = { objPlayer->GetPosition().x + 45.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 				}
 				else
 				{
-					cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
+					cloudPos[i] = { objPlayer->GetPosition().x + 45.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5)};
 				}
 			}
 			cloud[i]->SetPosition(cloudPos[i]);
@@ -760,6 +775,18 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 					thornStick[y][x]->Move();
 				}
 			}
+		}
+
+		if (gameControl->moveControl(Move::JUMP) && gaugeStatus == GamePlayScene::GaugeStatus::PUSHOK)
+		{
+			if (gaugeSpriteTime < 32)
+			{
+				gaugeSpriteTime++;
+			}
+		}
+		else if (!gameControl->moveControl(Move::JUMP))
+		{
+			gaugeStatus = GamePlayScene::GaugeStatus::PUSHED;
 		}
 
 		for (int y = 0; y < Y_MAX; y++)
@@ -806,6 +833,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 				if (GameCollision::CollisionPlayerDownToObj(objPlayer, objStageBox[y][x]))
 				{
 					objPlayer->HitObjDown(objStageBox[y][x]);
+					gaugeSpriteTime = 0;
+					gaugeStatus = GamePlayScene::GaugeStatus::PUSHOK;
 				}
 				if (GameCollision::CollisionPlayerUpToObj(objPlayer, objStageBox[y][x]))
 				{
@@ -1054,6 +1083,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
 	reStart->SetSize({ (float)reStartSpriteSize * 3,(float)reStartSpriteSize });
 	Return->SetSize({ (float)ReturnSpriteSize * 3,(float)ReturnSpriteSize });
+	for (int i = 0; i < 17; i++)
+	{
+		gaugeSprite[i]->SetPosition({ WinApp::window_width / 2 - 256,WinApp::window_height / 2 + 200 - (objPlayer->GetPosition().y*20)});
+	}
 }
 
 void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
@@ -1064,7 +1097,7 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	//// 背景スプライト描画
-	backGround->Draw();
+	//backGround->Draw();
 	///*スプライト描画後処理*/
 	Sprite::PostDraw();
 	////深度バッファクリア
@@ -1193,9 +1226,13 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 		homeUI->Draw();
 	}
 
+	//ゴールまでの位置を表示するスプライト
 	startToGoal->Draw();
 	eggSprite->Draw();
 	goalSprite->Draw();
+
+	//ジャンプ時のゲージスプライト
+	gaugeSprite[(int)(gaugeSpriteTime / 2)]->Draw();
 
 	//ゲームオーバーの遷移
 	if (gameOverFlag == true)

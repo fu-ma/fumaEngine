@@ -493,7 +493,7 @@ void Player::HitObjBase(ModelObj *obj2)
 				0
 			};
 			leftWallColFlag = false;
-			//moveSpeed = 0.01f;
+			moveSpeed = 0.01f;
 		}
 	}
 
@@ -511,7 +511,7 @@ void Player::HitObjBase(ModelObj *obj2)
 				0
 			};
 			rightWallColFlag = false;
-			//moveSpeed = 0.01f;
+			moveSpeed = 0.01f;
 		}
 	}
 
@@ -613,6 +613,8 @@ void Player::Gravity()
 
 void Player::PlayerJump()
 {
+	Resources *resources = Resources::GetInstance();
+
 	//1.2.3段ジャンプ処理
 	if (jumpChange == 0)
 	{
@@ -625,6 +627,12 @@ void Player::PlayerJump()
 	if (jumpChange == 2)
 	{
 		jumpMax = 60;
+	}
+
+	if (jumpChangeTimer > 20)
+	{
+		//ジャンプが途切れたら元のモデルに戻す
+		SetModel(resources->GetModel(ResourcesName::modelPlayer));
 	}
 
 	if (moveFlag == false)
@@ -684,6 +692,7 @@ void Player::PlayerJump()
 
 						ParticleManager::GetInstance()->Add(20, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 1.0f, 0.0f,{0,0,0});
 					}
+					SetModel(resources->GetModel(ResourcesName::modelPlayer));
 				}
 				if (jumpChange == 1)
 				{
@@ -696,6 +705,7 @@ void Player::PlayerJump()
 
 						ParticleManager::GetInstance()->Add(40, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 2.0f, 0.0f);
 					}
+					SetModel(resources->GetModel(ResourcesName::modelBluePlayer));
 				}
 				if (jumpChange == 2)
 				{
@@ -708,6 +718,7 @@ void Player::PlayerJump()
 
 						ParticleManager::GetInstance()->Add(60, XMFLOAT3({ position.x, position.y - scale.y / 2, 0 }), vel, XMFLOAT3(), 3.0f, 0.0f);
 					}
+					SetModel(resources->GetModel(ResourcesName::modelRedPlayer));
 				}
 			}
 			//2段階目かつ重力よりもジャンプ力が高い場合

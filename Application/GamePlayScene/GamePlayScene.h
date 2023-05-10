@@ -11,6 +11,14 @@ class GamePlayScene : public GameSceneManagerState
 	using XMFLOAT4 = DirectX::XMFLOAT4;
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
+
+private:
+	enum class GaugeStatus
+	{
+		PUSHOK,
+		PUSHED,
+	};
+
 private:
 	//ゲーム用の操作のクラス
 	GameControl *gameControl = nullptr;
@@ -30,15 +38,22 @@ private:
 	Sprite *eggSprite = nullptr;
 	Sprite *startToGoal = nullptr;
 	Sprite *goalSprite = nullptr;
+	Sprite *gaugeSprite[17] = { nullptr };
 
 	//スプライトサイズ
 	XMFLOAT2 eggSpriteSize;
 	XMFLOAT2 startToGoalSize;
 	XMFLOAT2 goalSpriteSize;
 
+	//ゲージ用のタイム
+	float gaugeSpriteTime;
+	//ゲージ用
+	GaugeStatus gaugeStatus;
+
 	//雲
 	ModelObj *cloud[10] = { nullptr };
 	XMFLOAT3 cloudPos[10] = {};
+	float cloudSpeed[10];
 
 	//敵
 	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
@@ -149,6 +164,7 @@ private:
 	float tmp;
 	int swapI;
 	XMFLOAT3 starToget;
+	XMFLOAT3 oldStarToGet;
 
 	//画面シェイク用の変数
 	XMFLOAT3 enemyHitShakePos;
@@ -206,6 +222,11 @@ public:
 		delete goalSprite;
 		goalSprite = nullptr;
 
+		for (int i = 0; i < 17; i++)
+		{
+			delete gaugeSprite[i];
+			gaugeSprite[i] = nullptr;
+		}
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];

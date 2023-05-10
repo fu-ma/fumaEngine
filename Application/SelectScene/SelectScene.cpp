@@ -225,14 +225,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		cloudPos[i].x -= 0.03f;
 		if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 40.0f)
 		{
-			if (i == 0)
-			{
-				cloudPos[i] = { cloud[9]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
-			}
-			else
-			{
-				cloudPos[i] = { cloud[i - 1]->GetPosition().x + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
-			}
+			cloudPos[i] = { 40.0f + 8.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) };
 		}
 		cloud[i]->SetPosition(cloudPos[i]);
 	}
@@ -475,6 +468,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage3Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage4Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos, WinApp::window_height / 2.0f });
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
+
 	//スターの位置と大きさ
 	for (int i = 0; i < 3; i++)
 	{
@@ -501,6 +495,39 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		noStarSprite[i][2]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 2 - (float)selectPos - (float)stage3SpriteSize / 4 + (((float)stage3SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage3SpriteSize / 2 });
 		noStarSprite[i][3]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 3 - (float)selectPos - (float)stage4SpriteSize / 4 + (((float)stage4SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage4SpriteSize / 2 });
 		noStarSprite[i][4]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos - (float)stage5SpriteSize / 4 + (((float)stage5SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage5SpriteSize / 2 });
+	}
+	//スターの回転
+	for (int i = 0; i < 5; i++)
+	{
+		if (wholeScene->GetStarNum(i).x == 0)
+		{
+			starTotalRot[0][i] = 0;
+		}
+		if (wholeScene->GetStarNum(i).x == 1)
+		{
+			starTotalRot[0][i] += 1.0f;
+			starSprite[0][i]->SetRotation(starTotalRot[0][i]);
+		}
+
+		if (wholeScene->GetStarNum(i).y == 0)
+		{
+			starTotalRot[1][i] = 0;
+		}
+		if (wholeScene->GetStarNum(i).y == 1)
+		{
+			starTotalRot[1][i] += 1.0f;
+			starSprite[1][i]->SetRotation(starTotalRot[1][i]);
+		}
+
+		if (wholeScene->GetStarNum(i).z == 0)
+		{
+			starTotalRot[2][i] = 0;
+		}
+		if (wholeScene->GetStarNum(i).z == 1)
+		{
+			starTotalRot[2][i] += 1.0f;
+			starSprite[2][i]->SetRotation(starTotalRot[2][i]);
+		}
 	}
 	//指定の位置でSpaceを押すとそのステージにとぶ
 	if (objPlayer->GetJumpTimer() > 5 && fadeOutFlag == false)
@@ -566,7 +593,7 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	backGround->Draw();
+	//backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア

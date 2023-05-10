@@ -60,9 +60,9 @@ bool GameScene::Update()
 void GameScene::Draw()
 {
 	//•`‰æŠJŽn
-	common->PreDraw();
+	//common->PreDraw();
 	manager->Draw(common.get(), debugText);
 	//•`‰æI—¹
-	common->PostDraw();
+	//common->PostDraw();
 	manager->StateDelete();
 }

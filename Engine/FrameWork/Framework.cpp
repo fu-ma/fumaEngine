@@ -13,7 +13,18 @@ void Framework::GameRun()
 			break;
 		}
 		//描画処理
+		//レンダーテクスチャへの描画
+		postEffect->PreDrawScene(common->GetCmdList().Get());
 		Draw();
+		//Imguiの描画処理
+		postEffect->PostDrawScene(common->GetCmdList().Get());
+
+		//描画開始
+		common->PreDraw();
+		//ポストエフェクトの描画
+		postEffect->Draw(common->GetCmdList().Get());
+		//描画終了
+		common->PostDraw();
 	}
 	SceneDelete();
 }
@@ -42,7 +53,7 @@ void Framework::staticInit()
 	//ポストエフェクト用テクスチャの読み込み
 	//Sprite::LoadTexture(100, L"Resources/backGround3.png");
 	//ポストエフェクトの初期化
-	postEffect = std::make_unique<MultipleTexture>();
+	postEffect = std::make_unique<PostEffect>();
 	postEffect->Initialize();
 
 	/*FBX初期化*/

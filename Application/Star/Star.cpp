@@ -40,6 +40,9 @@ void Star::GetStar()
 
 void Star::Moveing()
 {
+	//デフォルトで動く
+	rotation.y += 2;
+	//ゲットしたときに動く
 	if (moveingFlag == true)
 	{
 		rotation.y += 5;

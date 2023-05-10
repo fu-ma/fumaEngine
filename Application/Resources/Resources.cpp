@@ -42,6 +42,7 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(25, L"Resources/image/goal.dds");
 	Sprite::LoadTexture(26, L"Resources/image/starSprite.dds");
 	Sprite::LoadTexture(27, L"Resources/image/noStarSprite.dds");
+	Sprite::LoadTexture(28, L"Resources/image/gauge.dds");
 
 	// ƒ‚ƒfƒ‹“Ç‚Ýž‚Ý
 	modelPlayer = Model::CreateFromOBJ("player", true);
@@ -67,6 +68,8 @@ void Resources::StaticInit(Audio *audio)
 	modelThornStick = Model::CreateFromOBJ("thornStick", true);
 	modelFire = Model::CreateFromOBJ("gimmick", true);
 	modelStar = Model::CreateFromOBJ("star", true);
+	modelBluePlayer = Model::CreateFromOBJ("bluePlayer", true);
+	modelRedPlayer = Model::CreateFromOBJ("redPlayer", true);
 
 	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
 	modelEgg->SetBaseColor(XMFLOAT3(1, 1, 1));
@@ -196,6 +199,14 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelStar)
 	{
 		return modelStar;
+	}
+	else if (resourcesName == ResourcesName::modelBluePlayer)
+	{
+		return modelBluePlayer;
+	}
+	else if (resourcesName == ResourcesName::modelRedPlayer)
+	{
+		return modelRedPlayer;
 	}
 	else
 	{

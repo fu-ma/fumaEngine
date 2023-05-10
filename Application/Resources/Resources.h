@@ -34,6 +34,8 @@ enum class ResourcesName
 	modelThornStick,
 	modelFire,
 	modelStar,
+	modelBluePlayer,
+	modelRedPlayer,
 };
 
 class Resources
@@ -58,6 +60,8 @@ private:
 
 	//プレイヤー
 	Model *modelPlayer;
+	Model *modelBluePlayer;
+	Model *modelRedPlayer;
 
 	//チュートリアル用の看板
 	Model *modelJumpSignA;

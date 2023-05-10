@@ -101,7 +101,7 @@ protected:
 	DebugText *debugText;
 	DebugCamPtr camera;
 	LightGroupPtr lightGroup;
-	MultipleTexPtr postEffect;
+	PostEffectPtr postEffect;
 	FpsPtr fps;
 	Resources *resources;
 	Json *json;

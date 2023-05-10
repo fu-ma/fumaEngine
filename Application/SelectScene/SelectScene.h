@@ -21,6 +21,9 @@ private:
 	Sprite *starSprite[3][5] = {nullptr};
 	Sprite *noStarSprite[3][5] = { nullptr };
 
+	//スター用の回転の数値
+	float starTotalRot[3][5] = { 0 };
+
 	//雲
 	ModelObj *cloud[10] = { nullptr };
 	XMFLOAT3 cloudPos[10] = {};
@@ -99,8 +102,6 @@ private:
 						 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
 	};
 
-	//何個スターを入手したか
-	XMFLOAT3 totalGetStar[5];
 public:
 	SelectScene(const int stageNum = 0) {  }
 	~SelectScene()

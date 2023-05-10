@@ -6,12 +6,12 @@ SamplerState smp:register(s0);//0番スロットに設定されたサンプラー
 float4 main(VSOutput input) :SV_TARGET
 {
 	//緑色（初期）
-	float4 texcolor = tex.Sample(smp,input.uv);
-	return float4(texcolor.rgb, 1);
+	//float4 texcolor = tex.Sample(smp,input.uv);
+	//return float4(texcolor.rgb, 1);
 
 	////明度の変更
-	//float4 texcolor = tex.Sample(smp,input.uv);
-	//return float4(texcolor.rgb * 2.0f, 1);
+	float4 texcolor = tex.Sample(smp,input.uv);
+	return float4(texcolor.r * 1.5f, texcolor.g / 1.5f, texcolor.b, 1.0f);
 
 	////色反転
 	//float4 texcolor = tex.Sample(smp,input.uv);

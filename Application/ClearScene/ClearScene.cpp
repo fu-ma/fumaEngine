@@ -186,7 +186,7 @@ void ClearScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	/*スプライト描画*/
 	/*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
-	StageClear->Draw();
+	//StageClear->Draw();
 	/*スプライト描画後処理*/
 	//fadeout
 	if (fadeOutFlag == true)
