@@ -43,6 +43,8 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(26, L"Resources/image/starSprite.dds");
 	Sprite::LoadTexture(27, L"Resources/image/noStarSprite.dds");
 	Sprite::LoadTexture(28, L"Resources/image/gauge.dds");
+	Sprite::LoadTexture(29, L"Resources/image/ButtonA.dds");
+	Sprite::LoadTexture(30, L"Resources/image/ButtonSpace.dds");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);
@@ -53,10 +55,9 @@ void Resources::StaticInit(Audio *audio)
 	modelRedBlock = Model::CreateFromOBJ("redBlock", true);
 	modelBlueBlock = Model::CreateFromOBJ("blueBlock", true);
 	modelWireBlock = Model::CreateFromOBJ("wireBlock", true);
-	modelJumpSignA = Model::CreateFromOBJ("jumpSignA", true);
-	modelJumpSignSpace = Model::CreateFromOBJ("jumpSignSpace", true);
-	modelWallSignA = Model::CreateFromOBJ("wallSignA", true);
-	modelWallSignSpace = Model::CreateFromOBJ("wallSignSpace", true);
+	modelSignboard = Model::CreateFromOBJ("signboard", true);
+	modelSignboardA = Model::CreateFromOBJ("signboardA", true);
+	modelSignboardSpace = Model::CreateFromOBJ("signboardSpace", true);
 	modelBackObj1 = Model::CreateFromOBJ("backObj1", true);
 	modelBackObj2 = Model::CreateFromOBJ("backObj2", true);
 	modelBackObj3 = Model::CreateFromOBJ("backObj3", true);
@@ -140,21 +141,17 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	{
 		return modelGoal;
 	}
-	else if (resourcesName == ResourcesName::modelJumpSignA)
+	else if (resourcesName == ResourcesName::modelSignboard)
 	{
-		return modelJumpSignA;
+		return modelSignboard;
 	}
-	else if (resourcesName == ResourcesName::modelJumpSignSpace)
+	else if (resourcesName == ResourcesName::modelSignboardA)
 	{
-		return modelJumpSignSpace;
+		return modelSignboardA;
 	}
-	else if (resourcesName == ResourcesName::modelWallSignA)
+	else if (resourcesName == ResourcesName::modelSignboardSpace)
 	{
-		return modelWallSignA;
-	}
-	else if (resourcesName == ResourcesName::modelWallSignSpace)
-	{
-		return modelWallSignSpace;
+		return modelSignboardSpace;
 	}
 	else if (resourcesName == ResourcesName::modelBackObj1)
 	{

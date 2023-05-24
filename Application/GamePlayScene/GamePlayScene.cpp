@@ -42,6 +42,9 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		gaugeSprite[i]->SetSize({ 32,128 });
 		gaugeSprite[i]->SetTextureRect({ (float)(128 * i),(float)(0) }, { 128,512 });
 	}
+	buttonA = Sprite::Create(29, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
+	buttonSpace = Sprite::Create(30, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
+
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
 	startToGoal->SetSize(startToGoalSize);
@@ -77,8 +80,10 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
 
 	//チュートリアル用の看板
-	objJumpSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelJumpSignSpace));
-	objWallSignA = ModelObj::Create(resources->GetModel(ResourcesName::modelWallSignSpace));
+	for (int i = 0; i < 2; i++)
+	{
+		objSignboard[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelSignboard));
+	}
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
@@ -165,6 +170,10 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	fadeInT = 0;
 	fadeInFlag = false;
 	operationButton = false;
+	for (int i = 0; i < 2; i++)
+	{
+		operationDrawButton[i] = false;
+	}
 
 	tmp = 0;
 	swapI = 0;
@@ -287,16 +296,16 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 			//チュートリアル用の看板1
 			if (map[y][x] == 6)
 			{
-				objJumpSignA->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 10 });
-				objJumpSignA->SetRotation({ 0,90,0 });
-				objJumpSignA->SetScale({ 1,5,5 });
+				objSignboard[0]->SetPosition({2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
+				objSignboard[0]->SetRotation({ 0,90,0 });
+				objSignboard[0]->SetScale({ 1,1,1 });
 			}
 			//チュートリアル用の看板2
 			if (map[y][x] == 7)
 			{
-				objWallSignA->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 10 });
-				objWallSignA->SetRotation({ 0,90,0 });
-				objWallSignA->SetScale({ 1,5,5 });
+				objSignboard[1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
+				objSignboard[1]->SetRotation({ 0,90,0 });
+				objSignboard[1]->SetScale({ 1,1,1 });
 			}
 			//とげこん棒
 			if (map[y][x] == 8)
@@ -524,15 +533,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 	if (gameControl->menuControl(Menu::ANYKEYBORD))
 	{
-		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignSpace));
-		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignSpace));
 		operationButton = false;
 	}
 
 	if (gameControl->menuControl(Menu::ANYPAD))
 	{
-		objJumpSignA->SetModel(resources->GetModel(ResourcesName::modelJumpSignA));
-		objWallSignA->SetModel(resources->GetModel(ResourcesName::modelWallSignA));
 		operationButton = true;
 	}
 
@@ -928,7 +933,18 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			}
 		}
 	}
-
+	
+	for (int i = 0; i < 2; i++)
+	{
+		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == true)
+		{
+			operationDrawButton[i] = true;
+		}
+		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == false)
+		{
+			operationDrawButton[i] = false;
+		}
+	}
 	for (auto &fireBar : fire)
 	{
 
@@ -1064,8 +1080,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 	objGoal->Update();
 	//チュートリアル用の看板
-	objJumpSignA->Update();
-	objWallSignA->Update();
+	for (int i = 0; i < 2; i++)
+	{
+		objSignboard[i]->Update();
+	}
+
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
 	{
@@ -1101,7 +1120,7 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	///*スプライト描画後処理*/
 	Sprite::PostDraw();
 	////深度バッファクリア
-	common->ClearDepthBuffer();
+	//common->ClearDepthBuffer();
 #pragma region 描画処理
 	/*モデル描画*/
 	/*モデル描画前処理*/
@@ -1175,13 +1194,24 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	//ゴールの描画
 	objGoal->Draw();
 	//看板の描画
-	if (objJumpSignA->GetPosition().x >= 0)
+	for (int i = 0; i < 2; i++)
 	{
-		objJumpSignA->Draw();
-	}
-	if (objWallSignA->GetPosition().x >= 0)
-	{
-		objWallSignA->Draw();
+		if (objSignboard[i]->GetPosition().x >= 0)
+		{
+			if (operationDrawButton[i] == false)
+			{
+				objSignboard[i]->SetModel(resources->GetModel(ResourcesName::modelSignboard));
+			}
+			if (operationButton == false && operationDrawButton[i] == true)
+			{
+				objSignboard[i]->SetModel(resources->GetModel(ResourcesName::modelSignboardSpace));
+			}
+			if (operationButton == true && operationDrawButton[i] == true)
+			{
+				objSignboard[i]->SetModel(resources->GetModel(ResourcesName::modelSignboardA));
+			}
+			objSignboard[i]->Draw();
+		}
 	}
 	//プレイヤーの描画
 	objPlayer->Draw();
@@ -1220,10 +1250,24 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	if (operationButton == false)
 	{
 		escUI->Draw();
+		for (int i = 0; i < 2; i++)
+		{
+			if (operationDrawButton[i] == true)
+			{
+				buttonSpace->Draw();
+			}
+		}
 	}
 	if (operationButton == true)
 	{
 		homeUI->Draw();
+		for (int i = 0; i < 2; i++)
+		{
+			if (operationDrawButton[i] == true)
+			{
+				buttonA->Draw();
+			}
+		}
 	}
 
 	//ゴールまでの位置を表示するスプライト

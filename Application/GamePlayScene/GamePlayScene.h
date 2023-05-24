@@ -39,6 +39,8 @@ private:
 	Sprite *startToGoal = nullptr;
 	Sprite *goalSprite = nullptr;
 	Sprite *gaugeSprite[17] = { nullptr };
+	Sprite *buttonA = nullptr;
+	Sprite *buttonSpace = nullptr;
 
 	//スプライトサイズ
 	XMFLOAT2 eggSpriteSize;
@@ -67,8 +69,7 @@ private:
 	Player *objPlayer = nullptr;
 
 	//チュートリアル用の看板
-	ModelObj *objJumpSignA = nullptr;
-	ModelObj *objWallSignA = nullptr;
+	ModelObj *objSignboard[2] = { nullptr };
 
 	//ステージブロック
 	ModelObj *objStageBox[Y_MAX][X_MAX] = { nullptr };
@@ -149,6 +150,7 @@ private:
 
 	//操作しているのがキーボードかコントローラーか判定するフラグ（falseでキーボード、trueでコントローラー）
 	bool operationButton;
+	bool operationDrawButton[2];
 
 	//タイマーの位置
 	double timerPosX;
@@ -227,6 +229,11 @@ public:
 			delete gaugeSprite[i];
 			gaugeSprite[i] = nullptr;
 		}
+		delete buttonA;
+		buttonA = nullptr;
+		delete buttonSpace;
+		buttonSpace = nullptr;
+
 		for (int i = 0; i < 10; i++)
 		{
 			delete cloud[i];
@@ -252,10 +259,11 @@ public:
 		}
 		delete objPlayer;
 		objPlayer = nullptr;
-		delete objJumpSignA;
-		objJumpSignA = nullptr;
-		delete objWallSignA;
-		objWallSignA = nullptr;
+		for (int i = 0; i < 2; i++)
+		{
+			delete objSignboard[i];
+			objSignboard[i] = nullptr;
+		}
 		delete firebar;
 		firebar = nullptr;
 		delete objGoal;

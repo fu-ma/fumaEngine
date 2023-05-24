@@ -17,10 +17,9 @@ enum class ResourcesName
 	modelBlueBlock,
 	modelWireBlock,
 	modelGoal,
-	modelJumpSignA,
-	modelJumpSignSpace,
-	modelWallSignA,
-	modelWallSignSpace,
+	modelSignboard,
+	modelSignboardA,
+	modelSignboardSpace,
 	modelBackObj1,
 	modelBackObj2,
 	modelBackObj3,
@@ -64,10 +63,9 @@ private:
 	Model *modelRedPlayer;
 
 	//チュートリアル用の看板
-	Model *modelJumpSignA;
-	Model *modelJumpSignSpace;
-	Model *modelWallSignA;
-	Model *modelWallSignSpace;
+	Model *modelSignboard;
+	Model *modelSignboardA;
+	Model *modelSignboardSpace;
 
 	//雲
 	Model *modelCloud;
