@@ -4,7 +4,6 @@
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
 	Framework *scene = new GameScene();
-
 	scene->GameRun();
 
 	delete scene;
