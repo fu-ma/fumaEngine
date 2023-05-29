@@ -45,6 +45,8 @@ void Resources::StaticInit(Audio *audio)
 	Sprite::LoadTexture(28, L"Resources/image/gauge.dds");
 	Sprite::LoadTexture(29, L"Resources/image/ButtonA.dds");
 	Sprite::LoadTexture(30, L"Resources/image/ButtonSpace.dds");
+	Sprite::LoadTexture(31, L"Resources/image/tutorial1.dds");
+	Sprite::LoadTexture(32, L"Resources/image/tutorial2.dds");
 
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer = Model::CreateFromOBJ("player", true);

@@ -41,7 +41,7 @@ private:
 	Sprite *gaugeSprite[17] = { nullptr };
 	Sprite *buttonA = nullptr;
 	Sprite *buttonSpace = nullptr;
-
+	Sprite *tutorialSprite[2] = { nullptr };
 	//スプライトサイズ
 	XMFLOAT2 eggSpriteSize;
 	XMFLOAT2 startToGoalSize;
@@ -151,6 +151,8 @@ private:
 	//操作しているのがキーボードかコントローラーか判定するフラグ（falseでキーボード、trueでコントローラー）
 	bool operationButton;
 	bool operationDrawButton[2];
+	//動かなくなるフラグ
+	bool tutorialMoveFlag;
 
 	//タイマーの位置
 	double timerPosX;
@@ -233,6 +235,11 @@ public:
 		buttonA = nullptr;
 		delete buttonSpace;
 		buttonSpace = nullptr;
+		for (int i = 0; i < 2; i++)
+		{
+			delete tutorialSprite[i];
+			tutorialSprite[i] = nullptr;
+		}
 
 		for (int i = 0; i < 10; i++)
 		{

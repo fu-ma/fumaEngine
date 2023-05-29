@@ -47,7 +47,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	//プレイヤーのすべての動き
-	void Move();
+	void Move(const bool &isJumpFlag = false);
 	//ステージセレクト用に使うジャンプだけの処理
 	void Jump();
 	//壁の左に当たった時の処理

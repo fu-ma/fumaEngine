@@ -44,6 +44,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	}
 	buttonA = Sprite::Create(29, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
 	buttonSpace = Sprite::Create(30, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
+	tutorialSprite[0] = Sprite::Create(31, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f });
+	tutorialSprite[1]=Sprite::Create(32, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f });
 
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
@@ -174,6 +176,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	{
 		operationDrawButton[i] = false;
 	}
+	tutorialMoveFlag = false;
 
 	tmp = 0;
 	swapI = 0;
@@ -704,7 +707,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			timerMoveT = 0.21f;
 			//一時停止していなかったら
-			if (stopFlag == false && clearStopFlag == false)
+			if (stopFlag == false && clearStopFlag == false && tutorialMoveFlag == false)
 			{
 				if (gameTimer > 0)
 				{
@@ -767,9 +770,9 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			objPlayer->notOnCollision();
 		}
-		if (objPlayer->GetHP() > 0 && gameOverFlag == false)
+		if (objPlayer->GetHP() > 0 && gameOverFlag == false && tutorialMoveFlag == false)
 		{
-			objPlayer->Move();
+			objPlayer->Move(operationDrawButton[0] || operationDrawButton[1]);
 		}
 		for (int y = 0; y < Y_MAX; y++)
 		{
@@ -939,6 +942,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == true)
 		{
 			operationDrawButton[i] = true;
+			if (gameControl->moveControl(Move::JUMPTRIGGER))
+			{
+				tutorialMoveFlag = !tutorialMoveFlag;
+			}
 		}
 		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == false)
 		{
@@ -1277,6 +1284,14 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 
 	//ジャンプ時のゲージスプライト
 	gaugeSprite[(int)(gaugeSpriteTime / 2)]->Draw();
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (tutorialMoveFlag == true && operationDrawButton[i] == true)
+		{
+			tutorialSprite[i]->Draw();
+		}
+	}
 
 	//ゲームオーバーの遷移
 	if (gameOverFlag == true)

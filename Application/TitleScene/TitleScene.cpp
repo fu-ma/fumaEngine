@@ -319,7 +319,7 @@ void TitleScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	//backGround->Draw();
+	backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア

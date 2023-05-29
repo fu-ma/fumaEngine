@@ -148,7 +148,7 @@ void Player::Draw()
 	pushEnemyParticle->Draw();
 }
 
-void Player::Move()
+void Player::Move(const bool &isJumpFlag)
 {
 	//プレイヤーの重力処理
 	Gravity();
@@ -247,7 +247,10 @@ void Player::Move()
 	}
 
 	//プレイヤーのジャンプ処理
-	PlayerJump();
+	if (isJumpFlag == false)
+	{
+		PlayerJump();
+	}
 
 	//無敵時間
 	invincibleTime();
