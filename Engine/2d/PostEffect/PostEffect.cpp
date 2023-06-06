@@ -8,12 +8,12 @@
 using namespace DirectX;
 
 //静的メンバ変数の実体
-const float PostEffect::clearColor[4] = { 1.0f,0.2f,0.8f,0.1f };//緑っぽい色
+const float PostEffect::clearColor[4] = { 0.0f,0.2f,0.5f,0.1f };//緑っぽい色
 
 PostEffect::PostEffect()
 	: Sprite
 	(
-		100,//テクスチャ番号
+		31,//テクスチャ番号
 		{ 0, 0},//座標
 		{ 1280.0f, 720.0f},//サイズ
 		{ 1, 1, 1, 1},//色

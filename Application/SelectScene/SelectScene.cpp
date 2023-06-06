@@ -15,46 +15,39 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
 	// 背景スプライト生成
-	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Stage1Sprite = Sprite::Create(6, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Stage2Sprite = Sprite::Create(7, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Stage3Sprite = Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Stage4Sprite = Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Stage5Sprite = Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	playerIconSprite = Sprite::Create(12, { 64,64 });
-	fadeIN = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	for (int j = 0; j < 5; j++)
+	backGround.reset(Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Stage1Sprite.reset(Sprite::Create(6, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Stage2Sprite.reset(Sprite::Create(7, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Stage3Sprite.reset(Sprite::Create(8, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Stage4Sprite.reset(Sprite::Create(9, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Stage5Sprite.reset(Sprite::Create(10, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	playerIconSprite.reset(Sprite::Create(12, { 64,64 }));
+	fadeIN.reset(Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	fadeOut.reset(Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+
+	for (int j = 0; j < STAR_STAGE_NUM; j++)
 	{
-		for (int i = 0; i < 3; i++)
+		for (int i = 0; i < STAR_NUM; i++)
 		{
-			starSprite[i][j] = Sprite::Create(26, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f});
-			noStarSprite[i][j] = Sprite::Create(27, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f});
+			starSprite[i][j].reset(Sprite::Create(26, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f}));
+			noStarSprite[i][j].reset(Sprite::Create(27, {WinApp::window_width / 2.0f,WinApp::window_height / 2.0f}));
 		}
 	}
 
 	// 3Dオブジェクト生成
-	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
+	objPlayer.reset(Player::Create(resources->GetModel(ResourcesName::modelPlayer)));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < cloud.size(); i++)
 	{
-		cloud[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelCloud));
-	}
-
-	for (int y = 0; y < 6; y++)
-	{
-		for (int x = 0; x < 24; x++)
-		{
-			titleStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
-		}
+		cloud[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelCloud)));
 	}
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
 	{
-		backObj1[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1));
-		backObj2[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2));
-		backObj3[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3));
+		backObj1[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1)));
+		backObj2[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2)));
+		backObj3[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3)));
 	}
 
 	//背景用の見栄え用オブジェクト
@@ -89,16 +82,17 @@ void SelectScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Aud
 	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
 	objPlayer->Initialize();
 	objPlayer->SetRotation({ 0,0,0 });
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < cloud.size(); i++)
 	{
 		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
 
-	for (int y = 0; y < 6; y++)
+	for (int y = 0; y < TITLE_STAGE_Y; y++)
 	{
-		for (int x = 0; x < 24; x++)
+		for (int x = 0; x < TITLE_STAGE_X; x++)
 		{
+			titleStageBox[y][x].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox)));
 			if (selectMap[y][x] == 1)
 			{
 				titleStageBox[y][x]->SetPosition({ 2.0f * x - 10.0f, -2.0f * y + 10.0f, 0 });
@@ -220,7 +214,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		fadeOut->SetSize({ (float)fadeOutSizeX,(float)fadeOutSizeY });
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < cloud.size(); i++)
 	{
 		cloudPos[i].x -= 0.03f;
 		if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 40.0f)
@@ -291,9 +285,9 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		}
 
 		//ブロックのスクロール
-		for (int y = 0; y < 6; y++)
+		for (int y = 0; y < TITLE_STAGE_Y; y++)
 		{
-			for (int x = 0; x < 24; x++)
+			for (int x = 0; x < TITLE_STAGE_X; x++)
 			{
 				stageBoxPos[y][x].x += moveStageBlockSpeed;
 				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x > objPlayer->GetPosition().x + 25 && moveStageBlockSpeed == 0.06f)
@@ -313,7 +307,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 				{
 					if (x == 0)
 					{
-						stageBoxPos[y][x] = { titleStageBox[y][24 - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+						stageBoxPos[y][x] = { titleStageBox[y][TITLE_STAGE_X - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
 					}
 					else
 					{
@@ -327,6 +321,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 		if (input->isKeyTrigger(DIK_ESCAPE) || controller->TriggerButton(static_cast<int>(Button::START)) == true)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			easingFlag = true;
 			goTitleFlag = true;
 		}
@@ -334,6 +329,8 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		if ((input->isKeyTrigger(DIK_A) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
 			&& wholeScene->GetSelectNum() > 0 && selectMoveTime >= 0.2f)
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData5));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData5), 0.2f);
 			selectMoveTime = 0;
 			afterplayerRotZ += 180;
 			selectNumber -= 1;
@@ -341,12 +338,15 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		else if ((input->isKeyTrigger(DIK_D) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
 			&& wholeScene->GetSelectNum() < 4 && selectMoveTime >= 0.2f)
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData5));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData5), 0.2f);
 			selectMoveTime = 0;
 			afterplayerRotZ -= 180;
 			selectNumber += 1;
 		}
 		else
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData5));
 			selectMoveTime += 0.08f;
 		}
 	}
@@ -431,35 +431,34 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	lightGroup->Update();
 	camera->Update();
 	objPlayer->Update();
-	for (int y = 0; y < 6; y++)
+	for (int y = 0; y < TITLE_STAGE_Y; y++)
 	{
-		for (int x = 0; x < 24; x++)
+		for (int x = 0; x < TITLE_STAGE_X; x++)
 		{
-			titleStageBox[y][x]->Update();
-			objPlayer->HitObjBase(titleStageBox[y][x]);
+			objPlayer->HitObjBase(titleStageBox[y][x].get());
 
-			if (GameCollision::CollisionPlayerLeftToObj(objPlayer, titleStageBox[y][x]))
+			if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjLeft(titleStageBox[y][x]);
+				objPlayer->HitObjLeft(titleStageBox[y][x].get());
 			}
-			else if (GameCollision::CollisionPlayerRightToObj(objPlayer, titleStageBox[y][x]))
+			else if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjRight(titleStageBox[y][x]);
+				objPlayer->HitObjRight(titleStageBox[y][x].get());
 			}
-			else if (GameCollision::CollisionPlayerDownToObj(objPlayer, titleStageBox[y][x]))
+			else if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjDown(titleStageBox[y][x]);
+				objPlayer->HitObjDown(titleStageBox[y][x].get());
 			}
-			else if (GameCollision::CollisionPlayerUpToObj(objPlayer, titleStageBox[y][x]))
+			else if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjUp(titleStageBox[y][x]);
+				objPlayer->HitObjUp(titleStageBox[y][x].get());
 			}
 		}
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (const auto& oneCloud : cloud)
 	{
-		cloud[i]->Update();
+		oneCloud->Update();
 	}
 
 	//ステージ番号をずらす
@@ -470,7 +469,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 	Stage5Sprite->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos, WinApp::window_height / 2.0f });
 
 	//スターの位置と大きさ
-	for (int i = 0; i < 3; i++)
+	for (int i = 0; i < STAR_NUM; i++)
 	{
 		starSprite[i][0]->SetSize({ (float)stage1SpriteSize / 4,(float)stage1SpriteSize / 4 });
 		starSprite[i][1]->SetSize({ (float)stage2SpriteSize / 4,(float)stage2SpriteSize / 4 });
@@ -497,7 +496,7 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		noStarSprite[i][4]->SetPosition({ WinApp::window_width / 2.0f + selectInterval * 4 - (float)selectPos - (float)stage5SpriteSize / 4 + (((float)stage5SpriteSize / 4) * i), WinApp::window_height / 2.0f - (float)stage5SpriteSize / 2 });
 	}
 	//スターの回転
-	for (int i = 0; i < 5; i++)
+	for (int i = 0; i < STAR_STAGE_NUM; i++)
 	{
 		if (wholeScene->GetStarNum(i).x == 0)
 		{
@@ -530,8 +529,9 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 		}
 	}
 	//指定の位置でSpaceを押すとそのステージにとぶ
-	if (objPlayer->GetJumpTimer() > 5 && fadeOutFlag == false)
+	if ((input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A))) && fadeOutFlag == false)
 	{
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 		easingFlag = true;
 		selectedStageFlag = true;
 	}
@@ -573,6 +573,13 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 			pEngine->changeState(new GamePlayScene(5));
 		}
 	}
+	for (int y = 0; y < TITLE_STAGE_Y; y++)
+	{
+		for (int x = 0; x < TITLE_STAGE_X; x++)
+		{
+			titleStageBox[y][x]->Update();
+		}
+	}
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
@@ -593,7 +600,7 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	//backGround->Draw();
+	backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア
@@ -611,9 +618,9 @@ void SelectScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText 
 		backObj3[i]->Draw();
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (const auto &oneCloud : cloud)
 	{
-		cloud[i]->Draw();
+		oneCloud->Draw();
 	}
 	objPlayer->Draw();
 	for (int y = 0; y < 6; y++)

@@ -21,29 +21,31 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	goalSpriteSize = { 64,64 };
 
 	//スプライト生成
-	backGround = Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	playerIconSprite = Sprite::Create(12, { 64,64 });
-	GameOver = Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	goTitle = Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f });
-	reStart = Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	Return = Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f });
-	ClearStageSprite = Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	fadeOut = Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	fadeIn = Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f });
-	escUI = Sprite::Create(21, { WinApp::window_width - 64,WinApp::window_height - 64 });
-	homeUI = Sprite::Create(22, { WinApp::window_width - 64,WinApp::window_height - 64 });
-	eggSprite = Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x/2 ,150 });
-	startToGoal = Sprite::Create(24, { WinApp::window_width / 2,150 });
-	goalSprite = Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 });
+	backGround.reset(Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	playerIconSprite.reset(Sprite::Create(12, { 64,64 }));
+	GameOver.reset(Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	goTitle.reset(Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f }));
+	reStart.reset(Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	Return.reset(Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f }));
+	ClearStageSprite.reset(Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	fadeOut.reset(Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	fadeIn.reset(Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	escUI.reset(Sprite::Create(21, { WinApp::window_width - 64,WinApp::window_height - 64 }));
+	homeUI.reset(Sprite::Create(22, { WinApp::window_width - 64,WinApp::window_height - 64 }));
+	eggSprite.reset(Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x/2 ,150 }));
+	startToGoal.reset(Sprite::Create(24, { WinApp::window_width / 2,150 }));
+	goalSprite.reset(Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 }));
 
 	for (int i = 0; i < 17; i++)
 	{
-		gaugeSprite[i] = Sprite::Create(28, { WinApp::window_width / 2,WinApp::window_height / 2 },{1,1,1,0.5f});
+		gaugeSprite[i].reset(Sprite::Create(28, { WinApp::window_width / 2,WinApp::window_height / 2 },{1,1,1,0.5f}));
 		gaugeSprite[i]->SetSize({ 32,128 });
 		gaugeSprite[i]->SetTextureRect({ (float)(128 * i),(float)(0) }, { 128,512 });
 	}
-	buttonA = Sprite::Create(29, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
-	buttonSpace = Sprite::Create(30, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 });
+	buttonA.reset(Sprite::Create(29, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 }));
+	buttonSpace.reset(Sprite::Create(30, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 }));
+	tutorialSprite[0].reset(Sprite::Create(31, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f }));
+	tutorialSprite[1].reset(Sprite::Create(32, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f }));
 
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
@@ -51,23 +53,12 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	goalSprite->SetSize(goalSpriteSize);
 
 	// 3Dオブジェクト生成
-	objPlayer = Player::Create(resources->GetModel(ResourcesName::modelPlayer));
+	objPlayer = std::make_unique<Player>();
+	objPlayer.reset(Player::Create(resources->GetModel(ResourcesName::modelPlayer)));
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < cloud.size(); i++)
 	{
-		cloud[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelCloud));
-	}
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			objStageBox[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox));
-			enemy[y][x] = Enemy::Create(resources->GetModel(ResourcesName::modelEnemy));
-			star[y][x] = Star::Create(resources->GetModel(ResourcesName::modelStar));
-			thornStick[y][x] = ThornStick::Create(resources->GetModel(ResourcesName::modelThornStick));
-			objRedBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock));
-			objBlueBlock[y][x] = ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock));
-		}
+		cloud[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelCloud)));
 	}
 
 	for (int i = 0; i < 10; i++)
@@ -77,27 +68,27 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		cloudSpeed[i] = (float)wholeScene->GetRand(10, 30);
 	}
 
-	objGoal = ModelObj::Create(resources->GetModel(ResourcesName::modelGoal));
+	objGoal.reset(ModelObj::Create(resources->GetModel(ResourcesName::modelGoal)));
 
 	//チュートリアル用の看板
-	for (int i = 0; i < 2; i++)
+	for (auto &oneSigboard : objSignboard)
 	{
-		objSignboard[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelSignboard));
+		oneSigboard.reset(ModelObj::Create(resources->GetModel(ResourcesName::modelSignboard)));
 	}
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
 	{
-		backObj1[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1));
-		backObj2[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2));
-		backObj3[i] = ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3));
+		backObj1[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj1)));
+		backObj2[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj2)));
+		backObj3[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3)));
 	}
 
-	playerParticle = new Particle();
+	playerParticle = std::make_unique<Particle>();
 	playerParticle->Initialize(resources->GetModel(ResourcesName::modelEggShell));
 
 	//カウントダウンクラス初期化
-	countDown = new CountDown();
+	countDown = std::make_unique<CountDown>();
 	if (wholeScene->GetSelectNum() == 0)
 	{
 		json->ReadFile("Resources/data.json", "map1");
@@ -174,6 +165,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	{
 		operationDrawButton[i] = false;
 	}
+	tutorialMoveFlag = false;
 
 	tmp = 0;
 	swapI = 0;
@@ -196,18 +188,11 @@ void GamePlayScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugTex
 	StageDraw(common, debugText);
 }
 
-void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Audio *audio, Fps *fps)
+void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map, const int stageNum, Audio *audio, Fps *fps)
 {
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
-	for (int y = 0; y < Y_MAX; y++)
-	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			map[y][x] = Map[y][x];
-		}
-	}
 	objPlayer->Initialize();
 	gimmickCenterNum = 0;
 	enemyNum = 0;
@@ -216,36 +201,27 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	{
 		for (int x = 0; x < X_MAX; x++)
 		{
-
-			objStageBox[y][x]->SetPosition({ -100, -100, 0 });
-			enemy[y][x]->Initialize();
-			enemy[y][x]->SetPosition({ -100, -100, 0 });
-			enemy[y][x]->SetRotation({ 0,180,0 });
-
-			star[y][x]->Initialize();
-			star[y][x]->SetPosition({ -100, -100, 0 });
-			star[y][x]->SetRotation({ 90,0,0 });
-
-			thornStick[y][x]->Initialize();
-			thornStick[y][x]->SetPosition({ -100, -100, 0 });
-
-			objRedBlock[y][x]->SetPosition({ -100,-100,0 });
-			objBlueBlock[y][x]->SetPosition({ -100,-100,0 });
-
 			//ブロック
-			if (map[y][x] == 1)
+			if (Map[y][x] == 1)
 			{
-				objStageBox[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objStageBox.push_back(std::make_unique<ModelObj>());
+				objStageBox[objStageBox.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox)));
+				objStageBox[objStageBox.size() - 1]->Initialize();
+				objStageBox[objStageBox.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//敵
-			if (map[y][x] == 2)
+			if (Map[y][x] == 2)
 			{
-				enemy[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+				enemy.push_back(std::make_unique<Enemy>());
+				enemy[enemy.size() - 1].reset(Enemy::Create(resources->GetModel(ResourcesName::modelEnemy)));
+				enemy[enemy.size() - 1]->Initialize();
+				enemy[enemy.size() - 1]->SetRotation({ 0,180,0 });
+				enemy[enemy.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 				if (stageNum == 2)
 				{
 					if (x == 12)
 					{
-						enemy[y][x]->SetAction("FIRE");
+						enemy[enemy.size() - 1]->SetAction("FIRE");
 					}
 					if (x == 23 || x == 26)
 					{
@@ -253,21 +229,21 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 					}
 					if (x == 67 || x == 70)
 					{
-						enemy[y][x]->SetAction("JUMP");
+						enemy[enemy.size() - 1]->SetAction("JUMP");
 					}
 				}
 				if (stageNum == 3)
 				{
 					if (x == 9 || x == 12 || x == 15)
 					{
-						enemy[y][x]->SetAction("NORMAL");
+						enemy[enemy.size() - 1]->SetAction("NORMAL");
 					}
 				}
 				if (stageNum == 4)
 				{
 					if (x == 12)
 					{
-						enemy[y][x]->SetAction("NORMAL");
+						enemy[enemy.size() - 1]->SetAction("NORMAL");
 					}
 					if (x == 23 || x == 26)
 					{
@@ -275,7 +251,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 					}
 					if (x == 67 || x == 70)
 					{
-						enemy[y][x]->SetAction("JUMP");
+						enemy[enemy.size() - 1]->SetAction("JUMP");
 					}
 				}
 				if (stageNum == 5)
@@ -284,52 +260,65 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 				}
 			}
 			//赤ブロック
-			if (map[y][x] == 4)
+			if (Map[y][x] == 4)
 			{
-				objRedBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objRedBlock.push_back(std::make_unique<ModelObj>());
+				objRedBlock[objRedBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock)));
+				objRedBlock[objRedBlock.size() - 1]->Initialize();
+				objRedBlock[objRedBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//青ブロック
-			if (map[y][x] == 5)
+			if (Map[y][x] == 5)
 			{
-				objBlueBlock[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objBlueBlock.push_back(std::make_unique<ModelObj>());
+				objBlueBlock[objBlueBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock)));
+				objBlueBlock[objBlueBlock.size() - 1]->Initialize();
+				objBlueBlock[objBlueBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//チュートリアル用の看板1
-			if (map[y][x] == 6)
+			if (Map[y][x] == 6)
 			{
 				objSignboard[0]->SetPosition({2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
 				objSignboard[0]->SetRotation({ 0,90,0 });
 				objSignboard[0]->SetScale({ 1,1,1 });
 			}
 			//チュートリアル用の看板2
-			if (map[y][x] == 7)
+			if (Map[y][x] == 7)
 			{
 				objSignboard[1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
 				objSignboard[1]->SetRotation({ 0,90,0 });
 				objSignboard[1]->SetScale({ 1,1,1 });
 			}
 			//とげこん棒
-			if (map[y][x] == 8)
+			if (Map[y][x] == 8)
 			{
-				thornStick[y][x]->SetDirection(ThornDirection::UP);
-				thornStick[y][x]->RollingStick();
-				if (thornStick[y][x]->GetDirection() == ThornDirection::DOWN || thornStick[y][x]->GetDirection() == ThornDirection::UP)
+				thornStick.push_back(std::make_unique<ThornStick>());
+				thornStick[thornStick.size() - 1].reset(ThornStick::Create(resources->GetModel(ResourcesName::modelThornStick)));
+				thornStick[thornStick.size() - 1]->Initialize();
+				thornStick[thornStick.size() - 1]->SetDirection(ThornDirection::UP);
+				thornStick[thornStick.size() - 1]->RollingStick();
+				if (thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::DOWN || thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::UP)
 				{
-					thornStick[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 6, 0 });
-					thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
+					thornStick[thornStick.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 6, 0 });
+					thornStick[thornStick.size() - 1]->SetOldStickPos(thornStick[thornStick.size() - 1]->GetPosition());
 				}
-				if (thornStick[y][x]->GetDirection() == ThornDirection::LEFT || thornStick[y][x]->GetDirection() == ThornDirection::RIGHT)
+				if (thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::LEFT || thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::RIGHT)
 				{
-					thornStick[y][x]->SetPosition({ 2.0f * x - 6, -2.0f * y + Y_MAX * 2.0f, 0 });
-					thornStick[y][x]->SetOldStickPos(thornStick[y][x]->GetPosition());
+					thornStick[thornStick.size() - 1]->SetPosition({ 2.0f * x - 6, -2.0f * y + Y_MAX * 2.0f, 0 });
+					thornStick[thornStick.size() - 1]->SetOldStickPos(thornStick[thornStick.size() - 1]->GetPosition());
 				}
 			}
 			//スター（収集物）
-			if (map[y][x] == 9)
+			if (Map[y][x] == 9)
 			{
-				star[y][x]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				star.push_back(std::make_unique<Star>());
+				star[star.size() - 1].reset(Star::Create(resources->GetModel(ResourcesName::modelStar)));
+				star[star.size() - 1]->Initialize();
+				star[star.size() - 1]->SetRotation({ 90,0,0 });
+				star[star.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//ゴール
-			if (map[y][x] == 10)
+			if (Map[y][x] == 10)
 			{
 				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
 				objGoal->SetScale({ 1.0f,3.0f,1.0f });
@@ -344,7 +333,7 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 		{
 			gimmickCenter[x] = { -100,0,0 };
 			//ファイアーバー
-			if (map[y][x] == 3)
+			if (Map[y][x] == 3)
 			{
 				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
 				gimmickCenterNum++;
@@ -384,9 +373,8 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	for (int i = 0; i < gimmickCenterNum; i++)
 	{
 		wholeScene->SetStageData(wholeScene->GetStageDatas(stageNum - 1, i));
-		firebar = new Firebar(gimmickCenter[i].x, gimmickCenter[i].y, wholeScene->GetStageData().firebarNum, wholeScene->GetStageData().direction, wholeScene->GetStageData().firebarSpeed);
-		firebar->StaticInit();
-		fire.push_back(firebar);
+		fire.push_back(std::make_unique<Firebar>(gimmickCenter[i].x, gimmickCenter[i].y, wholeScene->GetStageData().firebarNum, wholeScene->GetStageData().direction, wholeScene->GetStageData().firebarSpeed));
+		fire[fire.size() - 1]->StaticInit();
 	}
 
 
@@ -437,18 +425,15 @@ void GamePlayScene::StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Au
 	timerEmphasisSize = 0;
 	timerEmphasisSizeT = 0;
 
-	for (int y = 0; y < Y_MAX; y++)
+	for (const auto &oneStar : star)
 	{
-		for (int x = 0; x < X_MAX; x++)
+		if (oneStar->GetPosition().x >= 0)
 		{
-			if (star[y][x]->GetPosition().x >= 0)
+			//数値だけ一旦移す
+			starPosX[swapI] = oneStar->GetPosition().x;
+			if (swapI < 2)
 			{
-				//数値だけ一旦移す
-				starPosX[swapI] = star[y][x]->GetPosition().x;
-				if (swapI < 2)
-				{
-					swapI++;
-				}
+				swapI++;
 			}
 		}
 	}
@@ -471,7 +456,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 {
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
-
+	
 	lightGroup->SetCircleShadowDir(0, XMVECTOR({ 0,-1,0 }));
 	lightGroup->SetCircleShadowCasterPos(0, objPlayer->GetPosition());
 	lightGroup->SetCircleShadowAtten(0, XMFLOAT3({ objPlayer->GetShadowSize().x,objPlayer->GetShadowSize().y,0.0f }));
@@ -704,7 +689,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			timerMoveT = 0.21f;
 			//一時停止していなかったら
-			if (stopFlag == false && clearStopFlag == false)
+			if (stopFlag == false && clearStopFlag == false && tutorialMoveFlag == false)
 			{
 				if (gameTimer > 0)
 				{
@@ -767,19 +752,13 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			objPlayer->notOnCollision();
 		}
-		if (objPlayer->GetHP() > 0 && gameOverFlag == false)
+		if (objPlayer->GetHP() > 0 && gameOverFlag == false && tutorialMoveFlag == false)
 		{
-			objPlayer->Move();
+			objPlayer->Move(audio,operationDrawButton[0] || operationDrawButton[1]);
 		}
-		for (int y = 0; y < Y_MAX; y++)
+		for (const auto &oneThornStick : thornStick)
 		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				if (thornStick[y][x]->GetPosition().x >= 0)
-				{
-					thornStick[y][x]->Move();
-				}
-			}
+			oneThornStick->Move();
 		}
 
 		if (gameControl->moveControl(Move::JUMP) && gaugeStatus == GamePlayScene::GaugeStatus::PUSHOK)
@@ -794,20 +773,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			gaugeStatus = GamePlayScene::GaugeStatus::PUSHED;
 		}
 
-		for (int y = 0; y < Y_MAX; y++)
+		for (const auto &oneEnemy : enemy)
 		{
-			for (int x = 0; x < X_MAX; x++)
+			if ((objPlayer->GetPosition().x + 2.0 * 13 > oneEnemy->GetPosition().x))
 			{
-				if (enemy[y][x]->GetPosition().x >= 0 && (objPlayer->GetPosition().x + 2.0 * 13 > enemy[y][x]->GetPosition().x))
+				oneEnemy->Move(objPlayer->GetPosition());
+				for (const auto &oneStageBox : objStageBox)
 				{
-					enemy[y][x]->Move(objPlayer->GetPosition());
-					for (int w = 0; w < Y_MAX; w++)
-					{
-						for (int z = 0; z < X_MAX; z++)
-						{
-							enemy[y][x]->CollisionObject(objStageBox[w][z]);
-						}
-					}
+					oneEnemy->CollisionObject(oneStageBox.get());
 				}
 			}
 		}
@@ -821,126 +794,139 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//あたり判定
 	if (countDown->GetStart() >= 0.2 && stopFlag == false)
 	{
-		for (int y = 0; y < Y_MAX; y++)
+		for (const auto &oneStageBox : objStageBox)
 		{
-			for (int x = 0; x < X_MAX; x++)
+			//ブロックとプレイヤーの当たり判定
+			objPlayer->HitObjBase(oneStageBox.get());
+			if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneStageBox.get()))
 			{
-				//ブロックとプレイヤーの当たり判定
-				objPlayer->HitObjBase(objStageBox[y][x]);
-				if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objStageBox[y][x]))
+				objPlayer->HitObjLeft(oneStageBox.get());
+			}
+			if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneStageBox.get()))
+			{
+				objPlayer->HitObjRight(oneStageBox.get());
+			}
+			if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneStageBox.get()))
+			{
+				objPlayer->HitObjDown(oneStageBox.get());
+				gaugeSpriteTime = 0;
+				gaugeStatus = GamePlayScene::GaugeStatus::PUSHOK;
+			}
+			if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), oneStageBox.get()))
+			{
+				objPlayer->HitObjUp(oneStageBox.get());
+			}
+		}
+
+		for (const auto &oneEnemy : enemy)
+		{
+			//敵とプレイヤーの当たり判定
+			if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer.get(), oneEnemy.get()))
+			{
+				objPlayer->HitEnemyLeftAndRight(oneEnemy.get());
+			}
+			if (GameCollision::CollisionPlayerDownToEnemy(objPlayer.get(), oneEnemy.get()))
+			{
+				objPlayer->HitEnemyDown(oneEnemy.get());
+			}
+			if (GameCollision::CollisionPlayerUpToEnemy(objPlayer.get(), oneEnemy.get()))
+			{
+				objPlayer->HitEnemyUp(oneEnemy.get());
+			}
+			//敵が出すファイアーとプレイヤーの当たり判定
+			if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), oneEnemy->GetFire(), oneEnemy.get()->GetFire()->GetScale()))
+			{
+				if (oneEnemy.get()->GetFire()->GetScale().x >= 0.1f)
 				{
-					objPlayer->HitObjLeft(objStageBox[y][x]);
+					objPlayer->HitGimmick(oneEnemy.get()->GetFire());
 				}
-				if (GameCollision::CollisionPlayerRightToObj(objPlayer, objStageBox[y][x]))
+			}
+		}
+		for (const auto &oneRedBlock : objRedBlock)
+		{
+			if (objPlayer->GetJumpChangeBlockFlag() == false)
+			{
+				objPlayer->HitObjBase(oneRedBlock.get());
+
+				if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneRedBlock.get()))
 				{
-					objPlayer->HitObjRight(objStageBox[y][x]);
+					objPlayer->HitObjLeft(oneRedBlock.get());
 				}
-				if (GameCollision::CollisionPlayerDownToObj(objPlayer, objStageBox[y][x]))
+				if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneRedBlock.get()))
 				{
-					objPlayer->HitObjDown(objStageBox[y][x]);
-					gaugeSpriteTime = 0;
-					gaugeStatus = GamePlayScene::GaugeStatus::PUSHOK;
+					objPlayer->HitObjRight(oneRedBlock.get());
 				}
-				if (GameCollision::CollisionPlayerUpToObj(objPlayer, objStageBox[y][x]))
+				if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneRedBlock.get()))
 				{
-					objPlayer->HitObjUp(objStageBox[y][x]);
+					objPlayer->HitObjDown(oneRedBlock.get());
+				}
+				if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), oneRedBlock.get()))
+				{
+					objPlayer->HitObjUp(oneRedBlock.get());
 				}
 
-				//敵とプレイヤーの当たり判定
-				if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer, enemy[y][x]))
-				{
-					objPlayer->HitEnemyLeftAndRight(enemy[y][x]);
-				}
-				if (GameCollision::CollisionPlayerDownToEnemy(objPlayer, enemy[y][x]))
-				{
-					objPlayer->HitEnemyDown(enemy[y][x]);
-				}
-				if (GameCollision::CollisionPlayerUpToEnemy(objPlayer, enemy[y][x]))
-				{
-					objPlayer->HitEnemyUp(enemy[y][x]);
-				}
-				//敵が出すファイアーとプレイヤーの当たり判定
-				if (GameCollision::CollisionPlayerToGimmick(objPlayer, enemy[y][x]->GetFire(), enemy[y][x]->GetFire()->GetScale()))
-				{
-					if (enemy[y][x]->GetFire()->GetScale().x >= 0.1f)
-					{
-						objPlayer->HitGimmick(enemy[y][x]->GetFire());
-					}
-				}
+			}
 
-				//スターとプレイヤーの当たり判定
-				if (GameCollision::CollisionPlayerToStar(objPlayer, star[y][x]))
+		}
+		for (const auto &oneBlueBlock : objBlueBlock)
+		{
+			if (objPlayer->GetJumpChangeBlockFlag() == true)
+			{
+				objPlayer->HitObjBase(oneBlueBlock.get());
+
+				if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
-					star[y][x]->GetStar();
-					//スターの枚数分調べる
-					if (star[y][x]->GetPosition().x == starPosX[0])
-					{
-						starToget.x = 1;
-					}
-					if (star[y][x]->GetPosition().x == starPosX[1])
-					{
-						starToget.y = 1;
-					}
-					if (star[y][x]->GetPosition().x == starPosX[2])
-					{
-						starToget.z = 1;
-					}
-					wholeScene->SetStarNum(starToget, wholeScene->GetStageFireNum() - 1);
+					objPlayer->HitObjLeft(oneBlueBlock.get());
 				}
-				if (objPlayer->GetJumpChangeBlockFlag() == false)
+				if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
-					objPlayer->HitObjBase(objRedBlock[y][x]);
-
-					if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objRedBlock[y][x]))
-					{
-						objPlayer->HitObjLeft(objRedBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerRightToObj(objPlayer, objRedBlock[y][x]))
-					{
-						objPlayer->HitObjRight(objRedBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerDownToObj(objPlayer, objRedBlock[y][x]))
-					{
-						objPlayer->HitObjDown(objRedBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerUpToObj(objPlayer, objRedBlock[y][x]))
-					{
-						objPlayer->HitObjUp(objRedBlock[y][x]);
-					}
-
+					objPlayer->HitObjRight(oneBlueBlock.get());
 				}
-				if (objPlayer->GetJumpChangeBlockFlag() == true)
+				if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
-					objPlayer->HitObjBase(objBlueBlock[y][x]);
-
-					if (GameCollision::CollisionPlayerLeftToObj(objPlayer, objBlueBlock[y][x]))
-					{
-						objPlayer->HitObjLeft(objBlueBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerRightToObj(objPlayer, objBlueBlock[y][x]))
-					{
-						objPlayer->HitObjRight(objBlueBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerDownToObj(objPlayer, objBlueBlock[y][x]))
-					{
-						objPlayer->HitObjDown(objBlueBlock[y][x]);
-					}
-					if (GameCollision::CollisionPlayerUpToObj(objPlayer, objBlueBlock[y][x]))
-					{
-						objPlayer->HitObjUp(objBlueBlock[y][x]);
-					}
+					objPlayer->HitObjDown(oneBlueBlock.get());
+				}
+				if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), oneBlueBlock.get()))
+				{
+					objPlayer->HitObjUp(oneBlueBlock.get());
 				}
 			}
 		}
 	}
 	
-	for (int i = 0; i < 2; i++)
+	//スターとプレイヤーの当たり判定
+	for (const auto &oneStar : star)
 	{
-		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == true)
+		if (GameCollision::CollisionPlayerToStar(objPlayer.get(), oneStar.get()))
+		{
+			oneStar->GetStar();
+			//スターの枚数分調べる
+			if (oneStar->GetPosition().x == starPosX[0])
+			{
+				starToget.x = 1;
+			}
+			if (oneStar->GetPosition().x == starPosX[1])
+			{
+				starToget.y = 1;
+			}
+			if (oneStar->GetPosition().x == starPosX[2])
+			{
+				starToget.z = 1;
+			}
+			wholeScene->SetStarNum(starToget, wholeScene->GetStageFireNum() - 1);
+		}
+	}
+	for (int i = 0; i < objSignboard.size(); i++)
+	{
+		if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), objSignboard[i].get(), objSignboard[i]->GetScale()) == true)
 		{
 			operationDrawButton[i] = true;
+			if (gameControl->moveControl(Move::JUMPTRIGGER))
+			{
+				tutorialMoveFlag = !tutorialMoveFlag;
+			}
 		}
-		if (GameCollision::CollisionPlayerToGimmick(objPlayer, objSignboard[i], objSignboard[i]->GetScale()) == false)
+		if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), objSignboard[i].get(), objSignboard[i]->GetScale()) == false)
 		{
 			operationDrawButton[i] = false;
 		}
@@ -948,19 +934,19 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	for (auto &fireBar : fire)
 	{
 
-		if (GameCollision::CollisionPlayerLeftToObj(objPlayer, fireBar->GetCenter()))
+		if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
 			objPlayer->HitObjLeft(fireBar->GetCenter());
 		}
-		if (GameCollision::CollisionPlayerRightToObj(objPlayer, fireBar->GetCenter()))
+		if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
 			objPlayer->HitObjRight(fireBar->GetCenter());
 		}
-		if (GameCollision::CollisionPlayerUpToObj(objPlayer, fireBar->GetCenter()))
+		if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
 			objPlayer->HitObjUp(fireBar->GetCenter());
 		}
-		if (GameCollision::CollisionPlayerDownToObj(objPlayer, fireBar->GetCenter()) && !gameControl->moveControl(Move::JUMPTRIGGER))
+		if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), fireBar->GetCenter()) && !gameControl->moveControl(Move::JUMPTRIGGER))
 		{
 			objPlayer->HitObjDown(fireBar->GetCenter());
 		}
@@ -970,7 +956,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			if (i != 0)
 			{
-				if (GameCollision::CollisionPlayerToGimmick(objPlayer, fireBar->GetFire(i),fireBar->GetFire(i)->GetScale()))
+				if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), fireBar->GetFire(i),fireBar->GetFire(i)->GetScale()))
 				{
 					objPlayer->HitGimmick(fireBar->GetFire(i));
 				}
@@ -980,36 +966,30 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//とげこん棒との当たり判定
-	for (int y = 0; y < Y_MAX; y++)
+	for (const auto &oneThornStick : thornStick)
 	{
-		for (int x = 0; x < X_MAX; x++)
+		if (oneThornStick->GetDirection() == ThornDirection::DOWN || oneThornStick->GetDirection() == ThornDirection::UP)
 		{
-			if (thornStick[y][x]->GetPosition().x >= 0)
+			if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), oneThornStick.get(),
+				XMFLOAT3(oneThornStick->GetScale().x, oneThornStick->GetScale().y * 5, oneThornStick->GetScale().z)))
 			{
-				if (thornStick[y][x]->GetDirection() == ThornDirection::DOWN || thornStick[y][x]->GetDirection() == ThornDirection::UP)
-				{
-					if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
-						XMFLOAT3(thornStick[y][x]->GetScale().x, thornStick[y][x]->GetScale().y * 5, thornStick[y][x]->GetScale().z)))
-					{
-						objPlayer->HitGimmick(thornStick[y][x]);
-					}
-				}
-				if (thornStick[y][x]->GetDirection() == ThornDirection::LEFT || thornStick[y][x]->GetDirection() == ThornDirection::RIGHT)
-				{
-					if (GameCollision::CollisionPlayerToGimmick(objPlayer, thornStick[y][x],
-						XMFLOAT3(thornStick[y][x]->GetScale().x * 5, thornStick[y][x]->GetScale().y, thornStick[y][x]->GetScale().z)))
-					{
-						objPlayer->HitGimmick(thornStick[y][x]);
-					}
-				}
+				objPlayer->HitGimmick(oneThornStick.get());
+			}
+		}
+		if (oneThornStick->GetDirection() == ThornDirection::LEFT || oneThornStick->GetDirection() == ThornDirection::RIGHT)
+		{
+			if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), oneThornStick.get(),
+				XMFLOAT3(oneThornStick->GetScale().x * 5, oneThornStick->GetScale().y, oneThornStick->GetScale().z)))
+			{
+				objPlayer->HitGimmick(oneThornStick.get());
 			}
 		}
 	}
 	//ゴールとのあたり判定
-	if (GameCollision::CollisionPlayerToGoalflag(objPlayer,objGoal))
+	if (GameCollision::CollisionPlayerToGoalflag(objPlayer.get(),objGoal.get()))
 	{
-		objPlayer->HitGoal(objGoal);
-		if (GameCollision::CollisionPlayerToGoal(objPlayer, objGoal))
+		objPlayer->HitGoal(objGoal.get());
+		if (GameCollision::CollisionPlayerToGoal(objPlayer.get(), objGoal.get()))
 		{
 			fadeInFlag = true;
 			clearFlag = true;
@@ -1047,42 +1027,40 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	objPlayer->Update();
-	for (int y = 0; y < Y_MAX; y++)
+	for (const auto &oneStageBox : objStageBox)
 	{
-		for (int x = 0; x < X_MAX; x++)
-		{
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Update();
-			}
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Update();
-			}
-			if (star[y][x]->GetPosition().x >= 0)
-			{
-				star[y][x]->Update();
-			}
-			if (thornStick[y][x]->GetPosition().x >= 0)
-			{
-				thornStick[y][x]->Update();
-			}
-			if (objRedBlock[y][x]->GetPosition().x >= 0)
-			{
-				objRedBlock[y][x]->Update();
-			}
-			if (objBlueBlock[y][x]->GetPosition().x >= 0)
-			{
-				objBlueBlock[y][x]->Update();
-			}
-		}
+		oneStageBox->Update();
+	}
+	for (const auto &oneEnemy : enemy)
+	{
+		oneEnemy->Update();
+	}
+	for (const auto &oneRedBlock : objRedBlock)
+	{
+		oneRedBlock->Update();
+	}
+	for (const auto &oneBlueBlock : objBlueBlock)
+	{
+		oneBlueBlock->Update();
+	}
+
+	//スターの更新
+	for (const auto &oneStar : star)
+	{
+		oneStar->Update();
+	}
+
+	//とげこん棒の更新
+	for (const auto &oneThornStick : thornStick)
+	{
+		oneThornStick->Update();
 	}
 
 	objGoal->Update();
 	//チュートリアル用の看板
-	for (int i = 0; i < 2; i++)
+	for (const auto &oneSignboard : objSignboard)
 	{
-		objSignboard[i]->Update();
+		oneSignboard->Update();
 	}
 
 	//背景用の見栄え用オブジェクト
@@ -1115,12 +1093,12 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 ///*スプライト描画前処理*/
 	Sprite::PreDraw(common->GetCmdList().Get());
 
-	//// 背景スプライト描画
-	//backGround->Draw();
+	// 背景スプライト描画
+	backGround->Draw();
 	///*スプライト描画後処理*/
 	Sprite::PostDraw();
-	////深度バッファクリア
-	//common->ClearDepthBuffer();
+	//深度バッファクリア
+	common->ClearDepthBuffer();
 #pragma region 描画処理
 	/*モデル描画*/
 	/*モデル描画前処理*/
@@ -1140,52 +1118,61 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 		cloud[i]->Draw();
 	}
 	//マップの描画
-	for (int y = 0; y < Y_MAX; y++)
+	for (const auto &oneStageBox : objStageBox)
 	{
-		for (int x = 0; x < X_MAX; x++)
+		oneStageBox->Draw();
+	}
+	//敵の描画
+	for (const auto &oneEnemy : enemy)
+	{
+		oneEnemy->Draw();
+	}
+
+	//赤いブロック
+	for (const auto &oneRedBlock : objRedBlock)
+	{
+		//あたり判定なしのワイヤーブロックを表示
+		if (objPlayer->GetJumpChangeBlockFlag() == true)
 		{
-			if (enemy[y][x]->GetPosition().x >= 0)
-			{
-				enemy[y][x]->Draw();
-			}
-			if (star[y][x]->GetPosition().x >= 0)
-			{
-				star[y][x]->Draw();
-			}
-			if (thornStick[y][x]->GetPosition().x >= 0)
-			{
-				thornStick[y][x]->Draw();
-			}
-			if (objStageBox[y][x]->GetPosition().x >= 0)
-			{
-				objStageBox[y][x]->Draw();
-			}
-			//あたり判定なしのワイヤーブロックを表示
-			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
-			{
-				objRedBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
-				objRedBlock[y][x]->Draw();
-			}
-			//あたり判定ありのレッドブロックを表示
-			if (objRedBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
-			{
-				objRedBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelRedBlock));
-				objRedBlock[y][x]->Draw();
-			}
-			//あたり判定なしのワイヤーブロックを表示
-			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == false)
-			{
-				objBlueBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
-				objBlueBlock[y][x]->Draw();
-			}
-			//あたり判定ありのブルーブロックを表示
-			if (objBlueBlock[y][x]->GetPosition().x >= 0 && objPlayer->GetJumpChangeBlockFlag() == true)
-			{
-				objBlueBlock[y][x]->SetModel(resources->GetModel(ResourcesName::modelBlueBlock));
-				objBlueBlock[y][x]->Draw();
-			}
+			oneRedBlock->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
+			oneRedBlock->Draw();
+		}
+		//あたり判定ありのレッドブロックを表示
+		if (objPlayer->GetJumpChangeBlockFlag() == false)
+		{
+			oneRedBlock->SetModel(resources->GetModel(ResourcesName::modelRedBlock));
+			oneRedBlock->Draw();
 		}
 	}
+	//青いブロック
+	for (const auto &oneBlueBlock : objBlueBlock)
+	{
+		//あたり判定なしのワイヤーブロックを表示
+		if (objPlayer->GetJumpChangeBlockFlag() == false)
+		{
+			oneBlueBlock->SetModel(resources->GetModel(ResourcesName::modelWireBlock));
+			oneBlueBlock->Draw();
+		}
+		//あたり判定ありのブルーブロックを表示
+		if (objPlayer->GetJumpChangeBlockFlag() == true)
+		{
+			oneBlueBlock->SetModel(resources->GetModel(ResourcesName::modelBlueBlock));
+			oneBlueBlock->Draw();
+		}
+	}
+
+	//スターの描画
+	for (const auto &oneStar : star)
+	{
+		oneStar->Draw();
+	}
+
+	//とげこん棒の描画
+	for (const auto &oneThornStick : thornStick)
+	{
+		oneThornStick->Draw();
+	}
+
 	//ファイアーバーの描画
 	for (auto &fireBar : fire)
 	{
@@ -1277,6 +1264,14 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 
 	//ジャンプ時のゲージスプライト
 	gaugeSprite[(int)(gaugeSpriteTime / 2)]->Draw();
+
+	for (int i = 0; i < 2; i++)
+	{
+		if (tutorialMoveFlag == true && operationDrawButton[i] == true)
+		{
+			tutorialSprite[i]->Draw();
+		}
+	}
 
 	//ゲームオーバーの遷移
 	if (gameOverFlag == true)

@@ -11,7 +11,7 @@ float4 main(VSOutput input) :SV_TARGET
 
 	////–¾“x‚Ì•ÏX
 	float4 texcolor = tex.Sample(smp,input.uv);
-	return float4(texcolor.r * 1.5f, texcolor.g / 1.5f, texcolor.b, 1.0f);
+	return float4(texcolor.r, texcolor.g, texcolor.b *1.5f, 1.0f);
 
 	////F”½“]
 	//float4 texcolor = tex.Sample(smp,input.uv);

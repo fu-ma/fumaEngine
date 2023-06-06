@@ -276,6 +276,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		//シーン遷移
 		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			fadeInFlag = true;
 			goSelectFlag = true;
 		}
@@ -319,7 +320,7 @@ void TitleScene::Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *
 	Sprite::PreDraw(common->GetCmdList().Get());
 
 	// 背景スプライト描画
-	//backGround->Draw();
+	backGround->Draw();
 	/*スプライト描画後処理*/
 	Sprite::PostDraw();
 	//深度バッファクリア

@@ -13,18 +13,18 @@ void Framework::GameRun()
 			break;
 		}
 		//描画処理
-		//レンダーテクスチャへの描画
-		postEffect->PreDrawScene(common->GetCmdList().Get());
-		Draw();
-		//Imguiの描画処理
-		postEffect->PostDrawScene(common->GetCmdList().Get());
-
 		//描画開始
 		common->PreDraw();
-		//ポストエフェクトの描画
-		postEffect->Draw(common->GetCmdList().Get());
+		Draw();
 		//描画終了
 		common->PostDraw();
+		////レンダーテクスチャへの描画
+		//postEffect->PreDrawScene(common->GetCmdList().Get());
+		////ポストエフェクトの描画
+		//postEffect->Draw(common->GetCmdList().Get());
+		////Imguiの描画処理
+		//postEffect->PostDrawScene(common->GetCmdList().Get());
+
 	}
 	SceneDelete();
 }

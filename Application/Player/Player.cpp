@@ -148,7 +148,7 @@ void Player::Draw()
 	pushEnemyParticle->Draw();
 }
 
-void Player::Move()
+void Player::Move(Audio *audio, const bool &isJumpFlag)
 {
 	//プレイヤーの重力処理
 	Gravity();
@@ -247,7 +247,10 @@ void Player::Move()
 	}
 
 	//プレイヤーのジャンプ処理
-	PlayerJump();
+	if (isJumpFlag == false)
+	{
+		PlayerJump(audio);
+	}
 
 	//無敵時間
 	invincibleTime();
@@ -611,7 +614,7 @@ void Player::Gravity()
 	position.y += speed + gravity;
 }
 
-void Player::PlayerJump()
+void Player::PlayerJump(Audio *audio)
 {
 	Resources *resources = Resources::GetInstance();
 
@@ -678,6 +681,7 @@ void Player::PlayerJump()
 			}
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData4), 0.05f);
 				jumpChangeBlockFlag = !jumpChangeBlockFlag;
 				//ジャンプパーティクル
 				//moveParticle->SetFlag(true);

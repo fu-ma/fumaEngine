@@ -9,6 +9,9 @@ enum class ResourcesName
 	soundData1,
 	soundData2,
 	soundData3,
+	soundData4,
+	soundData5,
+	soundData6,
 	modelPlayer,
 	modelCloud,
 	modelStageBox,
@@ -56,6 +59,9 @@ private:
 	SoundData soundData1;
 	SoundData soundData2;
 	SoundData soundData3;
+	SoundData soundData4;
+	SoundData soundData5;
+	SoundData soundData6;
 
 	//ÉvÉåÉCÉÑÅ[
 	Model *modelPlayer;

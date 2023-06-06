@@ -21,27 +21,27 @@ private:
 
 private:
 	//ゲーム用の操作のクラス
-	GameControl *gameControl = nullptr;
+	std::shared_ptr <GameControl> gameControl;
 
 	//スプライト
-	Sprite *backGround = nullptr;
-	Sprite *goTitle = nullptr;
-	Sprite *reStart = nullptr;
-	Sprite *Return = nullptr;
-	Sprite *playerIconSprite = nullptr;
-	Sprite *ClearStageSprite = nullptr;
-	Sprite *GameOver = nullptr;
-	Sprite *fadeOut = nullptr;
-	Sprite *fadeIn = nullptr;
-	Sprite *escUI = nullptr;
-	Sprite *homeUI = nullptr;
-	Sprite *eggSprite = nullptr;
-	Sprite *startToGoal = nullptr;
-	Sprite *goalSprite = nullptr;
-	Sprite *gaugeSprite[17] = { nullptr };
-	Sprite *buttonA = nullptr;
-	Sprite *buttonSpace = nullptr;
-
+	std::unique_ptr <Sprite> backGround;
+	std::unique_ptr <Sprite> goTitle;
+	std::unique_ptr <Sprite> reStart;
+	std::unique_ptr <Sprite> Return;
+	std::unique_ptr <Sprite> playerIconSprite;
+	std::unique_ptr <Sprite> ClearStageSprite;
+	std::unique_ptr <Sprite> GameOver;
+	std::unique_ptr <Sprite> fadeOut;
+	std::unique_ptr <Sprite> fadeIn;
+	std::unique_ptr <Sprite> escUI;
+	std::unique_ptr <Sprite> homeUI;
+	std::unique_ptr <Sprite> eggSprite;
+	std::unique_ptr <Sprite> startToGoal;
+	std::unique_ptr <Sprite> goalSprite;
+	std::array<std::unique_ptr <Sprite>, 17> gaugeSprite;
+	std::unique_ptr <Sprite> buttonA;
+	std::unique_ptr <Sprite> buttonSpace;
+	std::array<std::unique_ptr <Sprite>, 2> tutorialSprite;
 	//スプライトサイズ
 	XMFLOAT2 eggSpriteSize;
 	XMFLOAT2 startToGoalSize;
@@ -53,60 +53,59 @@ private:
 	GaugeStatus gaugeStatus;
 
 	//雲
-	ModelObj *cloud[10] = { nullptr };
-	XMFLOAT3 cloudPos[10] = {};
-	float cloudSpeed[10];
+	std::array<std::unique_ptr<ModelObj>, 10> cloud;
+	std::array<XMFLOAT3, 10> cloudPos = {};
+	std::array<float, 10> cloudSpeed;
 
 	//敵
-	Enemy *enemy[Y_MAX][X_MAX] = { nullptr };
+	std::vector<std::unique_ptr<Enemy>> enemy;
 
 	//スター（収集物）
-	Star *star[Y_MAX][X_MAX] = { nullptr };
+	std::vector<std::unique_ptr<Star>> star;
 	//とげこん棒
-	ThornStick *thornStick[Y_MAX][X_MAX] = { nullptr };
+	std::vector<std::unique_ptr<ThornStick>> thornStick;
 
 	//プレイヤー
-	Player *objPlayer = nullptr;
+	std::unique_ptr<Player> objPlayer;
 
 	//チュートリアル用の看板
-	ModelObj *objSignboard[2] = { nullptr };
+	std::array<std::unique_ptr<ModelObj>, 2> objSignboard;
 
 	//ステージブロック
-	ModelObj *objStageBox[Y_MAX][X_MAX] = { nullptr };
+	std::vector<std::unique_ptr<ModelObj>> objStageBox;
 
 	//ギミック
-	Firebar *firebar;
-	std::vector<Firebar *> fire;
+	std::vector<std::unique_ptr<Firebar>> fire;
 
 	XMFLOAT3 gimmickCenter[GIMMICK_NUM];
 	int gimmickCenterNum;
 
 	//一定時間で切り替わる床
-	ModelObj *objRedBlock[Y_MAX][X_MAX];
-	ModelObj *objBlueBlock[Y_MAX][X_MAX];
+	std::vector<std::unique_ptr<ModelObj>> objRedBlock;
+	std::vector<std::unique_ptr<ModelObj>> objBlueBlock;
 
 	//ゴール
-	ModelObj *objGoal = nullptr;
+	std::unique_ptr<ModelObj> objGoal;
 
 	//背景用の見栄え用オブジェクト
 	static const int backObjNum = 10;
-	ModelObj *backObj1[backObjNum] = { nullptr };
-	ModelObj *backObj2[backObjNum] = { nullptr };
-	ModelObj *backObj3[backObjNum] = { nullptr };
-	XMFLOAT3 backObj1Pos[backObjNum];
-	XMFLOAT3 backObj2Pos[backObjNum];
-	XMFLOAT3 backObj3Pos[backObjNum];
-	float backObj1Size[backObjNum];
-	float backObj2Size[backObjNum];
-	float backObj3Size[backObjNum];
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj1;
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj2;
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj3;
+	std::array<XMFLOAT3, backObjNum> backObj1Pos;
+	std::array<XMFLOAT3, backObjNum> backObj2Pos;
+	std::array<XMFLOAT3, backObjNum> backObj3Pos;
+	std::array<float, backObjNum> backObj1Size;
+	std::array<float, backObjNum> backObj2Size;
+	std::array<float, backObjNum> backObj3Size;
 
 	//パーティクル
-	Particle *playerParticle = nullptr;
+	std::unique_ptr<Particle> playerParticle;
 
 	ParticleManager *particleMan = nullptr;
 
 	//カウントダウンクラス
-	CountDown *countDown = nullptr;
+	std::unique_ptr<CountDown> countDown;
 
 	//ゲームオーバーフラグ
 	bool gameOverFlag;
@@ -150,7 +149,9 @@ private:
 
 	//操作しているのがキーボードかコントローラーか判定するフラグ（falseでキーボード、trueでコントローラー）
 	bool operationButton;
-	bool operationDrawButton[2];
+	std::array<bool, 2> operationDrawButton;
+	//動かなくなるフラグ
+	bool tutorialMoveFlag;
 
 	//タイマーの位置
 	double timerPosX;
@@ -162,7 +163,7 @@ private:
 	double timerEmphasisSizeT;
 
 	//スターの位置をソートする用の変数
-	float starPosX[3];
+	std::array<float, 3> starPosX;
 	float tmp;
 	int swapI;
 	XMFLOAT3 starToget;
@@ -174,10 +175,7 @@ private:
 	int enemyHitShakeTimer;
 
 	//ステージの配列
-	int mapData[Y_MAX][X_MAX];
-
-	//代入用の配列
-	int map[Y_MAX][X_MAX];
+	std::array<std::array<int, X_MAX>, Y_MAX> mapData;
 
 	//プレイヤー総数（代入用）
 	int totalPlayer;
@@ -191,102 +189,11 @@ public:
 	void Draw(GameSceneManager *pEngine, DirectXApp *common, DebugText *debugText);
 	~GamePlayScene()
 	{
-		//ゲームの操作クラス
-		delete gameControl;
-		gameControl = nullptr;
-		//スプライト
-		delete backGround;
-		backGround = nullptr;
-		delete goTitle;
-		goTitle = nullptr;
-		delete reStart;
-		reStart = nullptr;
-		delete Return;
-		Return = nullptr;
-		delete playerIconSprite;
-		playerIconSprite = nullptr;
-		delete ClearStageSprite;
-		ClearStageSprite = nullptr;
-		delete GameOver;
-		GameOver = nullptr;
-		delete fadeOut;
-		fadeOut = nullptr;
-		delete fadeIn;
-		fadeIn = nullptr;
-		delete escUI;
-		escUI = nullptr;
-		delete homeUI;
-		homeUI = nullptr;
-		delete eggSprite;
-		eggSprite = nullptr;
-		delete startToGoal;
-		startToGoal = nullptr;
-		delete goalSprite;
-		goalSprite = nullptr;
-
-		for (int i = 0; i < 17; i++)
-		{
-			delete gaugeSprite[i];
-			gaugeSprite[i] = nullptr;
-		}
-		delete buttonA;
-		buttonA = nullptr;
-		delete buttonSpace;
-		buttonSpace = nullptr;
-
-		for (int i = 0; i < 10; i++)
-		{
-			delete cloud[i];
-			cloud[i] = nullptr;
-		}
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				delete enemy[y][x];
-				enemy[y][x] = nullptr;
-				delete star[y][x];
-				star[y][x] = nullptr;
-				delete thornStick[y][x];
-				thornStick[y][x] = nullptr;
-				delete objStageBox[y][x];
-				objStageBox[y][x] = nullptr;
-				delete objRedBlock[y][x];
-				objRedBlock[y][x] = nullptr;
-				delete objBlueBlock[y][x];
-				objBlueBlock[y][x] = nullptr;
-			}
-		}
-		delete objPlayer;
-		objPlayer = nullptr;
-		for (int i = 0; i < 2; i++)
-		{
-			delete objSignboard[i];
-			objSignboard[i] = nullptr;
-		}
-		delete firebar;
-		firebar = nullptr;
-		delete objGoal;
-		objGoal = nullptr;
-		for (int i = 0; i < backObjNum; i++)
-		{
-			delete backObj1[i];
-			backObj1[i] = nullptr;
-			delete backObj2[i];
-			backObj2[i] = nullptr;
-			delete backObj3[i];
-			backObj3[i] = nullptr;
-		}
-
-		delete playerParticle;
-		playerParticle = nullptr;
-		delete countDown;
-		countDown = nullptr;
 	}
 
 private:
 #pragma region ステージセット
-	void StageSet(const int Map[Y_MAX][X_MAX], const int stageNum, Audio *audio, Fps *fps);
+	void StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map, const int stageNum, Audio *audio, Fps *fps);
 
 #pragma region 共通更新関数
 	void StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);
