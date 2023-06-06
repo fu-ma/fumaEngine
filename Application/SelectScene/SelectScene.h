@@ -9,54 +9,62 @@ class SelectScene : public GameSceneManagerState
 	using XMVECTOR = DirectX::XMVECTOR;
 	using XMMATRIX = DirectX::XMMATRIX;
 private:
-	Sprite *backGround = nullptr;
-	Sprite *Stage1Sprite = nullptr;
-	Sprite *Stage2Sprite = nullptr;
-	Sprite *Stage3Sprite = nullptr;
-	Sprite *Stage4Sprite = nullptr;
-	Sprite *Stage5Sprite = nullptr;
-	Sprite *playerIconSprite = nullptr;
-	Sprite *fadeIN = nullptr;
-	Sprite *fadeOut = nullptr;
-	Sprite *starSprite[3][5] = {nullptr};
-	Sprite *noStarSprite[3][5] = { nullptr };
+	static const int STAR_STAGE_NUM = 5;
+	static const int STAR_NUM = 3;
+	static const int CLOUD_MAX = 10;
+	static const int TITLE_STAGE_Y = 6;
+	static const int TITLE_STAGE_X = 24;
+	static const int backObjNum = 10;
+	const int stageSpriteMinSize = 256;
+	const int stageSpriteMaxSize = 512;
+	const int selectInterval = 512;
+private:
+	std::unique_ptr<Sprite> backGround;
+	std::unique_ptr<Sprite> Stage1Sprite;
+	std::unique_ptr<Sprite> Stage2Sprite;
+	std::unique_ptr<Sprite> Stage3Sprite;
+	std::unique_ptr<Sprite> Stage4Sprite;
+	std::unique_ptr<Sprite> Stage5Sprite;
+	std::unique_ptr<Sprite> playerIconSprite;
+	std::unique_ptr<Sprite> fadeIN;
+	std::unique_ptr<Sprite> fadeOut;
+	std::array<std::array<std::unique_ptr<Sprite>, STAR_STAGE_NUM>, STAR_NUM> starSprite;
+	std::array<std::array<std::unique_ptr<Sprite>, STAR_STAGE_NUM>, STAR_NUM> noStarSprite;
 
 	//スター用の回転の数値
-	float starTotalRot[3][5] = { 0 };
+	std::array<std::array<float, STAR_STAGE_NUM>, STAR_NUM> starTotalRot;
 
 	//雲
-	ModelObj *cloud[10] = { nullptr };
-	XMFLOAT3 cloudPos[10] = {};
+	std::array<std::unique_ptr<ModelObj>, CLOUD_MAX> cloud;
+	std::array<XMFLOAT3, CLOUD_MAX> cloudPos;
 
 	//パーティクル
 	ParticleManager *particleMan = nullptr;
 
 	//プレイヤー
-	Player *objPlayer = nullptr;
+	std::unique_ptr<Player> objPlayer;
 
 	//プレイヤーの回転
 	double playerRotationZ;
 	double afterplayerRotZ;
 
 	//ステージブロック
-	ModelObj *titleStageBox[6][24] = { nullptr };
-	XMFLOAT3 stageBoxPos[6][24];
+	std::array<std::array<std::unique_ptr<ModelObj>, TITLE_STAGE_X>, TITLE_STAGE_Y> titleStageBox;
+	std::array<std::array<XMFLOAT3, TITLE_STAGE_X>, TITLE_STAGE_Y> stageBoxPos;
 
 	//背景用の見栄え用オブジェクト
-	static const int backObjNum = 10;
-	ModelObj *backObj1[backObjNum] = { nullptr };
-	ModelObj *backObj2[backObjNum] = { nullptr };
-	ModelObj *backObj3[backObjNum] = { nullptr };
-	XMFLOAT3 backObj1Pos[backObjNum];
-	XMFLOAT3 backObj2Pos[backObjNum];
-	XMFLOAT3 backObj3Pos[backObjNum];
-	float backObj1Size[backObjNum];
-	float backObj2Size[backObjNum];
-	float backObj3Size[backObjNum];
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj1;
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj2;
+	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj3;
+	std::array<XMFLOAT3, backObjNum> backObj1Pos;
+	std::array<XMFLOAT3, backObjNum> backObj2Pos;
+	std::array<XMFLOAT3, backObjNum> backObj3Pos;
+	std::array<float, backObjNum> backObj1Size;
+	std::array<float, backObjNum> backObj2Size;
+	std::array<float, backObjNum> backObj3Size;
 
 	double selectPos;
 	double selectMoveTime;
-	const int selectInterval = 512;
 
 	//ステージ選択の番号のサイズ
 	double stage1SpriteSize;
@@ -64,8 +72,6 @@ private:
 	double stage3SpriteSize;
 	double stage4SpriteSize;
 	double stage5SpriteSize;
-	const int stageSpriteMinSize = 256;
-	const int stageSpriteMaxSize = 512;
 
 	//ステージブロックの移動量
 	float moveStageBlockSpeed;
@@ -106,59 +112,6 @@ public:
 	SelectScene(const int stageNum = 0) {  }
 	~SelectScene()
 	{
-		delete backGround;
-		backGround = nullptr;
-		delete Stage1Sprite;
-		Stage1Sprite = nullptr;
-		delete Stage2Sprite;
-		Stage2Sprite = nullptr;
-		delete Stage3Sprite;
-		Stage3Sprite = nullptr;
-		delete Stage4Sprite;
-		Stage4Sprite = nullptr;
-		delete Stage5Sprite;
-		Stage5Sprite = nullptr;
-		delete playerIconSprite;
-		playerIconSprite = nullptr;
-		delete fadeIN;
-		fadeIN = nullptr;
-		delete fadeOut;
-		fadeOut = nullptr;
-		for (int j = 0; j < 5; j++)
-		{
-			for (int i = 0; i < 3; i++)
-			{
-				delete starSprite[i][j];
-				starSprite[i][j] = nullptr;
-				delete noStarSprite[i][j];
-				noStarSprite[i][j] = nullptr;
-			}
-		}
-		for (int i = 0; i < 10; i++)
-		{
-			delete cloud[i];
-			cloud[i] = nullptr;
-		}
-		for (int y = 0; y < 6; y++)
-		{
-			for (int x = 0; x < 24; x++)
-			{
-				delete titleStageBox[y][x];
-				titleStageBox[y][x] = nullptr;
-			}
-		}
-		for (int i = 0; i < backObjNum; i++)
-		{
-			delete backObj1[i];
-			backObj1[i] = nullptr;
-			delete backObj2[i];
-			backObj2[i] = nullptr;
-			delete backObj3[i];
-			backObj3[i] = nullptr;
-		}
-
-		delete objPlayer;
-		objPlayer = nullptr;
 	}
 	void Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps);
 	void Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps);

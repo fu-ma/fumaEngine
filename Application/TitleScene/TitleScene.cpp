@@ -276,6 +276,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		//ƒV[ƒ“‘JˆÚ
 		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			fadeInFlag = true;
 			goSelectFlag = true;
 		}

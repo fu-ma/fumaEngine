@@ -8,6 +8,7 @@
 #include"easing.h"
 #include"Particle.h"
 #include"GameControl.h"
+#include"Audio.h"
 
 class Player : public ModelObj
 {
@@ -47,7 +48,7 @@ public:
 	void Update() override;
 	void Draw() override;
 	//プレイヤーのすべての動き
-	void Move(const bool &isJumpFlag = false);
+	void Move(Audio *audio, const bool &isJumpFlag = false);
 	//ステージセレクト用に使うジャンプだけの処理
 	void Jump();
 	//壁の左に当たった時の処理
@@ -196,6 +197,6 @@ private:
 	//重力処理
 	void Gravity();
 	//プレイヤーのジャンプ処理
-	void PlayerJump();
+	void PlayerJump(Audio *audio);
 };
 
