@@ -1,9 +1,9 @@
-#include"GameScene.h"
+#include"Framework.h"
 
 //Windowsアプリでのエントリーポイント(main関数)
 int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 {
-	Framework *scene = new GameScene();
+	Framework *scene = new Framework();
 	scene->GameRun();
 
 	delete scene;
