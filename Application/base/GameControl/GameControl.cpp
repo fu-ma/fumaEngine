@@ -1,6 +1,6 @@
 #include "GameControl.h"
-#include "Engine/Input/Input.h"
-#include"Engine/Input/Controller.h"
+#include "Engine/base/Input/Input.h"
+#include"Engine/base/Input/Controller.h"
 
 bool GameControl::menuControl(const Menu &menu)
 {

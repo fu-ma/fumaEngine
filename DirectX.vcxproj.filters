@@ -94,7 +94,7 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameSprite\Resources\Resources.cpp">
-      <Filter>Game\GameSprite\Resources</Filter>
+      <Filter>Game\GameScene\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObj\Player\Player.cpp">
       <Filter>Game\GameObj\Player</Filter>
@@ -276,7 +276,7 @@
       <Filter>Engine\Base\WinApp</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameSprite\Resources\Resources.h">
-      <Filter>Game\GameSprite\Resources</Filter>
+      <Filter>Game\GameScene\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObj\Player\Player.h">
       <Filter>Game\GameObj\Player</Filter>
@@ -570,9 +570,6 @@
     <Filter Include="Game\GameSprite\CountDown">
       <UniqueIdentifier>{c3c1ac77-d386-4c22-ba35-df1c46fe77da}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameSprite\Resources">
-      <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Game\GameObj">
       <UniqueIdentifier>{3c6dd701-9fd7-4248-9b79-292c06506969}</UniqueIdentifier>
     </Filter>
@@ -659,6 +656,9 @@
     </Filter>
     <Filter Include="Engine\Base\WinApp">
       <UniqueIdentifier>{5a0909fa-a7e4-47a8-9fae-a362c388baa7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameScene\Resources">
+      <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>

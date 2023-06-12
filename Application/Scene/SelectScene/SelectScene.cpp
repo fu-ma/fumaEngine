@@ -439,11 +439,11 @@ void SelectScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *deb
 
 			if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjLeft(titleStageBox[y][x].get());
+				objPlayer->HitObjLeft(titleStageBox[y][x].get(), audio);
 			}
 			else if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{
-				objPlayer->HitObjRight(titleStageBox[y][x].get());
+				objPlayer->HitObjRight(titleStageBox[y][x].get(), audio);
 			}
 			else if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), titleStageBox[y][x].get()))
 			{

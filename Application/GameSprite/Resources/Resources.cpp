@@ -16,6 +16,8 @@ void Resources::StaticInit(Audio *audio)
 	soundData4 = audio->SoundLoadWave("Resources/sound/JumpSE.wav", false);
 	soundData5 = audio->SoundLoadWave("Resources/sound/MenuMoveSE.wav", false);
 	soundData6 = audio->SoundLoadWave("Resources/sound/wallSlide.wav", false);
+	soundData7 = audio->SoundLoadWave("Resources/sound/wallKick.wav", false);
+	soundData8 = audio->SoundLoadWave("Resources/sound/getStar.wav", false);
 
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/image/backGround3.dds");
@@ -117,6 +119,14 @@ SoundData &Resources::GetSoundData(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::soundData6)
 	{
 		return soundData6;
+	}
+	else if (resourcesName == ResourcesName::soundData7)
+	{
+		return soundData7;
+	}
+	else if (resourcesName == ResourcesName::soundData8)
+	{
+		return soundData8;
 	}
 	else
 	{

@@ -12,6 +12,8 @@ enum class ResourcesName
 	soundData4,
 	soundData5,
 	soundData6,
+	soundData7,
+	soundData8,
 	modelPlayer,
 	modelCloud,
 	modelStageBox,
@@ -62,6 +64,8 @@ private:
 	SoundData soundData4;
 	SoundData soundData5;
 	SoundData soundData6;
+	SoundData soundData7;
+	SoundData soundData8;
 
 	//ƒvƒŒƒCƒ„[
 	std::unique_ptr<Model> modelPlayer;

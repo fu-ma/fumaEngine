@@ -48,9 +48,9 @@ public:
 	//ステージセレクト用に使うジャンプだけの処理
 	void Jump();
 	//壁の左に当たった時の処理
-	void HitObjLeft(ModelObj *obj2);
+	void HitObjLeft(ModelObj *obj2, Audio *audio);
 	//壁の右に当たった時の処理
-	void HitObjRight(ModelObj *obj2);
+	void HitObjRight(ModelObj *obj2, Audio *audio);
 	//壁の下に当たった時の処理
 	void HitObjDown(ModelObj *obj2);
 	//壁の上に当たった時の処理
