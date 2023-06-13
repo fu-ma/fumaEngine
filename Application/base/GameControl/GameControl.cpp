@@ -1,6 +1,6 @@
 #include "GameControl.h"
-#include "Engine/Input/Input.h"
-#include"Engine/Input/Controller.h"
+#include "Engine/base/Input/Input.h"
+#include"Engine/base/Input/Controller.h"
 
 bool GameControl::menuControl(const Menu &menu)
 {
@@ -117,6 +117,22 @@ bool GameControl::moveControl(const Move &move)
 	else if (move == Move::WALLJUMPRIGHT)
 	{
 		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
+		{
+			return true;
+		}
+		return false;
+	}
+	else if (move == Move::LEFTTRIGER)
+	{
+		if (input->isKeyTrigger(DIK_LEFT) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
+		{
+			return true;
+		}
+		return false;
+	}
+	else if (move == Move::RIGHTTRIGER)
+	{
+		if (input->isKeyTrigger(DIK_RIGHT) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
 		{
 			return true;
 		}

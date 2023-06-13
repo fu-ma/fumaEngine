@@ -16,6 +16,14 @@ void Resources::StaticInit(Audio *audio)
 	soundData4 = audio->SoundLoadWave("Resources/sound/JumpSE.wav", false);
 	soundData5 = audio->SoundLoadWave("Resources/sound/MenuMoveSE.wav", false);
 	soundData6 = audio->SoundLoadWave("Resources/sound/wallSlide.wav", false);
+	soundData7 = audio->SoundLoadWave("Resources/sound/wallKick.wav", false);
+	soundData8 = audio->SoundLoadWave("Resources/sound/getStar.wav", false);
+	soundData9 = audio->SoundLoadWave("Resources/sound/selectSE.wav", false);
+	soundData10 = audio->SoundLoadWave("Resources/sound/gameClear.wav", false);
+	soundData11 = audio->SoundLoadWave("Resources/sound/damage.wav", false);
+	soundData12 = audio->SoundLoadWave("Resources/sound/killEnemy.wav", false);
+	soundData13 = audio->SoundLoadWave("Resources/sound/moveSE.wav",true);
+	soundData14 = audio->SoundLoadWave("Resources/sound/panicBgm.wav", false);
 
 	// テクスチャ読み込み
 	Sprite::LoadTexture(1, L"Resources/image/backGround3.dds");
@@ -117,6 +125,38 @@ SoundData &Resources::GetSoundData(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::soundData6)
 	{
 		return soundData6;
+	}
+	else if (resourcesName == ResourcesName::soundData7)
+	{
+		return soundData7;
+	}
+	else if (resourcesName == ResourcesName::soundData8)
+	{
+		return soundData8;
+	}
+	else if (resourcesName == ResourcesName::soundData9)
+	{
+		return soundData9;
+	}
+	else if (resourcesName == ResourcesName::soundData10)
+	{
+		return soundData10;
+	}
+	else if (resourcesName == ResourcesName::soundData11)
+	{
+		return soundData11;
+	}
+	else if (resourcesName == ResourcesName::soundData12)
+	{
+		return soundData12;
+	}
+	else if (resourcesName == ResourcesName::soundData13)
+	{
+		return soundData13;
+	}
+	else if (resourcesName == ResourcesName::soundData14)
+	{
+		return soundData14;
 	}
 	else
 	{

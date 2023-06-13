@@ -478,6 +478,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 	if (enemyHitShakeFlag == true)
 	{
+		if (enemyHitShakeTimer == 0)
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData11), 0.05f);
+		}
 		enemyHitShakeTimer++;
 		enemyHitShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
 		enemyHitShakePos.y = (float)wholeScene->GetRand(0, 0.2f);
@@ -529,6 +533,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//Escかスタートボタン（コントローラー）を押したときに一時停止する
 	if (gameControl->menuControl(Menu::ESCAPETRIGGER))
 	{
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 		stopFlag = !stopFlag;
 	}
 
@@ -537,6 +542,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		if (gameControl->menuControl(Menu::UPTRIGGER))
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
 			if (stopNum < 2 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -545,6 +552,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		}
 		else if (gameControl->menuControl(Menu::DOWNTRIGGER))
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
 			if (stopNum > 0 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -580,12 +589,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//モドルボタンを押したとき
 		if (stopNum == 0 && stopMoveTime >= 0.2f)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			stopFlag = false;
 		}
 
 		//リスタートボタンを押したとき
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			//fadein
 			fadeInFlag = true;
 			//fadeinが終わったらリスタート
@@ -595,6 +606,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 			//fadein
 			fadeInFlag = true;
 			//fadeinが終わったらセレクト画面に
@@ -637,6 +649,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (gameOverTime > 0.2)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData14));
 			//残機を減らす
 			totalPlayer--;
 			wholeScene->SetTotalPlayerNum(totalPlayer);
@@ -715,6 +728,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 	if (gameTimer / 60 <= 10)
 	{
+		if (gameTimer / 60 == 10)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData14), 0.05f);
+		}
 		timerEmphasisSizeT += 0.002f;
 		easing::Updete(timerEmphasisSize, 0, 3, timerEmphasisSizeT);
 	}
@@ -800,11 +818,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			objPlayer->HitObjBase(oneStageBox.get());
 			if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneStageBox.get()))
 			{
-				objPlayer->HitObjLeft(oneStageBox.get());
+				objPlayer->HitObjLeft(oneStageBox.get(), audio);
 			}
 			if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneStageBox.get()))
 			{
-				objPlayer->HitObjRight(oneStageBox.get());
+				objPlayer->HitObjRight(oneStageBox.get(), audio);
 			}
 			if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneStageBox.get()))
 			{
@@ -850,11 +868,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 				if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneRedBlock.get()))
 				{
-					objPlayer->HitObjLeft(oneRedBlock.get());
+					objPlayer->HitObjLeft(oneRedBlock.get(), audio);
 				}
 				if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneRedBlock.get()))
 				{
-					objPlayer->HitObjRight(oneRedBlock.get());
+					objPlayer->HitObjRight(oneRedBlock.get(), audio);
 				}
 				if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneRedBlock.get()))
 				{
@@ -876,11 +894,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 				if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
-					objPlayer->HitObjLeft(oneBlueBlock.get());
+					objPlayer->HitObjLeft(oneBlueBlock.get(), audio);
 				}
 				if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
-					objPlayer->HitObjRight(oneBlueBlock.get());
+					objPlayer->HitObjRight(oneBlueBlock.get(), audio);
 				}
 				if (GameCollision::CollisionPlayerDownToObj(objPlayer.get(), oneBlueBlock.get()))
 				{
@@ -899,6 +917,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		if (GameCollision::CollisionPlayerToStar(objPlayer.get(), oneStar.get()))
 		{
+			if (oneStar->GetMoveingFlag() == false)
+			{
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData8), 0.08f);
+			}
 			oneStar->GetStar();
 			//スターの枚数分調べる
 			if (oneStar->GetPosition().x == starPosX[0])
@@ -923,6 +945,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			operationDrawButton[i] = true;
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 				tutorialMoveFlag = !tutorialMoveFlag;
 			}
 		}
@@ -936,11 +959,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 		if (GameCollision::CollisionPlayerLeftToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
-			objPlayer->HitObjLeft(fireBar->GetCenter());
+			objPlayer->HitObjLeft(fireBar->GetCenter(), audio);
 		}
 		if (GameCollision::CollisionPlayerRightToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
-			objPlayer->HitObjRight(fireBar->GetCenter());
+			objPlayer->HitObjRight(fireBar->GetCenter(), audio);
 		}
 		if (GameCollision::CollisionPlayerUpToObj(objPlayer.get(), fireBar->GetCenter()))
 		{
@@ -1000,6 +1023,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	if (clearFlag == true && fadeInSizeX > 1280 * 15)
 	{
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData14));
 		fire.clear();
 		pEngine->changeState(new ClearScene());
 		//ステージ番号を次のステージの番号にする

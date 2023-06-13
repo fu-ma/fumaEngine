@@ -150,9 +150,15 @@ void Player::Draw()
 
 void Player::Move(Audio *audio, const bool &isJumpFlag)
 {
+	Resources *resources = Resources::GetInstance();
+
 	//プレイヤーの重力処理
 	Gravity();
 
+	if (jumpFlag == false)
+	{
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData6));
+	}
 	//左壁キック
 	if (leftWallJumpFlag == false)
 	{
@@ -177,11 +183,17 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 		rightWallColFlag = false;
 		if (leftWallJumpTimer < wallJumpMax)
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData6));
 			position.y += jump * 1.5f;
 			position.x += jump * 1.5f;
 			leftWallColFlag = true;
 		}
-		else if (leftWallJumpTimer > wallJumpMax * 2.5f)
+		else if (leftWallJumpTimer >= wallJumpMax / 2)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
+		}
+
+		if (leftWallJumpTimer >= wallJumpMax)
 		{
 			leftWallJumpFlag = false;
 		}
@@ -211,11 +223,17 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 		leftWallColFlag = false;
 		if (rightWallJumpTimer < wallJumpMax)
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData6));
 			position.y += jump * 1.5f;
 			position.x -= jump * 1.5f;
 			rightWallColFlag = true;
 		}
-		else if (rightWallJumpTimer > wallJumpMax * 2.5f)
+		else if (rightWallJumpTimer >= wallJumpMax / 2)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
+		}
+
+		if (rightWallJumpTimer >= wallJumpMax)
 		{
 			rightWallJumpFlag = false;
 		}
@@ -224,6 +242,21 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 	//移動処理
 	if (moveFlag == false)
 	{
+		if (jumpFlag == false && gameControl->moveControl(Move::LEFTTRIGER))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+		}
+		else if (jumpFlag == false && gameControl->moveControl(Move::RIGHTTRIGER))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+		}
+		else if (jumpFlag == true || !gameControl->moveControl(Move::LEFT) && !gameControl->moveControl(Move::RIGHT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+		}
+
 		if (gameControl->moveControl(Move::LEFT))
 		{
 			if (leftWallJumpFlag == false)
@@ -257,6 +290,10 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 
 	if (treadFlag == true)
 	{
+		if (t == 0)
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData12), 0.05f);
+		}
 		t += 0.01f;
 		easing::Updete(treadTime, 0.5, 3, t);
 		if (treadTime < 0.4)
@@ -357,10 +394,29 @@ void Player::Jump()
 	}
 }
 
-void Player::HitObjLeft(ModelObj *obj2)
+void Player::HitObjLeft(ModelObj *obj2, Audio *audio)
 {
+	Resources *resources = Resources::GetInstance();
+
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	if (jumpFlag == true)
+	{
+		if (gameControl->moveControl(Move::LEFT) && gameControl->moveControl(Move::WALLJUMPLEFT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
+		}
+		if (gameControl->moveControl(Move::LEFT))
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), 0.05f);
+		}
+		if(!gameControl->moveControl(Move::LEFT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData6));
+		}
+	}
 
 	if (oldPos.x > position.x)
 	{
@@ -376,6 +432,7 @@ void Player::HitObjLeft(ModelObj *obj2)
 			speed = gravity * 1.8f;
 			rotation.z = 0;
 			rightWallColFlag = false;
+
 			if (gameControl->moveControl(Move::WALLJUMPLEFT))
 			{
 				leftWallJumpFlag = true;
@@ -388,10 +445,29 @@ void Player::HitObjLeft(ModelObj *obj2)
 	}
 }
 
-void Player::HitObjRight(ModelObj *obj2)
+void Player::HitObjRight(ModelObj *obj2, Audio *audio)
 {
+	Resources *resources = Resources::GetInstance();
+
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
+
+	if (jumpFlag == true)
+	{
+		if (gameControl->moveControl(Move::RIGHT) && gameControl->moveControl(Move::WALLJUMPLEFT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
+		}
+		if (gameControl->moveControl(Move::RIGHT))
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), 0.05f);
+		}
+		if (!gameControl->moveControl(Move::RIGHT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData6));
+		}
+	}
 
 	if (oldPos.x < position.x)
 	{
@@ -407,6 +483,7 @@ void Player::HitObjRight(ModelObj *obj2)
 			speed = gravity * 1.8f;
 			rotation.z = 0;
 			leftWallColFlag = false;
+
 			if (gameControl->moveControl(Move::WALLJUMPRIGHT))
 			{
 				rightWallJumpFlag = true;
@@ -563,6 +640,7 @@ void Player::HitGimmick(ModelObj *obj2)
 	{
 		HP--;
 		onCollisionFlag = true;
+		enemyHitShakeFlag = true;
 	}
 	invincibleFlag = true;
 }

@@ -31,6 +31,8 @@ public:
 	/// </summary>
 	void Update() override;
 	void Draw() override;
+
+	const bool &GetMoveingFlag() { return moveingFlag; }
 private:
 	//Á‚¦‚é‚©“¯‰»‚Ìƒtƒ‰ƒO
 	bool toNotDisplay;
