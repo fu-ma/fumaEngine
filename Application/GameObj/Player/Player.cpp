@@ -242,6 +242,21 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 	//移動処理
 	if (moveFlag == false)
 	{
+		if (jumpFlag == false && gameControl->moveControl(Move::LEFTTRIGER))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+		}
+		else if (jumpFlag == false && gameControl->moveControl(Move::RIGHTTRIGER))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+		}
+		else if (jumpFlag == true || !gameControl->moveControl(Move::LEFT) && !gameControl->moveControl(Move::RIGHT))
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
+		}
+
 		if (gameControl->moveControl(Move::LEFT))
 		{
 			if (leftWallJumpFlag == false)
@@ -275,6 +290,10 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 
 	if (treadFlag == true)
 	{
+		if (t == 0)
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData12), 0.05f);
+		}
 		t += 0.01f;
 		easing::Updete(treadTime, 0.5, 3, t);
 		if (treadTime < 0.4)
@@ -384,7 +403,7 @@ void Player::HitObjLeft(ModelObj *obj2, Audio *audio)
 
 	if (jumpFlag == true)
 	{
-		if (gameControl->moveControl(Move::WALLJUMPLEFT))
+		if (gameControl->moveControl(Move::LEFT) && gameControl->moveControl(Move::WALLJUMPLEFT))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
 			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
@@ -435,7 +454,7 @@ void Player::HitObjRight(ModelObj *obj2, Audio *audio)
 
 	if (jumpFlag == true)
 	{
-		if (gameControl->moveControl(Move::WALLJUMPLEFT))
+		if (gameControl->moveControl(Move::RIGHT) && gameControl->moveControl(Move::WALLJUMPLEFT))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
 			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
@@ -621,6 +640,7 @@ void Player::HitGimmick(ModelObj *obj2)
 	{
 		HP--;
 		onCollisionFlag = true;
+		enemyHitShakeFlag = true;
 	}
 	invincibleFlag = true;
 }

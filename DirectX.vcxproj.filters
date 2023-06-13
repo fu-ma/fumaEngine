@@ -94,7 +94,7 @@
       <Filter>Game</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameSprite\Resources\Resources.cpp">
-      <Filter>Game\GameScene\Resources</Filter>
+      <Filter>Game\Resources</Filter>
     </ClCompile>
     <ClCompile Include="Application\GameObj\Player\Player.cpp">
       <Filter>Game\GameObj\Player</Filter>
@@ -276,7 +276,7 @@
       <Filter>Engine\Base\WinApp</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameSprite\Resources\Resources.h">
-      <Filter>Game\GameScene\Resources</Filter>
+      <Filter>Game\Resources</Filter>
     </ClInclude>
     <ClInclude Include="Application\GameObj\Player\Player.h">
       <Filter>Game\GameObj\Player</Filter>
@@ -657,7 +657,7 @@
     <Filter Include="Engine\Base\WinApp">
       <UniqueIdentifier>{5a0909fa-a7e4-47a8-9fae-a362c388baa7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Game\GameScene\Resources">
+    <Filter Include="Game\Resources">
       <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

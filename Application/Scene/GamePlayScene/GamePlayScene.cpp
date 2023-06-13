@@ -478,6 +478,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 	if (enemyHitShakeFlag == true)
 	{
+		if (enemyHitShakeTimer == 0)
+		{
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData11), 0.05f);
+		}
 		enemyHitShakeTimer++;
 		enemyHitShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
 		enemyHitShakePos.y = (float)wholeScene->GetRand(0, 0.2f);
@@ -538,6 +542,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		if (gameControl->menuControl(Menu::UPTRIGGER))
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
 			if (stopNum < 2 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -546,6 +552,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		}
 		else if (gameControl->menuControl(Menu::DOWNTRIGGER))
 		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
 			if (stopNum > 0 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -641,6 +649,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (gameOverTime > 0.2)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData14));
 			//残機を減らす
 			totalPlayer--;
 			wholeScene->SetTotalPlayerNum(totalPlayer);
@@ -719,6 +728,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 	if (gameTimer / 60 <= 10)
 	{
+		if (gameTimer / 60 == 10)
+		{
+			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData14), 0.05f);
+		}
 		timerEmphasisSizeT += 0.002f;
 		easing::Updete(timerEmphasisSize, 0, 3, timerEmphasisSizeT);
 	}
@@ -1009,6 +1023,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	if (clearFlag == true && fadeInSizeX > 1280 * 15)
 	{
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
+		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData14));
 		fire.clear();
 		pEngine->changeState(new ClearScene());
 		//ステージ番号を次のステージの番号にする

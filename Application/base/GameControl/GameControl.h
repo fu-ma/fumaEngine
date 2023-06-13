@@ -8,6 +8,8 @@ enum class Move
 	JUMPTRIGGER,
 	WALLJUMPLEFT,
 	WALLJUMPRIGHT,
+	LEFTTRIGER,
+	RIGHTTRIGER,
 };
 
 enum class Menu

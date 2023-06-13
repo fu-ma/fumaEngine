@@ -51,6 +51,8 @@ void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	parPosLeft = {};
 	parPosRight = {};
 	saveVel = 0;
+
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData10), 0.05f);
 }
 
 void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -93,6 +95,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			fadeInFlag = true;
 			goSelectFlag = true;
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
 		}
 
 		if (goSelectFlag == true)

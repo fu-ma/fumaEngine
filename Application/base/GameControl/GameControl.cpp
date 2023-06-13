@@ -122,6 +122,22 @@ bool GameControl::moveControl(const Move &move)
 		}
 		return false;
 	}
+	else if (move == Move::LEFTTRIGER)
+	{
+		if (input->isKeyTrigger(DIK_LEFT) || controller->TriggerButton(static_cast<int>(Button::LEFT)) == true)
+		{
+			return true;
+		}
+		return false;
+	}
+	else if (move == Move::RIGHTTRIGER)
+	{
+		if (input->isKeyTrigger(DIK_RIGHT) || controller->TriggerButton(static_cast<int>(Button::RIGHT)) == true)
+		{
+			return true;
+		}
+		return false;
+	}
 
 	return false;
 }
