@@ -127,6 +127,16 @@ void Enemy::Move(const XMFLOAT3 &playerPos)
 			}
 		}
 	}
+	if (enemyName == "TOGEZOU")
+	{
+		//d—Íˆ—
+		if (speed > gravity * 20)
+		{
+			speed += gravity / 5;
+		}
+		position.y += speed;
+		position.x += angleSpeed;
+	}
 }
 
 void Enemy::Draw()
@@ -147,7 +157,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 	XMVECTOR boxPos = XMLoadFloat3(&obj2->GetPosition());
 	XMVECTOR boxRad = XMLoadFloat3(&obj2->GetScale());
 
-	if (enemyName == "NORMAL" || enemyName == "" || enemyName == "FIRE")
+	if (enemyName == "NORMAL" || enemyName == "" || enemyName == "FIRE" || enemyName == "TOGEZOU")
 	{
 		if (oldPos.x > position.x)
 		{
@@ -186,12 +196,24 @@ void Enemy::CollisionObject(ModelObj *obj2)
 			{ obj2->GetPosition().x + 0.1f,obj2->GetPosition().y + 0.1f,0 },
 			scale.x, scale.y, obj2->GetScale().x, obj2->GetScale().y))
 		{
-			position =
+			if (!(enemyName == "TOGEZOU"))
 			{
-				position.x,
-				boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.51f ,
-				0
-			};
+				position =
+				{
+					position.x,
+					boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.51f ,
+					0
+				};
+			}
+			if (enemyName == "TOGEZOU")
+			{
+				position =
+				{
+					position.x,
+					boxPos.m128_f32[1] + boxRad.m128_f32[0] + scale.x + 0.11f ,
+					0
+				};
+			}
 			speed = 0;
 		}
 	}

@@ -24,6 +24,7 @@ enum class ResourcesName
 	modelCloud,
 	modelStageBox,
 	modelEnemy,
+	modelThornEnemy,
 	modelRedBlock,
 	modelBlueBlock,
 	modelWireBlock,
@@ -96,6 +97,7 @@ private:
 	std::unique_ptr<Model> modelStageBox;
 	//“G
 	std::unique_ptr<Model> modelEnemy;
+	std::unique_ptr<Model> modelThornEnemy;
 
 	//ˆê’èŠÔ‚ÅØ‚è‘Ö‚í‚é°
 	std::unique_ptr<Model> modelRedBlock;
