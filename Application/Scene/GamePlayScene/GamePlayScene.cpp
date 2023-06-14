@@ -214,14 +214,11 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 			{
 				enemy.push_back(std::make_unique<Enemy>());
 				enemy[enemy.size() - 1].reset(Enemy::Create(resources->GetModel(ResourcesName::modelEnemy)));
-				enemy[enemy.size() - 1]->Initialize();
-				enemy[enemy.size() - 1]->SetRotation({ 0,180,0 });
-				enemy[enemy.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 				if (stageNum == 2)
 				{
 					if (x == 12)
 					{
-						enemy[enemy.size() - 1]->SetAction("FIRE");
+						enemy[enemy.size() - 1]->SetAction("TOGEZOU");
 					}
 					if (x == 23 || x == 26)
 					{
@@ -258,6 +255,9 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				{
 
 				}
+				enemy[enemy.size() - 1]->Initialize();
+				enemy[enemy.size() - 1]->SetRotation({ 0,180,0 });
+				enemy[enemy.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 			}
 			//赤ブロック
 			if (Map[y][x] == 4)
@@ -327,6 +327,14 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 		}
 	}
 
+	//とげの敵だったらModelを変更
+	for (auto &oneEnemy : enemy)
+	{
+		if (oneEnemy->GetAction() == "TOGEZOU")
+		{
+			oneEnemy->SetModel(resources->GetModel(ResourcesName::modelThornEnemy));
+		}
+	}
 	for (int x = 0; x < X_MAX; x++)
 	{
 		for (int y = 0; y < Y_MAX; y++)
@@ -839,18 +847,32 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		for (const auto &oneEnemy : enemy)
 		{
 			//敵とプレイヤーの当たり判定
-			if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer.get(), oneEnemy.get()))
+			if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer.get(), oneEnemy.get()) && !(oneEnemy->GetAction() == "TOGEZOU"))
 			{
 				objPlayer->HitEnemyLeftAndRight(oneEnemy.get());
 			}
-			if (GameCollision::CollisionPlayerDownToEnemy(objPlayer.get(), oneEnemy.get()))
+			if (GameCollision::CollisionPlayerDownToEnemy(objPlayer.get(), oneEnemy.get()) && !(oneEnemy->GetAction() == "TOGEZOU"))
 			{
 				objPlayer->HitEnemyDown(oneEnemy.get());
 			}
-			if (GameCollision::CollisionPlayerUpToEnemy(objPlayer.get(), oneEnemy.get()))
+			if (GameCollision::CollisionPlayerUpToEnemy(objPlayer.get(), oneEnemy.get()) && !(oneEnemy->GetAction() == "TOGEZOU"))
 			{
 				objPlayer->HitEnemyUp(oneEnemy.get());
 			}
+			//とげぞうとプレイヤーの当たり判定
+			if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer.get(), oneEnemy.get()) && (oneEnemy->GetAction() == "TOGEZOU"))
+			{
+				objPlayer->HitGimmick(oneEnemy.get());
+			}
+			if (GameCollision::CollisionPlayerDownToEnemy(objPlayer.get(), oneEnemy.get()) && (oneEnemy->GetAction() == "TOGEZOU"))
+			{
+				objPlayer->HitGimmick(oneEnemy.get());
+			}
+			if (GameCollision::CollisionPlayerUpToEnemy(objPlayer.get(), oneEnemy.get()) && (oneEnemy->GetAction() == "TOGEZOU"))
+			{
+				objPlayer->HitGimmick(oneEnemy.get());
+			}
+
 			//敵が出すファイアーとプレイヤーの当たり判定
 			if (GameCollision::CollisionPlayerToGimmick(objPlayer.get(), oneEnemy->GetFire(), oneEnemy.get()->GetFire()->GetScale()))
 			{

@@ -62,6 +62,7 @@ void Resources::StaticInit(Audio *audio)
 	// ÉÇÉfÉãì«Ç›çûÇ›
 	modelPlayer.reset(Model::CreateFromOBJ("player", true));
 	modelEnemy.reset(Model::CreateFromOBJ("enemy", true));
+	modelThornEnemy.reset(Model::CreateFromOBJ("togezou", true));
 	modelStageBox.reset(Model::CreateFromOBJ("StageBox", true));
 	modelCloud.reset(Model::CreateFromOBJ("cloud", true));
 	modelGoal.reset(Model::CreateFromOBJ("goal", true));
@@ -181,6 +182,10 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelEnemy)
 	{
 		return modelEnemy.get();
+	}
+	else if (resourcesName == ResourcesName::modelThornEnemy)
+	{
+		return modelThornEnemy.get();
 	}
 	else if (resourcesName == ResourcesName::modelRedBlock)
 	{

@@ -31,6 +31,8 @@ public:
 
 	//“G‚Ìó‘Ô‚ğƒZƒbƒg
 	void SetAction(const std::string &enemyName) { this->enemyName = enemyName; }
+	//“G‚Ìó‘Ô‚ğæ“¾
+	const std::string &GetAction() { return enemyName; }
 
 	const int &GetHP() { return HP; }
 	const float &GetSpeed() { return speed; }
