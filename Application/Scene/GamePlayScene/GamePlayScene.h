@@ -19,6 +19,21 @@ private:
 		PUSHED,
 	};
 
+	enum class StageSet
+	{
+		BLOCK = 1,
+		ENEMY,
+		FIREBAR,
+		REDBLOCK,
+		BLUEBLOCK,
+		JUMPBORD,
+		WALLKICKBORD,
+		THORNSTICK,
+		STAR,
+		GOAL,
+		ZYUGEMU,
+	};
+
 private:
 	//ゲーム用の操作のクラス
 	std::shared_ptr <GameControl> gameControl;
@@ -59,6 +74,9 @@ private:
 
 	//敵
 	std::vector<std::unique_ptr<Enemy>> enemy;
+
+	//ジュゲム
+	std::vector<std::unique_ptr<Zyugemu>> zyugemu;
 
 	//スター（収集物）
 	std::vector<std::unique_ptr<Star>> star;

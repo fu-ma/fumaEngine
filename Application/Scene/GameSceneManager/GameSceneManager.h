@@ -37,6 +37,7 @@
 #include"ParticleManager.h"
 #include"WholeScene.h"
 #include"DirectXApp.h"
+#include"Zyugemu.h"
 
 class GameSceneManagerState;
 

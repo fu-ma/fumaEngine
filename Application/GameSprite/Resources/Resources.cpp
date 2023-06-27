@@ -85,6 +85,7 @@ void Resources::StaticInit(Audio *audio)
 	modelStar.reset(Model::CreateFromOBJ("star", true));
 	modelBluePlayer.reset(Model::CreateFromOBJ("bluePlayer", true));
 	modelRedPlayer.reset(Model::CreateFromOBJ("redPlayer", true));
+	modelZyugemu.reset(Model::CreateFromOBJ("zyugemu", true));
 
 	modelEgg = FbxLoader::GetInstance()->LoadModelFromFile("egg");
 	modelEgg->SetBaseColor(XMFLOAT3(1, 1, 1));
@@ -266,6 +267,10 @@ Model *Resources::GetModel(ResourcesName resourcesName)
 	else if (resourcesName == ResourcesName::modelRedPlayer)
 	{
 		return modelRedPlayer.get();
+	}
+	else if (resourcesName == ResourcesName::modelZyugemu)
+	{
+		return modelZyugemu.get();
 	}
 	else
 	{

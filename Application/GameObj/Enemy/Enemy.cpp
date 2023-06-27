@@ -132,9 +132,9 @@ void Enemy::Move(const XMFLOAT3 &playerPos)
 		//d—Íˆ—
 		if (speed > gravity * 20)
 		{
-			speed += gravity / 5;
+			speed += gravity / 2;
 		}
-		position.y += speed;
+		position.y += speed + gravity / 3;
 		position.x += angleSpeed;
 	}
 }
@@ -214,6 +214,7 @@ void Enemy::CollisionObject(ModelObj *obj2)
 					0
 				};
 			}
+			//angleSpeed = -0.03f;
 			speed = 0;
 		}
 	}

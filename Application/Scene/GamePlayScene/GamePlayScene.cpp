@@ -202,7 +202,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 		for (int x = 0; x < X_MAX; x++)
 		{
 			//ブロック
-			if (Map[y][x] == 1)
+			if (Map[y][x] == static_cast<int>(StageSet::BLOCK))
 			{
 				objStageBox.push_back(std::make_unique<ModelObj>());
 				objStageBox[objStageBox.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox)));
@@ -210,7 +210,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objStageBox[objStageBox.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//敵
-			if (Map[y][x] == 2)
+			if (Map[y][x] == static_cast<int>(StageSet::ENEMY))
 			{
 				enemy.push_back(std::make_unique<Enemy>());
 				enemy[enemy.size() - 1].reset(Enemy::Create(resources->GetModel(ResourcesName::modelEnemy)));
@@ -260,7 +260,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				enemy[enemy.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
 			}
 			//赤ブロック
-			if (Map[y][x] == 4)
+			if (Map[y][x] == static_cast<int>(StageSet::REDBLOCK))
 			{
 				objRedBlock.push_back(std::make_unique<ModelObj>());
 				objRedBlock[objRedBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock)));
@@ -268,7 +268,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objRedBlock[objRedBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//青ブロック
-			if (Map[y][x] == 5)
+			if (Map[y][x] == static_cast<int>(StageSet::BLUEBLOCK))
 			{
 				objBlueBlock.push_back(std::make_unique<ModelObj>());
 				objBlueBlock[objBlueBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock)));
@@ -276,21 +276,21 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objBlueBlock[objBlueBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//チュートリアル用の看板1
-			if (Map[y][x] == 6)
+			if (Map[y][x] == static_cast<int>(StageSet::JUMPBORD))
 			{
 				objSignboard[0]->SetPosition({2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
 				objSignboard[0]->SetRotation({ 0,90,0 });
 				objSignboard[0]->SetScale({ 1,1,1 });
 			}
 			//チュートリアル用の看板2
-			if (Map[y][x] == 7)
+			if (Map[y][x] == static_cast<int>(StageSet::WALLKICKBORD))
 			{
 				objSignboard[1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
 				objSignboard[1]->SetRotation({ 0,90,0 });
 				objSignboard[1]->SetScale({ 1,1,1 });
 			}
 			//とげこん棒
-			if (Map[y][x] == 8)
+			if (Map[y][x] == static_cast<int>(StageSet::THORNSTICK))
 			{
 				thornStick.push_back(std::make_unique<ThornStick>());
 				thornStick[thornStick.size() - 1].reset(ThornStick::Create(resources->GetModel(ResourcesName::modelThornStick)));
@@ -309,7 +309,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				}
 			}
 			//スター（収集物）
-			if (Map[y][x] == 9)
+			if (Map[y][x] == static_cast<int>(StageSet::STAR))
 			{
 				star.push_back(std::make_unique<Star>());
 				star[star.size() - 1].reset(Star::Create(resources->GetModel(ResourcesName::modelStar)));
@@ -318,11 +318,21 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				star[star.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
 			}
 			//ゴール
-			if (Map[y][x] == 10)
+			if (Map[y][x] == static_cast<int>(StageSet::GOAL))
 			{
 				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
 				objGoal->SetScale({ 1.0f,3.0f,1.0f });
 				objGoal->SetRotation({ 0, 90,0 });
+			}
+			//ジュゲム
+			if (Map[y][x] == static_cast<int>(StageSet::ZYUGEMU))
+			{
+				zyugemu.push_back(std::make_unique<Zyugemu>());
+				zyugemu[zyugemu.size() - 1].reset(Zyugemu::Create(resources->GetModel(ResourcesName::modelZyugemu)));
+				zyugemu[zyugemu.size() - 1]->Initialize();
+				zyugemu[zyugemu.size() - 1]->SetRotation({ 0,180,0 });
+				zyugemu[zyugemu.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+
 			}
 		}
 	}
@@ -811,6 +821,18 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			}
 		}
 
+		for (const auto &oneZyugemu : zyugemu)
+		{
+			if ((objPlayer->GetPosition().x + 2.0 * 13 > oneZyugemu->GetPosition().x))
+			{
+				oneZyugemu->Move(objPlayer->GetPosition());
+				for (const auto &oneStageBox : objStageBox)
+				{
+					oneZyugemu->CollisionObject(oneStageBox.get());
+				}
+			}
+		}
+
 		for (auto &fireBar : fire)
 		{
 			fireBar->Move();
@@ -879,6 +901,25 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 				if (oneEnemy.get()->GetFire()->GetScale().x >= 0.1f)
 				{
 					objPlayer->HitGimmick(oneEnemy.get()->GetFire());
+				}
+			}
+		}
+		//ジュゲムがいたら処理する
+		if (zyugemu.size() > 0)
+		{
+			for (int i = 0; i < zyugemu[zyugemu.size() - 1]->GetALLEnemy(); i++)
+			{
+				if (GameCollision::CollisionPlayerLeftAndRightToEnemy(objPlayer.get(), zyugemu[zyugemu.size() - 1]->GetEnemy(i)) && (zyugemu[zyugemu.size() - 1]->GetEnemy(i)->GetAction() == "TOGEZOU"))
+				{
+					objPlayer->HitGimmick(zyugemu[zyugemu.size() - 1]->GetEnemy(i));
+				}
+				if (GameCollision::CollisionPlayerDownToEnemy(objPlayer.get(), zyugemu[zyugemu.size() - 1]->GetEnemy(i)) && (zyugemu[zyugemu.size() - 1]->GetEnemy(i)->GetAction() == "TOGEZOU"))
+				{
+					objPlayer->HitGimmick(zyugemu[zyugemu.size() - 1]->GetEnemy(i));
+				}
+				if (GameCollision::CollisionPlayerUpToEnemy(objPlayer.get(), zyugemu[zyugemu.size() - 1]->GetEnemy(i)) && (zyugemu[zyugemu.size() - 1]->GetEnemy(i)->GetAction() == "TOGEZOU"))
+				{
+					objPlayer->HitGimmick(zyugemu[zyugemu.size() - 1]->GetEnemy(i));
 				}
 			}
 		}
@@ -1081,6 +1122,10 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		oneEnemy->Update();
 	}
+	for (const auto &oneZyugemu : zyugemu)
+	{
+		oneZyugemu->Update();
+	}
 	for (const auto &oneRedBlock : objRedBlock)
 	{
 		oneRedBlock->Update();
@@ -1172,6 +1217,10 @@ void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)
 	for (const auto &oneEnemy : enemy)
 	{
 		oneEnemy->Draw();
+	}
+	for (const auto &oneZyugemu : zyugemu)
+	{
+		oneZyugemu->Draw();
 	}
 
 	//赤いブロック

@@ -47,6 +47,7 @@ enum class ResourcesName
 	modelStar,
 	modelBluePlayer,
 	modelRedPlayer,
+	modelZyugemu,
 };
 
 class Resources
@@ -90,6 +91,8 @@ private:
 	std::unique_ptr<Model> modelSignboardA;
 	std::unique_ptr<Model> modelSignboardSpace;
 
+	//ƒWƒ…ƒQƒ€
+	std::unique_ptr<Model> modelZyugemu;
 	//‰_
 	std::unique_ptr<Model> modelCloud;
 

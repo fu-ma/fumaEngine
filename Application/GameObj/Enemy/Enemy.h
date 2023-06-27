@@ -38,6 +38,7 @@ public:
 	const float &GetSpeed() { return speed; }
 	void Death();
 
+	void SetMoveSpeed(const float &angleSpeed) { this->angleSpeed = angleSpeed; }
 	ModelObj *GetFire() { return fire.get(); }
 private:
 	int HP = 1;

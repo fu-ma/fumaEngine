@@ -228,6 +228,9 @@
     <ClCompile Include="Engine\base\ParticleManager\ParticleManager.cpp">
       <Filter>Engine\3D\ParticleManager</Filter>
     </ClCompile>
+    <ClCompile Include="Application\GameObj\Zyugemu\Zyugemu.cpp">
+      <Filter>Game\GameObj\Zyugemu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Engine\imgui\imconfig.h">
@@ -439,6 +442,9 @@
     </ClInclude>
     <ClInclude Include="Engine\base\ParticleManager\ParticleManager.h">
       <Filter>Engine\3D\ParticleManager</Filter>
+    </ClInclude>
+    <ClInclude Include="Application\GameObj\Zyugemu\Zyugemu.h">
+      <Filter>Game\GameObj\Zyugemu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -659,6 +665,9 @@
     </Filter>
     <Filter Include="Game\Resources">
       <UniqueIdentifier>{d235a243-8482-46b0-8bc8-f20fb2dfbb71}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Game\GameObj\Zyugemu">
+      <UniqueIdentifier>{7860c574-31a1-411e-a801-5f6d21384094}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
 </Project>
