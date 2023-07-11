@@ -28,6 +28,7 @@ float Json::ReadFile(const char *filename, const char* Name)
 {
 	x = 0;
 	y = 0;
+	letterCount = 0;
 	error = fopen_s(&fp,filename, "r");
 	if (error != 0)
 	{
@@ -61,6 +62,36 @@ float Json::ReadFile(const char *filename, const char* Name)
 						{
 							break;
 						}
+					}
+				}
+				else if (strcmp(num, "{") == 0)
+				{
+					//}‚ªŒ©‚Â‚©‚é‚Ü‚Å‘±‚¯‚é
+					while (strcmp(arrayNum, "}") != 0)
+					{
+						if (letterCount == 0)
+						{
+							fscanf_s(fp, "%s,", arrayNum, MAXSTRING_NUM);
+							xmfloat2.x = (float)atof(arrayNum);
+						}
+						else if (letterCount == 1)
+						{
+							fscanf_s(fp, "%s,", arrayNum, MAXSTRING_NUM);
+							xmfloat2.y = (float)atof(arrayNum);
+						}
+						else if (letterCount == 2)
+						{
+							fscanf_s(fp, "%s,", arrayNum, MAXSTRING_NUM);
+							xmfloat3.x = xmfloat2.x;
+							xmfloat3.y = xmfloat2.y;
+							xmfloat3.z = (float)atof(arrayNum);
+						}
+						else
+						{
+							break;
+						}
+						letterCount++;
+						
 					}
 				}
 				else

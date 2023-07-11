@@ -16,36 +16,55 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 	Json *json = Json::GetInstance();
 
 	//スプライトサイズ変更
-	eggSpriteSize = { 32,32 };
-	startToGoalSize = { 1000,64 };
-	goalSpriteSize = { 64,64 };
+	json->ReadFile("Resources/state.json", "eggSpriteSize");
+	eggSpriteSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
+	json->ReadFile("Resources/state.json", "startToGoalSize");
+	startToGoalSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
+	json->ReadFile("Resources/state.json", "goalSpriteSize");
+	goalSpriteSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
 
 	//スプライト生成
-	backGround.reset(Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	playerIconSprite.reset(Sprite::Create(12, { 64,64 }));
-	GameOver.reset(Sprite::Create(4, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	goTitle.reset(Sprite::Create(14, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f - WinApp::window_height / 6.0f }));
-	reStart.reset(Sprite::Create(15, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	Return.reset(Sprite::Create(16, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f + WinApp::window_height / 6.0f }));
-	ClearStageSprite.reset(Sprite::Create(17, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeOut.reset(Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeIn.reset(Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	escUI.reset(Sprite::Create(21, { WinApp::window_width - 64,WinApp::window_height - 64 }));
-	homeUI.reset(Sprite::Create(22, { WinApp::window_width - 64,WinApp::window_height - 64 }));
-	eggSprite.reset(Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x/2 ,150 }));
+	json->ReadFile("Resources/state.json", "backGroundPos");
+	backGround.reset(Sprite::Create(1, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "playerIconSpritePos");
+	playerIconSprite.reset(Sprite::Create(12, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "GameOverPos");
+	GameOver.reset(Sprite::Create(4, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "goTitlePos");
+	goTitle.reset(Sprite::Create(14, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "reStartPos");
+	reStart.reset(Sprite::Create(15, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "ReturnPos");
+	Return.reset(Sprite::Create(16, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "fadeOutPos");
+	fadeOut.reset(Sprite::Create(19, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "fadeInPos");
+	fadeIn.reset(Sprite::Create(18, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "escUIPos");
+	escUI.reset(Sprite::Create(21, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	json->ReadFile("Resources/state.json", "homeUIPos");
+	homeUI.reset(Sprite::Create(22, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+
+	eggSprite.reset(Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x / 2 ,150 }));
 	startToGoal.reset(Sprite::Create(24, { WinApp::window_width / 2,150 }));
 	goalSprite.reset(Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 }));
+
+	json->ReadFile("Resources/state.json", "gaugeSize");
 
 	for (int i = 0; i < 17; i++)
 	{
 		gaugeSprite[i].reset(Sprite::Create(28, { WinApp::window_width / 2,WinApp::window_height / 2 },{1,1,1,0.5f}));
-		gaugeSprite[i]->SetSize({ 32,128 });
+		gaugeSprite[i]->SetSize({ json->GetXmfloat2().x,json->GetXmfloat2().y });
 		gaugeSprite[i]->SetTextureRect({ (float)(128 * i),(float)(0) }, { 128,512 });
 	}
-	buttonA.reset(Sprite::Create(29, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 }));
-	buttonSpace.reset(Sprite::Create(30, { WinApp::window_width / 2 - 200,WinApp::window_height / 2 + 200 }, { 1,1,1,1 }));
-	tutorialSprite[0].reset(Sprite::Create(31, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f }));
-	tutorialSprite[1].reset(Sprite::Create(32, { WinApp::window_width / 2,WinApp::window_height / 2 }, { 1,1,1,0.8f }));
+	json->ReadFile("Resources/state.json", "buttonAPos");
+	buttonA.reset(Sprite::Create(29, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,1 }));
+	json->ReadFile("Resources/state.json", "buttonSpacePos");
+	buttonSpace.reset(Sprite::Create(30, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,1 }));
+	json->ReadFile("Resources/state.json", "tutorialSpritePos1");
+	tutorialSprite[0].reset(Sprite::Create(31, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,0.8f }));
+	json->ReadFile("Resources/state.json", "tutorialSpritePos2");
+	tutorialSprite[1].reset(Sprite::Create(32, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,0.8f }));
 
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
@@ -149,8 +168,8 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		}
 		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
-
-	objPlayer->SetPosition({ 10, 5, 0 });
+	json->ReadFile("Resources/state.json", "objPlayerPos");
+	objPlayer->SetPosition({ json->GetXmfloat3().x,json->GetXmfloat3().y ,json->GetXmfloat3().z });
 	fadeOutSizeX = 1280 * 5;
 	fadeOutSizeY = 720 * 5;
 	fadeOutT = 0;
@@ -192,6 +211,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 {
 	Resources *resources = Resources::GetInstance();
 	WholeScene *wholeScene = WholeScene::GetInstance();
+	Json *json = Json::GetInstance();
 
 	objPlayer->Initialize();
 	gimmickCenterNum = 0;
@@ -401,7 +421,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 		fireBar->Initialize();
 	}
 
-	gameTimer = (int)60 * 60;
+	gameTimer = (int)json->ReadFile("Resources/state.json", "gameTimer") * 60;
 
 	//カウントダウン用の画像の初期値の設定
 	countDown->Initialize();
@@ -467,6 +487,12 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				starPosX[j] = tmp;
 			}
 		}
+	}
+
+	json->ReadFile("Resources/state.json", "gaugePos");
+	for (int i = 0; i < 17; i++)
+	{
+		gaugeSprite[i]->SetPosition({ json->GetXmfloat2().x,json->GetXmfloat2().y - (objPlayer->GetPosition().y * 20)});
 	}
 }
 
@@ -1165,16 +1191,11 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	playerParticle->Update(TYPE::explosion, { objPlayer->GetPosition().x,objPlayer->GetPosition().y , 0 });
 	//移動してるときのみ卵の画像を回転させる
 	eggSprite->SetRotation(-(objPlayer->GetRotation().z));
-
 	startToGoal->SetSize(startToGoalSize);
 
 	goTitle->SetSize({ (float)goTitleSpriteSize * 3,(float)goTitleSpriteSize });
 	reStart->SetSize({ (float)reStartSpriteSize * 3,(float)reStartSpriteSize });
 	Return->SetSize({ (float)ReturnSpriteSize * 3,(float)ReturnSpriteSize });
-	for (int i = 0; i < 17; i++)
-	{
-		gaugeSprite[i]->SetPosition({ WinApp::window_width / 2 - 256,WinApp::window_height / 2 + 200 - (objPlayer->GetPosition().y*20)});
-	}
 }
 
 void GamePlayScene::StageDraw(DirectXApp *common, DebugText *debugText)

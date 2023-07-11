@@ -143,6 +143,9 @@ private:
 
 	//ジャンプで切り替わる床用のフラグ
 	bool jumpChangeBlockFlag;
+	//ジャンプで切り替わる床用の時間計測用
+	int jumpChangeBlockTimer;
+	const int MAXJUMPCHANGEBLOCKTIMER = 120;
 
 	//移動時パーティクル
 	std::unique_ptr<Particle> moveParticle;

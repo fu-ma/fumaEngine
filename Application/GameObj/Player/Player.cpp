@@ -88,6 +88,7 @@ bool Player::Initialize()
 	rotSpeed = constRotSpeed;
 
 	jumpChangeBlockFlag = false;
+	jumpChangeBlockTimer = 0;
 
 	oldPos = {};
 
@@ -333,11 +334,18 @@ void Player::Jump()
 		jumpMax = 60;
 	}
 	
+	//時間によって切り替えるブロック
+	jumpChangeBlockTimer++;
+	if (jumpChangeBlockTimer > MAXJUMPCHANGEBLOCKTIMER)
+	{
+		jumpChangeBlockFlag = !jumpChangeBlockFlag;
+		jumpChangeBlockTimer = 0;
+	}
+
 	if (jumpFlag == false)
 	{
 		if (gameControl->moveControl(Move::JUMPTRIGGER))
 		{
-			jumpChangeBlockFlag = !jumpChangeBlockFlag;
 			//ジャンプパーティクル
 			//moveParticle->SetFlag(true);
 			for (int i = 0; i < 60; ++i)
@@ -716,6 +724,14 @@ void Player::PlayerJump(Audio *audio)
 		SetModel(resources->GetModel(ResourcesName::modelPlayer));
 	}
 
+	//時間によって切り替えるブロック
+	jumpChangeBlockTimer++;
+	if (jumpChangeBlockTimer > MAXJUMPCHANGEBLOCKTIMER)
+	{
+		jumpChangeBlockFlag = !jumpChangeBlockFlag;
+		jumpChangeBlockTimer = 0;
+	}
+
 	if (moveFlag == false)
 	{
 		if (jumpFlag == false)
@@ -760,7 +776,6 @@ void Player::PlayerJump(Audio *audio)
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
 				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData4), 0.05f);
-				jumpChangeBlockFlag = !jumpChangeBlockFlag;
 				//ジャンプパーティクル
 				//moveParticle->SetFlag(true);
 				if (jumpChange == 0)

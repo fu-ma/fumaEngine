@@ -65,6 +65,6 @@ protected:
 	static const int GIMMICK_NUM = 100;
 
 	//§ŒÀŠÔ
-	int gameTimer = 10980;
+	int gameTimer;
 };
 

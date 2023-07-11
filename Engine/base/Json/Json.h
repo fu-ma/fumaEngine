@@ -5,10 +5,13 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include<assert.h>
+#include<DirectXMath.h>
 using namespace std;
 
 class Json
 {
+	using XMFLOAT2 = DirectX::XMFLOAT2;
+	using XMFLOAT3 = DirectX::XMFLOAT3;
 private:
 	static const int MAXSTRING_NUM = 100;
 	static const int MAXMAPSIZE_X = 100;
@@ -20,6 +23,8 @@ public:
 	void Write();
 	float ReadFile(const char *filename, const char *Name);
 	int GetMapData(const int y, const int x) { return mapData[y][x]; }
+	const XMFLOAT2 &GetXmfloat2() { return xmfloat2; }
+	const XMFLOAT3 &GetXmfloat3() { return xmfloat3; }
 private:
 	ofstream file;
 	string fileName = "data.json";
@@ -35,5 +40,8 @@ private:
 	float number = 0;
 	int mapData[MAXMAPSIZE_Y][MAXMAPSIZE_X];
 	int x, y;
+	XMFLOAT2 xmfloat2;
+	XMFLOAT3 xmfloat3;
+	int letterCount;
 };
 
