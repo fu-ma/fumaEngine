@@ -4,6 +4,42 @@
 #include"Model.h"
 #include"FBXLoader.h"
 
+enum ResourcesNo
+{
+	backGround3 = 1,
+	titleSprite,
+	StageClear,
+	skull,
+	e1,
+	Stage1,
+	Stage2,
+	Stage3,
+	Stage4,
+	Stage5,
+	CountStart,
+	playerIcon,
+	GameOver,
+	title,
+	restart,
+	Return,
+	ClearStage,
+	fadeIN,
+	fadeOUT,
+	TitleUI,
+	ESCUI,
+	HOMEUI,
+	egg,
+	startToGoal,
+	goal,
+	starSprite,
+	noStarSprite,
+	gauge,
+	ButtonA,
+	ButtonSpace,
+	tutorial1,
+	tutorial2,
+};
+
 enum class ResourcesName
 {
 	soundData1,
@@ -65,6 +101,21 @@ public:
 	SoundData &GetSoundData(ResourcesName resourcesName);
 	Model *GetModel(ResourcesName resourcesName);
 	FBXModel *GetFBXModel(ResourcesName resourcesName);
+public:
+	const float soundData1Bol = 0.05f;
+	const float soundData2Bol = 0.05f;
+	const float soundData3Bol = 0.05f;
+	const float soundData4Bol = 0.05f;
+	const float soundData5Bol = 0.2f;
+	const float soundData6Bol = 0.05f;
+	const float soundData7Bol = 0.05f;
+	const float soundData8Bol = 0.08f;
+	const float soundData9Bol = 0.03f;
+	const float soundData10Bol = 0.05f;
+	const float soundData11Bol = 0.05f;
+	const float soundData12Bol = 0.05f;
+	const float soundData13Bol = 0.05f;
+	const float soundData14Bol = 0.05f;
 private:
 	SoundData soundData1;
 	SoundData soundData2;

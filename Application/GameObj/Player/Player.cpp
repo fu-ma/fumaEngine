@@ -246,12 +246,12 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 		if (jumpFlag == false && gameControl->moveControl(Move::LEFTTRIGER))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), resources->soundData13Bol);
 		}
 		else if (jumpFlag == false && gameControl->moveControl(Move::RIGHTTRIGER))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData13));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData13), resources->soundData13Bol);
 		}
 		else if (jumpFlag == true || !gameControl->moveControl(Move::LEFT) && !gameControl->moveControl(Move::RIGHT))
 		{
@@ -293,7 +293,7 @@ void Player::Move(Audio *audio, const bool &isJumpFlag)
 	{
 		if (t == 0)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData12), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData12), resources->soundData12Bol);
 		}
 		t += 0.01f;
 		easing::Updete(treadTime, 0.5, 3, t);
@@ -414,11 +414,11 @@ void Player::HitObjLeft(ModelObj *obj2, Audio *audio)
 		if (gameControl->moveControl(Move::LEFT) && gameControl->moveControl(Move::WALLJUMPLEFT))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), resources->soundData7Bol);
 		}
 		if (gameControl->moveControl(Move::LEFT))
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), resources->soundData6Bol);
 		}
 		if(!gameControl->moveControl(Move::LEFT))
 		{
@@ -465,11 +465,11 @@ void Player::HitObjRight(ModelObj *obj2, Audio *audio)
 		if (gameControl->moveControl(Move::RIGHT) && gameControl->moveControl(Move::WALLJUMPLEFT))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData7));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData7), resources->soundData7Bol);
 		}
 		if (gameControl->moveControl(Move::RIGHT))
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData6), resources->soundData6Bol);
 		}
 		if (!gameControl->moveControl(Move::RIGHT))
 		{
@@ -775,7 +775,7 @@ void Player::PlayerJump(Audio *audio)
 			}
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
-				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData4), 0.05f);
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData4), resources->soundData4Bol);
 				//ジャンプパーティクル
 				//moveParticle->SetFlag(true);
 				if (jumpChange == 0)

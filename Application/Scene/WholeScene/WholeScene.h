@@ -29,6 +29,22 @@ private:
 
 	StageData stageData;
 
+public:
+	enum class STAGE_NUM
+	{
+		STAGE1 = 1,
+		STAGE2,
+		STAGE3,
+		STAGE4,
+		STAGE5,
+	};
+
+	const float WIN_WIDTH = 1280;
+	const float WIN_HEIGHT = 720;
+
+	const float OBJECT_SIZE = 2.0f;
+	const float HALF_SIZE = 2.0f;
+	const float ONE_SEC = 60.0f;
 public: // ê√ìIÉÅÉìÉoïœêî
 	static WholeScene *GetInstance();
 	void StaticInit();

@@ -16,11 +16,11 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	Json *json = Json::GetInstance();
 
 	// 背景スプライト生成
-	backGround.reset(Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	titleSprite.reset(Sprite::Create(2, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeOut.reset(Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeIn.reset(Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	titleUI.reset(Sprite::Create(20, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	backGround.reset(Sprite::Create(ResourcesNo::backGround3, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	titleSprite.reset(Sprite::Create(ResourcesNo::titleSprite, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	fadeOut.reset(Sprite::Create(ResourcesNo::fadeOUT, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	fadeIn.reset(Sprite::Create(ResourcesNo::fadeIN, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	titleUI.reset(Sprite::Create(ResourcesNo::TitleUI, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
 
 	// 3Dオブジェクト生成
 	objPlayer.reset(Player::Create(resources->GetModel(ResourcesName::modelPlayer)));
@@ -45,13 +45,14 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		backObj3[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBackObj3)));
 	}
 
-	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData2), resources->soundData2Bol);
 	objPlayer->Initialize();
 	for (int i = 0; i < CLOUD_NUM; i++)
 	{
 		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
 	}
+	cloudSpeed = 0.03f;
 
 	//背景用の見栄え用オブジェクト
 	for (int i = 0; i < backObjNum; i++)
@@ -81,6 +82,9 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		backObj2[i]->SetScale({ backObj2Size[i],20,backObj2Size[i] });
 		backObj3[i]->SetScale({ backObj3Size[i],10,backObj3Size[i] });
 	}
+	backObj1Speed = 0.06f;
+	backObj2Speed = 0.03f;
+	backObj3Speed = 0.12f;
 
 	for (int y = 0; y < TITLE_STAGE_Y; y++)
 	{
@@ -88,28 +92,31 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		{
 			if (selectMap[y][x] == 1)
 			{
-				titleStageBox[y][x]->SetPosition({ 2.0f * x , -2.0f * y + 10.0f, 0 });
+				titleStageBox[y][x]->SetPosition({ wholeScene->OBJECT_SIZE * x , -wholeScene->OBJECT_SIZE * y + 10.0f, 0 });
 				stageBoxPos[y][x] = titleStageBox[y][x]->GetPosition();
 			}
 		}
 	}
+	stageBoxSpeed = 0.06f;
 	// カメラ注視点をセット
 	camera->SetUp({ 0, 1, 0 });
 	camera->SetEye({ objPlayer->GetPosition().x + 10, 10, -20 });
 	camera->SetTarget({ objPlayer->GetPosition().x + 10, 10, 0 });
 
-	fadeInSizeX = 1280 / 2;
-	fadeInSizeY = 720 / 2;
+	fadeInSizeX = wholeScene->WIN_WIDTH / 2;
+	fadeInSizeY = wholeScene->WIN_HEIGHT / 2;
 	fadeInT = 0;
 	fadeInFlag = false;
 	goSelectFlag = false;
+	fadeInSpeed = 0.005f;
 
 	if (wholeScene->GetGoTitleFlag() == true)
 	{
-		fadeOutSizeX = 1280 * 5;
-		fadeOutSizeY = 720 * 5;
+		fadeOutSizeX = wholeScene->WIN_WIDTH * 5;
+		fadeOutSizeY = wholeScene->WIN_HEIGHT * 5;
 		fadeOutT = 0;
 		fadeOutFlag = true;
+		fadeOutSpeed = 0.005f;
 	}
 	else
 	{
@@ -117,11 +124,13 @@ void TitleScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 		fadeOutSizeY = 0;
 		fadeOutT = 0;
 		fadeOutFlag = false;
+		fadeOutSpeed = 0;
 	}
 
 	titleUICount = 0;
 
 	playerRot = 0;
+	playerRotSpeed = 2.0f;
 }
 
 void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -141,16 +150,16 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	//fadein
 	if (fadeInFlag == true)
 	{
-		fadeInT += 0.005f;
-		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
-		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
+		fadeInT += fadeInSpeed;
+		easing::Updete(fadeInSizeX, wholeScene->WIN_WIDTH * 17, 3, fadeInT);
+		easing::Updete(fadeInSizeY, wholeScene->WIN_HEIGHT * 17, 3, fadeInT);
 
 		fadeIn->SetSize({ (float)fadeInSizeX,(float)fadeInSizeY });
 	}
 	//fadeout
 	if (fadeOutFlag == true)
 	{
-		fadeOutT += 0.005f;
+		fadeOutT += fadeOutSpeed;
 		easing::Updete(fadeOutSizeX, 0, 3, fadeOutT);
 		easing::Updete(fadeOutSizeY, 0, 3, fadeOutT);
 		if (fadeOutT > 0.3f)
@@ -167,19 +176,19 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		//UI用カウントの増加
 		titleUICount++;
 		//オーバーフローしないように
-		if (titleUICount >= 60)
+		if (titleUICount >= wholeScene->ONE_SEC)
 		{
 			titleUICount = 0;
 		}
 
-		playerRot -= 2;
+		playerRot -= playerRotSpeed;
 		objPlayer->SetRotation({0,0,playerRot});
 		//背景用の見栄え用オブジェクト
 		for (int i = 0; i < backObjNum; i++)
 		{
-			backObj1Pos[i].x -= 0.06f;
-			backObj2Pos[i].x -= 0.03f;
-			backObj3Pos[i].x -= 0.12f;
+			backObj1Pos[i].x -= backObj1Speed;
+			backObj2Pos[i].x -= backObj2Speed;
+			backObj3Pos[i].x -= backObj3Speed;
 
 			if (backObj1[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
 			{
@@ -192,7 +201,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 					backObj1Pos[i] = { backObj1Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 
-				backObj1Size[i] = (float)wholeScene->GetRand(5, 14);
+				backObj1Size[i] = (float)wholeScene->GetRand(backGroundObjRandMin, backGroundObjRandMax);
 			}
 
 			if (backObj2[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
@@ -206,7 +215,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 					backObj2Pos[i] = { backObj2Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 
-				backObj2Size[i] = (float)wholeScene->GetRand(5, 14);
+				backObj2Size[i] = (float)wholeScene->GetRand(backGroundObjRandMin, backGroundObjRandMax);
 			}
 
 			if (backObj3[i]->GetPosition().x < objPlayer->GetPosition().x - 100.0f)
@@ -220,7 +229,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 					backObj3Pos[i] = { backObj3Pos[i - 1].x + (float)wholeScene->GetRand(20,100),-40 + (float)wholeScene->GetRand(10,12),(float)wholeScene->GetRand(40,50) };
 				}
 
-				backObj3Size[i] = (float)wholeScene->GetRand(5, 14);
+				backObj3Size[i] = (float)wholeScene->GetRand(backGroundObjRandMin, backGroundObjRandMax);
 			}
 
 			backObj1[i]->SetPosition(backObj1Pos[i]);
@@ -236,7 +245,7 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			for (int i = 0; i < CLOUD_NUM; i++)
 			{
-				cloudPos[i].x -= 0.03f;
+				cloudPos[i].x -= cloudSpeed;
 				if (cloud[i]->GetPosition().x < objPlayer->GetPosition().x - 25.0f)
 				{
 					if (i == 0)
@@ -256,16 +265,16 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			for (int x = 0; x < TITLE_STAGE_X; x++)
 			{
-				stageBoxPos[y][x].x -= 0.06f;
+				stageBoxPos[y][x].x -= stageBoxSpeed;
 				if (selectMap[y][x] == 1 && titleStageBox[y][x]->GetPosition().x < objPlayer->GetPosition().x - 15)
 				{
 					if (x == 0)
 					{
-						stageBoxPos[y][x] = { titleStageBox[y][TITLE_STAGE_X - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+						stageBoxPos[y][x] = { titleStageBox[y][TITLE_STAGE_X - 1]->GetPosition().x + wholeScene->OBJECT_SIZE, -wholeScene->OBJECT_SIZE * y + 10.0f, 0 };
 					}
 					else
 					{
-						stageBoxPos[y][x] = { titleStageBox[y][x - 1]->GetPosition().x + 2.0f, -2.0f * y + 10.0f, 0 };
+						stageBoxPos[y][x] = { titleStageBox[y][x - 1]->GetPosition().x + wholeScene->OBJECT_SIZE, -wholeScene->OBJECT_SIZE * y + 10.0f, 0 };
 					}
 
 				}
@@ -276,12 +285,12 @@ void TitleScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		//シーン遷移
 		if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 			fadeInFlag = true;
 			goSelectFlag = true;
 		}
 
-		if (fadeInSizeX > 1280 * 15 && goSelectFlag == true)
+		if (fadeInSizeX > wholeScene->WIN_WIDTH * 15 && goSelectFlag == true)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData2));
 			pEngine->changeState(new SelectScene());

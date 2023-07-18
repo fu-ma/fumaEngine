@@ -21,7 +21,7 @@ void EndScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugT
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 		pEngine->changeState(new TitleScene());
 		return;
 	}

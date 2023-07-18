@@ -66,6 +66,7 @@ private:
 	float gaugeSpriteTime;
 	//ƒQ[ƒW—p
 	GaugeStatus gaugeStatus;
+	const int GaugeSpriteMaxNum = 17;
 
 	//‰_
 	std::array<std::unique_ptr<ModelObj>, 10> cloud;

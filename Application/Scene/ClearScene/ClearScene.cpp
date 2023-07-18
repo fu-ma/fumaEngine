@@ -10,10 +10,11 @@
 
 void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audio *audio, Fps *fps)
 {
+	WholeScene *wholeScene = WholeScene::GetInstance();
 	Resources *resources = Resources::GetInstance();
-	StageClear.reset(Sprite::Create(1, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeOut.reset(Sprite::Create(19, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
-	fadeIn.reset(Sprite::Create(18, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	StageClear.reset(Sprite::Create(ResourcesNo::backGround3, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	fadeOut.reset(Sprite::Create(ResourcesNo::fadeOUT, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
+	fadeIn.reset(Sprite::Create(ResourcesNo::fadeIN, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE }));
 
 
 	egg = std::make_unique<FBXObject3d>();
@@ -52,7 +53,7 @@ void ClearScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, Audi
 	parPosRight = {};
 	saveVel = 0;
 
-	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData10), 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData10), resources->soundData10Bol);
 }
 
 void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debugText, LightGroup *lightGroup, DebugCamera *camera, Fps *fps)
@@ -60,6 +61,7 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 	Input *input = Input::GetInstance();
 	Controller *controller = Controller::GetInstance();
 	Resources *resources = Resources::GetInstance();
+	WholeScene *wholeScene = WholeScene::GetInstance();
 
 	//fadein
 	if (fadeInFlag == true)
@@ -95,14 +97,14 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 		{
 			fadeInFlag = true;
 			goSelectFlag = true;
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 		}
 
 		if (goSelectFlag == true)
 		{
 			if (fadeInSizeX > 1280 * 15)
 			{
-				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 				pEngine->changeState(new SelectScene());
 			}
 		}
@@ -156,9 +158,9 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 			{
 				const float rnd_vel = 1.2f;
 				XMFLOAT3 vel{};
-				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
 
 				ParticleManager::GetInstance()->Add(60, { parPosRight.x,parPosRight.y + (saveVel * 60) ,parPosRight.z }, vel, XMFLOAT3(), 5.0f, 0.0f);
 			}
@@ -167,9 +169,9 @@ void ClearScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *debu
 			{
 				const float rnd_vel = 1.2f;
 				XMFLOAT3 vel{};
-				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
-				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / 2.0f;
+				vel.x = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
+				vel.y = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
+				vel.z = (float)rand() / RAND_MAX * rnd_vel - rnd_vel / wholeScene->HALF_SIZE;
 
 				ParticleManager::GetInstance()->Add(60, { parPosLeft.x,parPosLeft.y + (saveVel * 60) ,parPosLeft.z }, vel, XMFLOAT3(), 5.0f, 0.0f);
 			}

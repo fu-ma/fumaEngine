@@ -13,6 +13,8 @@ private:
 	static const int TITLE_STAGE_X = 24;
 	static const int TITLE_STAGE_Y = 6;
 	static const int backObjNum = 10;
+	static const int backGroundObjRandMin = 5;
+	static const int backGroundObjRandMax = 14;
 private:
 	std::unique_ptr<Sprite> backGround;
 	std::unique_ptr<Sprite> titleSprite;
@@ -23,16 +25,19 @@ private:
 	//雲
 	std::array<std::unique_ptr<ModelObj>, CLOUD_NUM> cloud;
 	std::array<XMFLOAT3, CLOUD_NUM> cloudPos;
+	float cloudSpeed;
 
 	//プレイヤー
 	std::unique_ptr<Player> objPlayer;
 
 	//playerの動きが欲しいから回転させる
 	float playerRot;
+	float playerRotSpeed;
 
 	//ステージブロック
 	std::array<std::array<std::unique_ptr<ModelObj>, TITLE_STAGE_X> , TITLE_STAGE_Y> titleStageBox;
 	std::array<std::array<XMFLOAT3, TITLE_STAGE_X>, TITLE_STAGE_Y> stageBoxPos;
+	float stageBoxSpeed;
 
 	//背景用の見栄え用オブジェクト
 	std::array<std::unique_ptr<ModelObj>, backObjNum> backObj1;
@@ -44,18 +49,23 @@ private:
 	std::array<float, backObjNum> backObj1Size;
 	std::array<float, backObjNum> backObj2Size;
 	std::array<float, backObjNum> backObj3Size;
+	float backObj1Speed;
+	float backObj2Speed;
+	float backObj3Speed;
 
 	//開始時のフェイドイン用変数
 	double fadeInSizeX;
 	double fadeInSizeY;
 	double fadeInT;
 	bool fadeInFlag;
+	float fadeInSpeed;
 
 	//開始時のフェイドアウト用変数
 	double fadeOutSizeX;
 	double fadeOutSizeY;
 	double fadeOutT;
 	bool fadeOutFlag;
+	float fadeOutSpeed;
 
 	//セレクト画面に行くかを確認するためのフラグ
 	bool goSelectFlag;

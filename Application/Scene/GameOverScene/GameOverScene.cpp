@@ -13,7 +13,7 @@ void GameOverScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 {
 	WholeScene *wholeScene = WholeScene::GetInstance();
 
-	EndSprite.reset(Sprite::Create(13, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
+	EndSprite.reset(Sprite::Create(ResourcesNo::GameOver, { WinApp::window_width / 2.0f,WinApp::window_height / 2.0f }));
 	wholeScene->SetTotalPlayerNum(5);
 }
 
@@ -26,7 +26,7 @@ void GameOverScene::Update(GameSceneManager *pEngine, Audio *audio, DebugText *d
 	//ƒV[ƒ“‘JˆÚ
 	if (input->isKeyTrigger(DIK_SPACE) || controller->TriggerButton(static_cast<int>(Button::A)) == true)
 	{
-		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 		pEngine->changeState(new TitleScene());
 		return;
 	}

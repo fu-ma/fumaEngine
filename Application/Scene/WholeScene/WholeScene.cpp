@@ -10,7 +10,7 @@ WholeScene *WholeScene::GetInstance()
 void WholeScene::StaticInit()
 {
 	totalPlayerNum = 5;
-	selectNum = 0;
+	selectNum = 1;
 	stageNum = 1;
 	goTileEaseFlag = false;
 	for (int i = 0; i < 5; i++)

@@ -1,3 +1,4 @@
+#include<stdio.h>
 #include "GamePlayScene.h"
 #include "TitleScene.h"
 #include "GamePlayScene.h"
@@ -17,54 +18,54 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 
 	//スプライトサイズ変更
 	json->ReadFile("Resources/state.json", "eggSpriteSize");
-	eggSpriteSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
+	eggSpriteSize = { json->GetXmfloat2() };
 	json->ReadFile("Resources/state.json", "startToGoalSize");
-	startToGoalSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
+	startToGoalSize = { json->GetXmfloat2() };
 	json->ReadFile("Resources/state.json", "goalSpriteSize");
-	goalSpriteSize = { json->GetXmfloat2().x,json->GetXmfloat2().y };
+	goalSpriteSize = { json->GetXmfloat2() };
 
 	//スプライト生成
 	json->ReadFile("Resources/state.json", "backGroundPos");
-	backGround.reset(Sprite::Create(1, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	backGround.reset(Sprite::Create(ResourcesNo::backGround3, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "playerIconSpritePos");
-	playerIconSprite.reset(Sprite::Create(12, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	playerIconSprite.reset(Sprite::Create(ResourcesNo::playerIcon, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "GameOverPos");
-	GameOver.reset(Sprite::Create(4, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	GameOver.reset(Sprite::Create(ResourcesNo::skull, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "goTitlePos");
-	goTitle.reset(Sprite::Create(14, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	goTitle.reset(Sprite::Create(ResourcesNo::title, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "reStartPos");
-	reStart.reset(Sprite::Create(15, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	reStart.reset(Sprite::Create(ResourcesNo::restart, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "ReturnPos");
-	Return.reset(Sprite::Create(16, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	Return.reset(Sprite::Create(ResourcesNo::Return, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "fadeOutPos");
-	fadeOut.reset(Sprite::Create(19, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	fadeOut.reset(Sprite::Create(ResourcesNo::fadeOUT, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "fadeInPos");
-	fadeIn.reset(Sprite::Create(18, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	fadeIn.reset(Sprite::Create(ResourcesNo::fadeIN, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "escUIPos");
-	escUI.reset(Sprite::Create(21, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	escUI.reset(Sprite::Create(ResourcesNo::ESCUI, { json->GetXmfloat2() }));
 	json->ReadFile("Resources/state.json", "homeUIPos");
-	homeUI.reset(Sprite::Create(22, { json->GetXmfloat2().x,json->GetXmfloat2().y }));
+	homeUI.reset(Sprite::Create(ResourcesNo::HOMEUI, { json->GetXmfloat2() }));
 
-	eggSprite.reset(Sprite::Create(23, { WinApp::window_width / 2 - startToGoalSize.x / 2 ,150 }));
-	startToGoal.reset(Sprite::Create(24, { WinApp::window_width / 2,150 }));
-	goalSprite.reset(Sprite::Create(25, { WinApp::window_width / 2 + startToGoalSize.x / 2,150 }));
+	eggSprite.reset(Sprite::Create(ResourcesNo::egg, { WinApp::window_width / wholeScene->HALF_SIZE - startToGoalSize.x / wholeScene->HALF_SIZE ,150 }));
+	startToGoal.reset(Sprite::Create(ResourcesNo::startToGoal, { WinApp::window_width / wholeScene->HALF_SIZE,150 }));
+	goalSprite.reset(Sprite::Create(ResourcesNo::goal, { WinApp::window_width / wholeScene->HALF_SIZE + startToGoalSize.x / wholeScene->HALF_SIZE,150 }));
 
 	json->ReadFile("Resources/state.json", "gaugeSize");
 
-	for (int i = 0; i < 17; i++)
+	for (int i = 0; i < GaugeSpriteMaxNum; i++)
 	{
-		gaugeSprite[i].reset(Sprite::Create(28, { WinApp::window_width / 2,WinApp::window_height / 2 },{1,1,1,0.5f}));
+		gaugeSprite[i].reset(Sprite::Create(ResourcesNo::gauge, { WinApp::window_width / wholeScene->HALF_SIZE,WinApp::window_height / wholeScene->HALF_SIZE },{1,1,1,0.5f}));
 		gaugeSprite[i]->SetSize({ json->GetXmfloat2().x,json->GetXmfloat2().y });
 		gaugeSprite[i]->SetTextureRect({ (float)(128 * i),(float)(0) }, { 128,512 });
 	}
 	json->ReadFile("Resources/state.json", "buttonAPos");
-	buttonA.reset(Sprite::Create(29, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,1 }));
+	buttonA.reset(Sprite::Create(ResourcesNo::ButtonA, { json->GetXmfloat2() }, { 1,1,1,1 }));
 	json->ReadFile("Resources/state.json", "buttonSpacePos");
-	buttonSpace.reset(Sprite::Create(30, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,1 }));
+	buttonSpace.reset(Sprite::Create(ResourcesNo::ButtonSpace, { json->GetXmfloat2()}, { 1,1,1,1 }));
 	json->ReadFile("Resources/state.json", "tutorialSpritePos1");
-	tutorialSprite[0].reset(Sprite::Create(31, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,0.8f }));
+	tutorialSprite[0].reset(Sprite::Create(ResourcesNo::tutorial1, { json->GetXmfloat2()}, { 1,1,1,0.8f }));
 	json->ReadFile("Resources/state.json", "tutorialSpritePos2");
-	tutorialSprite[1].reset(Sprite::Create(32, { json->GetXmfloat2().x,json->GetXmfloat2().y }, { 1,1,1,0.8f }));
+	tutorialSprite[1].reset(Sprite::Create(ResourcesNo::tutorial2, { json->GetXmfloat2()}, { 1,1,1,0.8f }));
 
 	//スプライトサイズ変更
 	eggSprite->SetSize(eggSpriteSize);
@@ -80,7 +81,7 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 		cloud[i].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelCloud)));
 	}
 
-	for (int i = 0; i < 10; i++)
+	for (int i = 0; i < cloud.size(); i++)
 	{
 		cloud[i]->SetPosition({ (float)(8 * i) - 15.0f + (float)wholeScene->GetRand(-5,2),20 + (float)wholeScene->GetRand(-2,4),(float)wholeScene->GetRand(10,5) });
 		cloudPos[i] = cloud[i]->GetPosition();
@@ -108,75 +109,28 @@ void GamePlayScene::Initialize(GameSceneManager *pEngine, DebugCamera *camera, A
 
 	//カウントダウンクラス初期化
 	countDown = std::make_unique<CountDown>();
-	if (wholeScene->GetSelectNum() == 0)
+	char mapName[256];
+	sprintf_s(mapName, "map%d", wholeScene->GetSelectNum());
+	//ステージセット
+	json->ReadFile("Resources/data.json", mapName);
+	for (int y = 0; y < Y_MAX; y++)
 	{
-		json->ReadFile("Resources/data.json", "map1");
-		for (int y = 0; y < Y_MAX; y++)
+		for (int x = 0; x < X_MAX; x++)
 		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				mapData[y][x] = json->GetMapData(y, x);
-			}
+			mapData[y][x] = json->GetMapData(y, x);
 		}
-		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
 	}
-	if (wholeScene->GetSelectNum() == 1)
-	{
-		json->ReadFile("Resources/data.json", "map2");
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				mapData[y][x] = json->GetMapData(y, x);
-			}
-		}
-		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
-	}
-	if (wholeScene->GetSelectNum() == 2)
-	{
-		json->ReadFile("Resources/data.json", "map3");
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				mapData[y][x] = json->GetMapData(y, x);
-			}
-		}
-		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
-	}
-	if (wholeScene->GetSelectNum() == 3)
-	{
-		json->ReadFile("Resources/data.json", "map4");
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				mapData[y][x] = json->GetMapData(y, x);
-			}
-		}
-		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
-	}
-	if (wholeScene->GetSelectNum() == 4)
-	{
-		json->ReadFile("Resources/data.json", "map5");
-		for (int y = 0; y < Y_MAX; y++)
-		{
-			for (int x = 0; x < X_MAX; x++)
-			{
-				mapData[y][x] = json->GetMapData(y, x);
-			}
-		}
-		StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
-	}
+	StageSet(mapData, wholeScene->GetStageFireNum(), audio, fps);
+
 	json->ReadFile("Resources/state.json", "objPlayerPos");
 	objPlayer->SetPosition({ json->GetXmfloat3().x,json->GetXmfloat3().y ,json->GetXmfloat3().z });
-	fadeOutSizeX = 1280 * 5;
-	fadeOutSizeY = 720 * 5;
+	fadeOutSizeX = wholeScene->WIN_WIDTH * 5;
+	fadeOutSizeY = wholeScene->WIN_HEIGHT * 5;
 	fadeOutT = 0;
 	fadeOutFlag = true;
 
-	fadeInSizeX = 1280 / 2;
-	fadeInSizeY = 720 / 2;
+	fadeInSizeX = wholeScene->WIN_WIDTH / wholeScene->HALF_SIZE;
+	fadeInSizeY = wholeScene->WIN_HEIGHT / wholeScene->HALF_SIZE;
 	fadeInT = 0;
 	fadeInFlag = false;
 	operationButton = false;
@@ -227,7 +181,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objStageBox.push_back(std::make_unique<ModelObj>());
 				objStageBox[objStageBox.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelStageBox)));
 				objStageBox[objStageBox.size() - 1]->Initialize();
-				objStageBox[objStageBox.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objStageBox[objStageBox.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 });
 			}
 			//敵
 			if (Map[y][x] == static_cast<int>(StageSet::ENEMY))
@@ -277,7 +231,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				}
 				enemy[enemy.size() - 1]->Initialize();
 				enemy[enemy.size() - 1]->SetRotation({ 0,180,0 });
-				enemy[enemy.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+				enemy[enemy.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE + 0.5f, 0 });
 			}
 			//赤ブロック
 			if (Map[y][x] == static_cast<int>(StageSet::REDBLOCK))
@@ -285,7 +239,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objRedBlock.push_back(std::make_unique<ModelObj>());
 				objRedBlock[objRedBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelRedBlock)));
 				objRedBlock[objRedBlock.size() - 1]->Initialize();
-				objRedBlock[objRedBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objRedBlock[objRedBlock.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 });
 			}
 			//青ブロック
 			if (Map[y][x] == static_cast<int>(StageSet::BLUEBLOCK))
@@ -293,19 +247,19 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				objBlueBlock.push_back(std::make_unique<ModelObj>());
 				objBlueBlock[objBlueBlock.size() - 1].reset(ModelObj::Create(resources->GetModel(ResourcesName::modelBlueBlock)));
 				objBlueBlock[objBlueBlock.size() - 1]->Initialize();
-				objBlueBlock[objBlueBlock.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				objBlueBlock[objBlueBlock.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 });
 			}
 			//チュートリアル用の看板1
 			if (Map[y][x] == static_cast<int>(StageSet::JUMPBORD))
 			{
-				objSignboard[0]->SetPosition({2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
+				objSignboard[0]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE + 1.0f, 1.0f });
 				objSignboard[0]->SetRotation({ 0,90,0 });
 				objSignboard[0]->SetScale({ 1,1,1 });
 			}
 			//チュートリアル用の看板2
 			if (Map[y][x] == static_cast<int>(StageSet::WALLKICKBORD))
 			{
-				objSignboard[1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 1.0f, 1.0f });
+				objSignboard[1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE + 1.0f, 1.0f });
 				objSignboard[1]->SetRotation({ 0,90,0 });
 				objSignboard[1]->SetScale({ 1,1,1 });
 			}
@@ -319,12 +273,12 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				thornStick[thornStick.size() - 1]->RollingStick();
 				if (thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::DOWN || thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::UP)
 				{
-					thornStick[thornStick.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 6, 0 });
+					thornStick[thornStick.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE - 6, 0 });
 					thornStick[thornStick.size() - 1]->SetOldStickPos(thornStick[thornStick.size() - 1]->GetPosition());
 				}
 				if (thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::LEFT || thornStick[thornStick.size() - 1]->GetDirection() == ThornDirection::RIGHT)
 				{
-					thornStick[thornStick.size() - 1]->SetPosition({ 2.0f * x - 6, -2.0f * y + Y_MAX * 2.0f, 0 });
+					thornStick[thornStick.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x - 6, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 });
 					thornStick[thornStick.size() - 1]->SetOldStickPos(thornStick[thornStick.size() - 1]->GetPosition());
 				}
 			}
@@ -335,12 +289,12 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				star[star.size() - 1].reset(Star::Create(resources->GetModel(ResourcesName::modelStar)));
 				star[star.size() - 1]->Initialize();
 				star[star.size() - 1]->SetRotation({ 90,0,0 });
-				star[star.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 });
+				star[star.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 });
 			}
 			//ゴール
 			if (Map[y][x] == static_cast<int>(StageSet::GOAL))
 			{
-				objGoal->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f - 0.5f, 0 });
+				objGoal->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE - 0.5f, 0 });
 				objGoal->SetScale({ 1.0f,3.0f,1.0f });
 				objGoal->SetRotation({ 0, 90,0 });
 			}
@@ -351,7 +305,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 				zyugemu[zyugemu.size() - 1].reset(Zyugemu::Create(resources->GetModel(ResourcesName::modelZyugemu)));
 				zyugemu[zyugemu.size() - 1]->Initialize();
 				zyugemu[zyugemu.size() - 1]->SetRotation({ 0,180,0 });
-				zyugemu[zyugemu.size() - 1]->SetPosition({ 2.0f * x, -2.0f * y + Y_MAX * 2.0f + 0.5f, 0 });
+				zyugemu[zyugemu.size() - 1]->SetPosition({ wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE + 0.5f, 0 });
 
 			}
 		}
@@ -373,7 +327,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 			//ファイアーバー
 			if (Map[y][x] == 3)
 			{
-				gimmickCenter[gimmickCenterNum] = { 2.0f * x, -2.0f * y + Y_MAX * 2.0f, 0 };
+				gimmickCenter[gimmickCenterNum] = { wholeScene->OBJECT_SIZE * x, -wholeScene->OBJECT_SIZE * y + Y_MAX * wholeScene->OBJECT_SIZE, 0 };
 				gimmickCenterNum++;
 			}
 		}
@@ -421,14 +375,14 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 		fireBar->Initialize();
 	}
 
-	gameTimer = (int)json->ReadFile("Resources/state.json", "gameTimer") * 60;
+	gameTimer = (int)json->ReadFile("Resources/state.json", "gameTimer") * wholeScene->ONE_SEC;
 
 	//カウントダウン用の画像の初期値の設定
 	countDown->Initialize();
 
 	gameOverFlag = false;
-	skullSizeX = 1280 * 10;
-	skullSizeY = 720 * 10;
+	skullSizeX = wholeScene->WIN_WIDTH * 10;
+	skullSizeY = wholeScene->WIN_HEIGHT * 10;
 	gameOverTime = 0;
 
 	stopFlag = false;
@@ -442,7 +396,7 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 	}
 
 	clearStopFlag = false;
-	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData1), 0.05f);
+	audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData1), resources->soundData1Bol);
 
 	totalPlayer = wholeScene->GetTotalPlayerNum();
 	selectNum = wholeScene->GetSelectNum();
@@ -454,8 +408,8 @@ void GamePlayScene::StageSet(const std::array<std::array<int, X_MAX>, Y_MAX> Map
 	enemyHitShakeFlag = false;
 	enemyHitShakeTimer = 0;
 
-	timerPosX = 1280 / 2 - 20;
-	timerPosY = 720 / 2 - 45;
+	timerPosX = wholeScene->WIN_WIDTH / wholeScene->HALF_SIZE - 20;
+	timerPosY = wholeScene->WIN_HEIGHT / wholeScene->HALF_SIZE - 45;
 	timerSize = 0;
 	timerMoveT = 0;
 	timerSizeT = 0;
@@ -524,7 +478,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	{
 		if (enemyHitShakeTimer == 0)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData11), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData11), resources->soundData11Bol);
 		}
 		enemyHitShakeTimer++;
 		enemyHitShakePos.x = (float)wholeScene->GetRand(0, 0.2f);
@@ -539,8 +493,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	if (fadeInFlag == true)
 	{
 		fadeInT += 0.005f;
-		easing::Updete(fadeInSizeX, 1280 * 17, 3, fadeInT);
-		easing::Updete(fadeInSizeY, 720 * 17, 3, fadeInT);
+		easing::Updete(fadeInSizeX, wholeScene->WIN_WIDTH * 17, 3, fadeInT);
+		easing::Updete(fadeInSizeY, wholeScene->WIN_HEIGHT * 17, 3, fadeInT);
 
 		fadeIn->SetSize({ (float)fadeInSizeX,(float)fadeInSizeY });
 	}
@@ -559,7 +513,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//シーン遷移
-	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * 2.0f - 10 || gameTimer <= 0)
+	if ((playerParticle->GetFlag() == false && objPlayer->GetHP() == 0) || objPlayer->GetPosition().y < -Y_MAX * wholeScene->OBJECT_SIZE - 10 || gameTimer <= 0)
 	{
 		gameOverFlag = true;
 	}
@@ -577,7 +531,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//Escかスタートボタン（コントローラー）を押したときに一時停止する
 	if (gameControl->menuControl(Menu::ESCAPETRIGGER))
 	{
-		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+		audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 		stopFlag = !stopFlag;
 	}
 
@@ -587,7 +541,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		if (gameControl->menuControl(Menu::UPTRIGGER))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), resources->soundData9Bol);
 			if (stopNum < 2 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -597,7 +551,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		else if (gameControl->menuControl(Menu::DOWNTRIGGER))
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData9));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), 0.03f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData9), resources->soundData9Bol);
 			if (stopNum > 0 && stopMoveTime >= 0.2f)
 			{
 				stopMoveTime = 0;
@@ -633,14 +587,14 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//モドルボタンを押したとき
 		if (stopNum == 0 && stopMoveTime >= 0.2f)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 			stopFlag = false;
 		}
 
 		//リスタートボタンを押したとき
 		if (stopNum == 1 && stopMoveTime >= 0.2f)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 			//fadein
 			fadeInFlag = true;
 			//fadeinが終わったらリスタート
@@ -650,7 +604,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		//セレクトに戻るボタンを押したとき
 		if (stopNum == 2 && stopMoveTime >= 0.2f)
 		{
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 			//fadein
 			fadeInFlag = true;
 			//fadeinが終わったらセレクト画面に
@@ -661,7 +615,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//リスタートするとき
 	if (reStartFlag == true)
 	{
-		if (fadeInSizeX > 1280 * 15)
+		if (fadeInSizeX > wholeScene->WIN_WIDTH * 15)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 			wholeScene->SetStarNum(oldStarToGet, wholeScene->GetStageFireNum() - 1);
@@ -674,7 +628,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//セレクト画面に戻るとき
 	if (goTitleFlag == true)
 	{
-		if (fadeInSizeX > 1280 * 15)
+		if (fadeInSizeX > wholeScene->WIN_WIDTH * 15)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 			wholeScene->SetStarNum(oldStarToGet, wholeScene->GetStageFireNum() - 1);
@@ -687,8 +641,8 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	//デス時の画面遷移
 	if (gameOverFlag == true)
 	{
-		easing::Updete(skullSizeX, 1280, 3, gameOverTime);
-		easing::Updete(skullSizeY, 720, 3, gameOverTime);
+		easing::Updete(skullSizeX, wholeScene->WIN_WIDTH, 3, gameOverTime);
+		easing::Updete(skullSizeY, wholeScene->WIN_HEIGHT, 3, gameOverTime);
 		gameOverTime += 0.001f;
 		if (gameOverTime > 0.2)
 		{
@@ -758,30 +712,30 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 
 	//ゴールまでの距離を測る
 	startToGoalSize.x = objGoal->GetPosition().x * 4.0f;
-	eggSprite->SetPosition({ WinApp::window_width / 2 - startToGoalSize.x / 2 + objPlayer->GetPosition().x * 4.0f , 150 });
-	goalSprite->SetPosition({ WinApp::window_width / 2 - startToGoalSize.x / 2 + objGoal->GetPosition().x * 4.0f , 150 });
+	eggSprite->SetPosition({ WinApp::window_width / wholeScene->HALF_SIZE - startToGoalSize.x / wholeScene->HALF_SIZE + objPlayer->GetPosition().x * 4.0f , 150 });
+	goalSprite->SetPosition({ WinApp::window_width / wholeScene->HALF_SIZE - startToGoalSize.x / wholeScene->HALF_SIZE + objGoal->GetPosition().x * 4.0f , 150 });
 
 	//タイマーを表示
 	debugText->SetPos((float)timerPosX, (float)timerPosY);
-	if ((float)gameTimer / 60.0f == 11 || (float)gameTimer / 60.0f == 10 || (float)gameTimer / 60.0f == 9 || (float)gameTimer / 60.0f == 8 ||
-		(float)gameTimer / 60.0f == 7 || (float)gameTimer / 60.0f == 6 || (float)gameTimer / 60.0f == 5 || (float)gameTimer / 60.0f == 4||
-		(float)gameTimer / 60.0f == 3|| (float)gameTimer / 60.0f == 2|| (float)gameTimer / 60.0f == 1)
+	if ((float)gameTimer / wholeScene->ONE_SEC == 11 || (float)gameTimer / wholeScene->ONE_SEC == 10 || (float)gameTimer / wholeScene->ONE_SEC == 9 || (float)gameTimer / wholeScene->ONE_SEC == 8 ||
+		(float)gameTimer / wholeScene->ONE_SEC == 7 || (float)gameTimer / wholeScene->ONE_SEC == 6 || (float)gameTimer / wholeScene->ONE_SEC == 5 || (float)gameTimer / wholeScene->ONE_SEC == 4||
+		(float)gameTimer / wholeScene->ONE_SEC == 3|| (float)gameTimer / wholeScene->ONE_SEC == 2|| (float)gameTimer / wholeScene->ONE_SEC == 1)
 	{
 		timerEmphasisSize = 0.5f;
 		timerEmphasisSizeT = 0;
 	}
-	if (gameTimer / 60 <= 10)
+	if (gameTimer / wholeScene->ONE_SEC <= 10)
 	{
-		if (gameTimer / 60 == 10)
+		if (gameTimer / wholeScene->ONE_SEC == 10)
 		{
 			audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
-			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData14), 0.05f);
+			audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData14), resources->soundData14Bol);
 		}
 		timerEmphasisSizeT += 0.002f;
 		easing::Updete(timerEmphasisSize, 0, 3, timerEmphasisSizeT);
 	}
 	debugText->SetSize((float)timerSize+(float)timerEmphasisSize);
-	debugText->Printf("%d", gameTimer / 60);
+	debugText->Printf("%d", gameTimer / wholeScene->ONE_SEC);
 
 	//プレイヤーの総数を表示
 	debugText->SetPos(150, 64);
@@ -1008,7 +962,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 		{
 			if (oneStar->GetMoveingFlag() == false)
 			{
-				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData8), 0.08f);
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData8), resources->soundData8Bol);
 			}
 			oneStar->GetStar();
 			//スターの枚数分調べる
@@ -1034,7 +988,7 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 			operationDrawButton[i] = true;
 			if (gameControl->moveControl(Move::JUMPTRIGGER))
 			{
-				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), 0.05f);
+				audio->PlayLoadedSound(resources->GetSoundData(ResourcesName::soundData3), resources->soundData3Bol);
 				tutorialMoveFlag = !tutorialMoveFlag;
 			}
 		}
@@ -1109,19 +1063,19 @@ void GamePlayScene::StageUpdate(GameSceneManager *pEngine, Audio *audio, DebugTe
 	}
 
 	//クリアー画面に行くための処理
-	if (clearFlag == true && fadeInSizeX > 1280 * 15)
+	if (clearFlag == true && fadeInSizeX > wholeScene->WIN_WIDTH * 15)
 	{
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData1));
 		audio->StopLoadedSound(resources->GetSoundData(ResourcesName::soundData14));
 		fire.clear();
 		pEngine->changeState(new ClearScene());
 		//ステージ番号を次のステージの番号にする
-		if (wholeScene->GetSelectNum() < 4)
+		if (wholeScene->GetSelectNum() < 5)
 		{
 			selectNum += 1;
-			if (selectNum > 4)
+			if (selectNum > 5)
 			{
-				selectNum = 4;
+				selectNum = 5;
 			}
 			wholeScene->SetSelectNum(selectNum);
 		}
